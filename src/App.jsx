@@ -36,6 +36,7 @@ export default function App() {
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
   const [editingPrompt, setEditingPrompt] = useState(null);
 
+  // ⬇️ Ezt a részt hiányoltad eddig ⬇️
   const filtered = useMemo(() => {
     return prompts.filter((p) => {
       const matchesSearch =
@@ -50,18 +51,14 @@ export default function App() {
   const handleSave = (prompt) => {
     setPrompts((prev) => {
       const exists = prev.find((p) => p.id === prompt.id);
-      return exists
-        ? prev.map((p) => (p.id === prompt.id ? prompt : p))
-        : [...prev, prompt];
+      return exists ? prev.map((p) => (p.id === prompt.id ? prompt : p)) : [...prev, prompt];
     });
   };
 
-  const handleDelete = (id) =>
-    setPrompts((prev) => prev.filter((p) => p.id !== id));
+  const handleDelete = (id) => setPrompts((prev) => prev.filter((p) => p.id !== id));
 
   return (
-    <div className="flex min-h-screen bg-rose-50 p-4 gap-4">
-      {/* ─────────── Sidebar ─────────── */}
+    <div className="flex min-h-screen bg-page-bg p-8 gap-8">
       <PromptSidebar
         search={search}
         setSearch={setSearch}
@@ -76,14 +73,7 @@ export default function App() {
         ]}
       />
 
-      {/* ─────────── Kártyarács ─────────── */}
-      <div
-        className="
-          flex-1 overflow-y-auto                 /* görgethető terület */
-          grid sm:grid-cols-2 lg:grid-cols-3     /* reszponzív oszlopszám */
-          auto-rows-min items-start gap-6        /* változó magasság */
-        "
-      >
+      <div className="flex-1 overflow-y-auto grid sm:grid-cols-2 lg:grid-cols-3 auto-rows-min items-start gap-8">
         {filtered.map((prompt) => (
           <PromptCard
             key={prompt.id}
@@ -95,7 +85,6 @@ export default function App() {
         ))}
       </div>
 
-      {/* ─────────── Új / Szerkesztő modal ─────────── */}
       {editingPrompt !== null && (
         <PromptFormModal
           prompt={editingPrompt}
