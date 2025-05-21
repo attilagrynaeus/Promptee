@@ -17,13 +17,13 @@ export default function PromptCard({ prompt, onCopy, onEdit, onDelete }) {
       {/* Token badge */}
       <span className="tag-token">{tokenCount} token</span>
 
-      {/* Read-only prompt text */}
-      <input
-        type="text"
-        value={prompt.content}
-        readOnly
-        className="field-dark w-full"
-      />
+ <input
+  type="text"
+  value={prompt.content}
+  readOnly
+  className="field-dark"
+/>
+
 
       {/* Category & visibility badges */}
       <div className="flex flex-wrap gap-2">

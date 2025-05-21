@@ -5,12 +5,15 @@ export default function PromptSidebar({
   categoryFilter, setCategoryFilter,
   onNew, categories,
 }) {
+  // Ensure unique categories by using a Set
+  const uniqueCategories = Array.from(new Set(['Illustration', 'Jokes & Humor', 'SEO Optimization', ...categories]));
+
   return (
     <aside className="sidebar-box">
-      {/* Heading with violet-pink gradient */}
+      {/* Heading with improved gradient */}
       <h2 className="
         text-4xl font-extrabold tracking-wide text-transparent bg-clip-text
-        bg-gradient-to-r from-accent-pink to-accent-blue text-center
+        bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 text-center
       ">
         Prompts
       </h2>
@@ -20,7 +23,7 @@ export default function PromptSidebar({
         New prompt
       </button>
 
-      {/* Search */}
+      {/* Search input */}
       <input
         type="text"
         placeholder="Search"
@@ -29,14 +32,14 @@ export default function PromptSidebar({
         className="field-dark"
       />
 
-      {/* Category filter */}
+      {/* Category selection */}
       <select
         value={categoryFilter}
         onChange={(e) => setCategoryFilter(e.target.value)}
         className="field-dark"
       >
-        <option>All Categories</option>
-        {categories.map((c) => (
+        <option key="all">All Categories</option>
+        {uniqueCategories.map((c) => (
           <option key={c}>{c}</option>
         ))}
       </select>

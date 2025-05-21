@@ -2,57 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
-/* —— Base page background —— */
 @layer base {
-  body { @apply bg-page-bg; }
+  body {
+    @apply bg-[#1e2024] text-gray-200;
+  }
 }
 
-/* —— Custom component utilities —— */
 @layer components {
-  /* Sidebar container */
   .sidebar-box {
-    @apply w-72 bg-sidebar-bg rounded-xl p-4 flex flex-col gap-6
-           shadow-inset;
+    @apply w-72 bg-[#2b2e38] rounded-xl p-4 flex flex-col gap-4 shadow-xl;
   }
 
-  /* Dark pill input / select */
   .field-dark {
-    @apply w-full bg-input-bg text-white placeholder-gray-400
-           rounded-full px-4 py-2 focus:ring-2 ring-accent-blue/70;
+    @apply bg-[#1c1f28] text-gray-200 placeholder-gray-400
+           rounded-full px-4 py-2 focus:ring-2 ring-blue-500/50;
   }
 
-  /* 3D pill button base */
   .btn-3d {
-    @apply inline-block rounded-full font-semibold text-white
-           select-none transition-all;
-    padding: 0.5rem 1.5rem;
-    box-shadow: theme('boxShadow.btn-down');
+    @apply inline-block rounded-full px-4 py-1 font-semibold text-white shadow-md
+           transition duration-150 hover:shadow-sm active:translate-y-0.5;
   }
-  .btn-3d:hover  { box-shadow: theme('boxShadow.btn-down-sm'); }
-  .btn-3d:active { @apply translate-y-1; box-shadow: none; }
 
-  /* Button variants */
-  .btn-blue   { @apply btn-3d bg-accent-blue hover:bg-accent-blue-hover; }
-  .btn-pink   { @apply btn-3d bg-accent-pink hover:bg-accent-pink/80; }
-  .btn-delete { @apply btn-3d bg-accent-red hover:bg-accent-red/90; }
-  .btn-edit   { @apply btn-3d bg-gray-200 text-gray-800 hover:bg-gray-300; }
-
-  /* Token & category badges */
-  .tag-token {
-    @apply inline-block text-xs text-gray-700 bg-panel-bg
-           rounded-full px-2 py-0.5 ring-1 ring-black/10;
+  .btn-blue {
+    @apply btn-3d bg-blue-500 hover:bg-blue-600;
   }
+
+  .btn-edit {
+    @apply btn-3d bg-gray-700 hover:bg-gray-600;
+  }
+
+  .btn-delete {
+    @apply btn-3d bg-red-500 hover:bg-red-600;
+  }
+
   .tag-primary {
-    @apply inline-block text-sm text-white bg-accent-pink
-           rounded-full px-2 py-1;
-  }
-  .tag-secondary {
-    @apply inline-block text-sm text-black bg-amber-400
-           rounded-full px-2 py-1;
+    @apply inline-block text-sm font-semibold rounded-full bg-indigo-500 text-white px-2 py-1;
   }
 
-  /* Card / modal panel */
+  .tag-secondary {
+    @apply inline-block text-sm font-semibold rounded-full bg-amber-400 text-black px-2 py-1;
+  }
+
+  .tag-token {
+    @apply inline-block text-xs rounded-full bg-gray-100 text-gray-700 px-2 py-0.5;
+  }
+
   .panel {
-    @apply bg-panel-bg rounded-xl p-6 shadow-card flex flex-col gap-4;
+    @apply bg-white text-gray-800 rounded-xl shadow-xl p-6 flex flex-col gap-4;
   }
 }
