@@ -18,7 +18,6 @@ export default function PromptSidebar({
         Prompts
       </h2>
 
-      {/* New prompt */}
       <button onClick={onNew} className="btn-blue">
         New prompt
       </button>
