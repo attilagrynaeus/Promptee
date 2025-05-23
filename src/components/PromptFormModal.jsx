@@ -76,8 +76,8 @@ export default function PromptFormModal({ prompt, onClose, onSave }) {
           <label className="flex items-center gap-1">
             <input
               type="checkbox"
-              checked={form.isPublic}
-              onChange={handleChange('isPublic')}
+              checked={form.is_public}
+              onChange={handleChange('is_public')}
             />
             Public
           </label>
