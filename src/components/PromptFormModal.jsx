@@ -11,7 +11,7 @@ export default function PromptFormModal({ prompt, onClose, onSave }) {
     content: prompt.content || '',
     description: prompt.description || '',
     category: prompt.category || 'Illustration',
-    isPublic: prompt.isPublic || false,
+    is_public: prompt.isPublic || false,
   });
 
   useEffect(() => setForm(prev => ({ ...prev, ...prompt })), [prompt]);
