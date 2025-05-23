@@ -24,7 +24,7 @@
   }
 
   .btn-blue {
-    @apply btn-3d bg-blue-500 hover:bg-blue-600;
+    @apply btn-3d bg-green-500 hover:bg-blue-600;
   }
 
   .btn-edit {
