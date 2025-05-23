@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import supabase from './supabase';
+import supabase from './supabaseClient';
 import PromptSidebar from './PromptSidebar';
 import PromptCard from './PromptCard';
 import PromptFormModal from './PromptFormModal';
