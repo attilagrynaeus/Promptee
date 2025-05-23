@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import supabase from './supabaseClient';
-import PromptSidebar from './PromptSidebar';
-import PromptCard from './PromptCard';
-import PromptFormModal from './PromptFormModal';
+import PromptSidebar from '../components/PromptSidebar';
+import PromptCard from '../components/PromptCard';
+import PromptFormModal from '../components/PromptFormModal';
 
 export default function App() {
   const [prompts, setPrompts] = useState([]);
