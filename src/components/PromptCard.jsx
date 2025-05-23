@@ -28,8 +28,8 @@ export default function PromptCard({ prompt, onCopy, onEdit, onDelete }) {
       {/* Category & visibility badges */}
       <div className="flex flex-wrap gap-2">
         <span className="tag-primary">{prompt.category}</span>
-        <span className={prompt.isPublic ? 'tag-primary' : 'tag-secondary'}>
-          {prompt.isPublic ? 'Public' : 'Private'}
+        <span className={prompt.is_Public ? 'tag-primary' : 'tag-secondary'}>
+          {prompt.is_Public ? 'Public' : 'Private'}
         </span>
       </div>
 
