@@ -88,12 +88,12 @@ export default function PromptCard({ prompt, currentUserId, onCopy, onEdit, onDe
         </button>
 
         {isOwner && (
-          <button
-            onClick={handleDelete}
-            className="bg-red-700 hover:bg-red-600 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors"
-          >
-            🗑️ Delete
-          </button>
+            <button
+              onClick={handleDelete}
+              className="bg-red-900 hover:bg-red-800 opacity-75 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors"
+            >
+              🗑️ Delete
+            </button>
         )}
       </div>
     </div>

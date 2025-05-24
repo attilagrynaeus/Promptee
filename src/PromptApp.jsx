@@ -51,20 +51,16 @@ export default function PromptApp() {
         *,
         categories(name),
         favorit,
-        profiles(email)
+        profiles(email),
+        next_prompt:next_prompt_id(title)
       `)
       .order('inserted_at', { ascending: false });
 
     if (error) {
-      showDialog({
-        title: 'Error',
-        message: `Failed to load prompts: ${error.message}`,
-        confirmText: 'OK',
-        cancelText: null,
-        onConfirm: () => {},
-      });
+      showDialog({ title: 'Error', message: `Failed: ${error.message}`, confirmText: 'OK' });
     } else setPrompts(data);
   }
+
 
   const filtered = useMemo(() => {
     if (!session || !session.user) return [];
@@ -79,30 +75,31 @@ export default function PromptApp() {
     );
   }, [prompts, search, categoryFilter, favoriteOnly, session]);
 
-  async function handleSave(prompt) {
-    const promptToSave = {
-      id: prompt.id,
-      title: prompt.title,
-      description: prompt.description,
-      content: prompt.content,
-      category_id: prompt.category_id,
-      is_public: prompt.is_public,
-      user_id: session.user.id,
-    };
+    async function handleSave(prompt) {
+      const promptToSave = {
+        id: prompt.id,
+        title: prompt.title,
+        description: prompt.description,
+        content: prompt.content,
+        category_id: prompt.category_id,
+        is_public: prompt.is_public,
+        user_id: session.user.id,
+        next_prompt_id: prompt.next_prompt_id || null, // ← fontos új sor!
+      };
 
-    const { error } = await supabase.from('prompts').upsert(promptToSave);
+      const { error } = await supabase.from('prompts').upsert(promptToSave);
 
-    if (error) {
-      showDialog({
-        title: 'Error',
-        message: `Failed to save prompt: ${error.message}`,
-        confirmText: 'OK',
-        cancelText: null,
-        onConfirm: () => {},
-      });
-    } else fetchPrompts();
-    setEditingPrompt(null);
-  }
+      if (error) {
+        showDialog({
+          title: 'Error',
+          message: `Failed to save prompt: ${error.message}`,
+          confirmText: 'OK',
+        });
+      } else fetchPrompts();
+
+      setEditingPrompt(null);
+    }
+
 
   async function handleToggleFavorit(prompt) {
     const { error } = await supabase
@@ -206,6 +203,7 @@ export default function PromptApp() {
         <PromptFormModal
           prompt={editingPrompt}
           categories={categories}
+          prompts={prompts}
           onClose={() => setEditingPrompt(null)}
           onSave={handleSave}
         />

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { tokensOf } from '../lib/tokenCounter';
 
-export default function PromptFormModal({ prompt, categories, onClose, onSave }) {
+export default function PromptFormModal({ prompt, categories, prompts, onClose, onSave }) {
   const defaultCategory = categories.find(c => c.name === 'Others')?.id || '';
 
   const [form, setForm] = useState({
@@ -12,6 +12,7 @@ export default function PromptFormModal({ prompt, categories, onClose, onSave })
     description: prompt.description || '',
     category_id: prompt.category_id || defaultCategory,
     is_public: prompt.is_public || false,
+    next_prompt_id: prompt.next_prompt_id || '',
   });
 
   useEffect(() => {
@@ -19,6 +20,7 @@ export default function PromptFormModal({ prompt, categories, onClose, onSave })
       ...prev,
       ...prompt,
       category_id: prompt.category_id || defaultCategory,
+      next_prompt_id: prompt.next_prompt_id || '',
     }));
   }, [prompt, defaultCategory]);
 
@@ -89,6 +91,24 @@ export default function PromptFormModal({ prompt, categories, onClose, onSave })
             onChange={handleChange('is_public')}
           />
           Public
+        </label>
+
+        <label className="flex flex-col gap-1 text-sm">
+          <span className="text-gray-400">🔗 Next Prompt (optional)</span>
+          <select
+            value={form.next_prompt_id}
+            onChange={handleChange('next_prompt_id')}
+            className="field-dark rounded-none"
+          >
+            <option value="">🔹 No next prompt</option>
+            {prompts
+              .filter(p => p.id !== form.id)
+              .map(p => (
+                <option key={p.id} value={p.id}>
+                  {p.title}
+                </option>
+              ))}
+          </select>
         </label>
 
         <div className="flex justify-end gap-2">
