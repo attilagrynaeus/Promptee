@@ -50,4 +50,22 @@
   .panel {
     @apply bg-white text-gray-800 rounded-xl shadow-xl p-6 flex flex-col gap-4;
   }
+
+.chain-connector {
+  width: 4px; 
+  height: 80px; 
+  background-image: linear-gradient(to bottom, #facc15 50%, transparent 0%); 
+  background-size: 100% 10px;
+  background-repeat: repeat-y;
+  margin: 0 auto;
+  animation: chainAnim 1s linear infinite;
+  z-index: 9999; 
+}
+
+
+  @keyframes chainAnim {
+    from { background-position-y: 0; }
+    to { background-position-y: 20px; }
+  }
+
 }

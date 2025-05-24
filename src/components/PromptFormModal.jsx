@@ -31,11 +31,23 @@ export default function PromptFormModal({ prompt, categories, prompts, onClose, 
     setForm({ ...form, [field]: value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await onSave(form);
-    onClose();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  const promptToSave = {
+    id: form.id,
+    title: form.title,
+    content: form.content,
+    description: form.description,
+    category_id: form.category_id || null,
+    is_public: form.is_public,
+    next_prompt_id: form.next_prompt_id || null,
   };
+
+  await onSave(promptToSave);
+  onClose();
+};
+
 
   return ReactDOM.createPortal(
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">

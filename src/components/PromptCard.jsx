@@ -2,7 +2,17 @@ import React from 'react';
 import { tokensOf } from '../lib/tokenCounter';
 import { useDialog } from '../context/DialogContext';
 
-export default function PromptCard({ prompt, currentUserId, onCopy, onEdit, onDelete, onToggleFavorit, onClone }) {
+export default function PromptCard({
+  prompt,
+  currentUserId,
+  onCopy,
+  onEdit,
+  onDelete,
+  onToggleFavorit,
+  onClone,
+  activateChainView,
+  chainViewActive
+}) {
   const tokenCount = tokensOf(prompt.content);
   const isOwner = prompt.user_id === currentUserId;
   const { showDialog } = useDialog();
@@ -19,7 +29,7 @@ export default function PromptCard({ prompt, currentUserId, onCopy, onEdit, onDe
   };
 
   return (
-    <div className="bg-gray-900 shadow-xl rounded-xl p-4 flex flex-col gap-3 text-gray-200">
+    <div className="bg-gray-900 shadow-xl rounded-xl p-4 flex flex-col gap-3 text-gray-200 relative">
       <div className="flex flex-col gap-2">
         <header>
           <h3 className="text-xl font-semibold tracking-wide">{prompt.title}</h3>
@@ -88,14 +98,28 @@ export default function PromptCard({ prompt, currentUserId, onCopy, onEdit, onDe
         </button>
 
         {isOwner && (
-            <button
-              onClick={handleDelete}
-              className="bg-red-900 hover:bg-red-800 opacity-75 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors"
-            >
-              🗑️ Delete
-            </button>
+          <button
+            onClick={handleDelete}
+            className="bg-red-900 hover:bg-red-800 opacity-75 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors"
+          >
+            🗑️ Delete
+          </button>
+        )}
+
+        {!chainViewActive && prompt.next_prompt_id && (
+          <button
+            onClick={() => activateChainView(prompt)}
+            className="bg-purple-700 hover:bg-purple-600 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors"
+          >
+            🔗 Chain
+          </button>
         )}
       </div>
+
+   {chainViewActive && prompt.next_prompt_id && (
+  <div className="chain-connector absolute -bottom-16 left-1/2 transform -translate-x-1/2"></div>
+   )}
+
     </div>
   );
 }
