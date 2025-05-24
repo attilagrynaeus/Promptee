@@ -6,11 +6,13 @@ import PromptFormModal from './components/PromptFormModal';
 import LoginForm from './components/LoginForm';
 import useProfile from './hooks/useProfile';
 import useIdleTimeout from './hooks/useIdleTimeout';
+import { useDialog } from './context/DialogContext';
 
 export default function PromptApp() {
   const session = useSession();
   const supabase = useSupabaseClient();
   const profile = useProfile();
+  const { showDialog } = useDialog();
 
   useIdleTimeout(30);
 
@@ -31,29 +33,16 @@ export default function PromptApp() {
   async function fetchCategories() {
     const { data, error } = await supabase.from('categories').select('*');
     if (!error) setCategories(data);
-    else alert(`Failed to load categories: ${error.message}`);
-  }
-
-  async function handleClonePrompt(prompt) {
-    const clonedPrompt = {
-      title: prompt.title + ' (clone)',
-      content: prompt.content,
-      description: prompt.description,
-      category_id: prompt.category_id,
-      is_public: false,
-      favorit: false,
-      user_id: session.user.id, 
-      inserted_at: new Date().toISOString(),
-    };
-
-    const { error } = await supabase.from('prompts').insert(clonedPrompt);
-
-    if (error) {
-      alert(`Failed to clone prompt: ${error.message}`);
-    } else {
-      fetchPrompts();
+    else {
+      showDialog({
+        title: 'Error',
+        message: `Failed to load categories: ${error.message}`,
+        confirmText: 'OK',
+        cancelText: null,
+        onConfirm: () => {},
+      });
     }
-}
+  }
 
   async function fetchPrompts() {
     const { data, error } = await supabase
@@ -66,24 +55,29 @@ export default function PromptApp() {
       `)
       .order('inserted_at', { ascending: false });
 
-    if (error) alert(`Failed to load prompts: ${error.message}`);
-    else setPrompts(data);
+    if (error) {
+      showDialog({
+        title: 'Error',
+        message: `Failed to load prompts: ${error.message}`,
+        confirmText: 'OK',
+        cancelText: null,
+        onConfirm: () => {},
+      });
+    } else setPrompts(data);
   }
 
-const filtered = useMemo(() => {
-  if (!session || !session.user) return [];
+  const filtered = useMemo(() => {
+    if (!session || !session.user) return [];
+    if (favoriteOnly) {
+      return prompts.filter(p => p.favorit && p.user_id === session.user.id);
+    }
 
-  if (favoriteOnly) {
-    return prompts.filter(p => p.favorit && p.user_id === session.user.id);
-  }
-
-  const lowerSearch = search.toLowerCase();
-  return prompts.filter(p =>
-    (p.title.toLowerCase().includes(lowerSearch) || p.content.toLowerCase().includes(lowerSearch)) &&
-    (categoryFilter === 'All Categories' || p.categories?.name === categoryFilter)
-  );
-}, [prompts, search, categoryFilter, favoriteOnly, session]);
-
+    const lowerSearch = search.toLowerCase();
+    return prompts.filter(p =>
+      (p.title.toLowerCase().includes(lowerSearch) || p.content.toLowerCase().includes(lowerSearch)) &&
+      (categoryFilter === 'All Categories' || p.categories?.name === categoryFilter)
+    );
+  }, [prompts, search, categoryFilter, favoriteOnly, session]);
 
   async function handleSave(prompt) {
     const promptToSave = {
@@ -98,8 +92,15 @@ const filtered = useMemo(() => {
 
     const { error } = await supabase.from('prompts').upsert(promptToSave);
 
-    if (error) alert(`Failed to save prompt: ${error.message}`);
-    else fetchPrompts();
+    if (error) {
+      showDialog({
+        title: 'Error',
+        message: `Failed to save prompt: ${error.message}`,
+        confirmText: 'OK',
+        cancelText: null,
+        onConfirm: () => {},
+      });
+    } else fetchPrompts();
     setEditingPrompt(null);
   }
 
@@ -109,14 +110,53 @@ const filtered = useMemo(() => {
       .update({ favorit: !prompt.favorit })
       .eq('id', prompt.id);
 
-    if (error) alert(`Failed to update favorite: ${error.message}`);
-    else fetchPrompts();
+    if (error) {
+      showDialog({
+        title: 'Error',
+        message: `Failed to update favorite: ${error.message}`,
+        confirmText: 'OK',
+        cancelText: null,
+        onConfirm: () => {},
+      });
+    } else fetchPrompts();
   }
 
   async function handleDelete(id) {
     const { error } = await supabase.from('prompts').delete().eq('id', id);
-    if (error) alert(`Failed to delete prompt: ${error.message}`);
-    else fetchPrompts();
+    if (error) {
+      showDialog({
+        title: 'Error',
+        message: `Failed to delete prompt: ${error.message}`,
+        confirmText: 'OK',
+        cancelText: null,
+        onConfirm: () => {},
+      });
+    } else fetchPrompts();
+  }
+
+  async function handleClonePrompt(prompt) {
+    const clonedPrompt = {
+      title: prompt.title + ' (clone)',
+      content: prompt.content,
+      description: prompt.description,
+      category_id: prompt.category_id,
+      is_public: false,
+      favorit: false,
+      user_id: session.user.id,
+      inserted_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase.from('prompts').insert(clonedPrompt);
+
+    if (error) {
+      showDialog({
+        title: 'Error',
+        message: `Failed to clone prompt: ${error.message}`,
+        confirmText: 'OK',
+        cancelText: null,
+        onConfirm: () => {},
+      });
+    } else fetchPrompts();
   }
 
   if (!session) return <LoginForm />;
@@ -133,7 +173,7 @@ const filtered = useMemo(() => {
           onNew={() => setEditingPrompt({})}
           categories={['All Categories', ...categories.map(c => c.name)]}
           user={profile}
-          favoriteOnly={favoriteOnly} 
+          favoriteOnly={favoriteOnly}
           setFavoriteOnly={setFavoriteOnly}
         />
       </div>
@@ -145,22 +185,21 @@ const filtered = useMemo(() => {
           </div>
         )}
 
-     {filtered.map(prompt => (
-        <PromptCard
-          key={prompt.id}
-          prompt={{
-            ...prompt,
-            category: prompt.categories?.name || 'Uncategorized',
-          }}
-          currentUserId={session.user.id}
-          onCopy={() => navigator.clipboard.writeText(prompt.content)}
-          onEdit={() => setEditingPrompt(prompt)}
-          onDelete={() => handleDelete(prompt.id)}
-          onToggleFavorit={handleToggleFavorit}
-          onClone={handleClonePrompt}
-        />
-      ))}
-
+        {filtered.map(prompt => (
+          <PromptCard
+            key={prompt.id}
+            prompt={{
+              ...prompt,
+              category: prompt.categories?.name || 'Uncategorized',
+            }}
+            currentUserId={session.user.id}
+            onCopy={() => navigator.clipboard.writeText(prompt.content)}
+            onEdit={() => setEditingPrompt(prompt)}
+            onDelete={() => handleDelete(prompt.id)}
+            onToggleFavorit={handleToggleFavorit}
+            onClone={handleClonePrompt}
+          />
+        ))}
       </div>
 
       {editingPrompt && (

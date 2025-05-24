@@ -1,9 +1,22 @@
 import React from 'react';
 import { tokensOf } from '../lib/tokenCounter';
+import { useDialog } from '../context/DialogContext';
 
 export default function PromptCard({ prompt, currentUserId, onCopy, onEdit, onDelete, onToggleFavorit, onClone }) {
   const tokenCount = tokensOf(prompt.content);
   const isOwner = prompt.user_id === currentUserId;
+  const { showDialog } = useDialog();
+
+  const handleDelete = () => {
+    showDialog({
+      title: 'Delete Prompt',
+      message: 'Are you sure you want to delete this prompt?',
+      confirmText: 'Yes, Delete',
+      cancelText: 'No, Cancel',
+      onConfirm: () => onDelete(prompt.id),
+      onCancel: () => {},
+    });
+  };
 
   return (
     <div className="bg-gray-900 shadow-xl rounded-xl p-4 flex flex-col gap-3 text-gray-200">
@@ -76,7 +89,7 @@ export default function PromptCard({ prompt, currentUserId, onCopy, onEdit, onDe
 
         {isOwner && (
           <button
-            onClick={() => confirm('Delete?') && onDelete(prompt.id)}
+            onClick={handleDelete}
             className="bg-red-700 hover:bg-red-600 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors"
           >
             🗑️ Delete

@@ -57,7 +57,8 @@ export default function PromptSidebar({
     <aside className="sidebar-box flex flex-col justify-between h-full min-h-full">
       <div>
         <h2 className="text-4xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 text-center">
-          Prompts
+          PrompTee
+          🍵
         </h2>
 
         <button onClick={onNew} className="btn-blue mt-4 w-full">
