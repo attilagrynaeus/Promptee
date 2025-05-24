@@ -97,7 +97,7 @@ export default function PromptSidebar({
         onClick={handleDumpPrompts}
         className="mt-2 ml-2 text-sm bg-gray-700 hover:bg-gray-600 transition-colors text-white rounded-lg py-1 px-3"
       >
-        Dump my prompts
+        📥Dump Prompts
       </button>
     </div>
 

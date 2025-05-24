@@ -12,21 +12,31 @@ export default function PromptApp() {
   const supabase = useSupabaseClient();
   const profile = useProfile();
 
-  useIdleTimeout(30); // 30 min session timeout
+  useIdleTimeout(30); // Session timeout: 30 perc
 
   const [prompts, setPrompts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
   const [editingPrompt, setEditingPrompt] = useState(null);
 
   useEffect(() => {
-    if (session) fetchPrompts();
+    if (session) {
+      fetchCategories();
+      fetchPrompts();
+    }
   }, [session]);
+
+  async function fetchCategories() {
+    const { data, error } = await supabase.from('categories').select('*');
+    if (!error) setCategories(data);
+    else alert(`Failed to load categories: ${error.message}`);
+  }
 
   async function fetchPrompts() {
     const { data, error } = await supabase
       .from('prompts')
-      .select('*')
+      .select('*, categories(name)')
       .order('inserted_at', { ascending: false });
 
     if (error) alert(`Failed to load prompts: ${error.message}`);
@@ -37,25 +47,29 @@ export default function PromptApp() {
     const lowerSearch = search.toLowerCase();
     return prompts.filter(p =>
       (p.title.toLowerCase().includes(lowerSearch) || p.content.toLowerCase().includes(lowerSearch)) &&
-      (categoryFilter === 'All Categories' || p.category === categoryFilter)
+      (categoryFilter === 'All Categories' || p.categories?.name === categoryFilter)
     );
   }, [prompts, search, categoryFilter]);
 
-  async function handleSave(prompt) {
-    const promptWithUser = {
-      ...prompt,
-      user_id: session.user.id, // user_id fix
-    };
+async function handleSave(prompt) {
+  const promptToSave = {
+    id: prompt.id,
+    title: prompt.title,
+    description: prompt.description,
+    content: prompt.content,
+    category_id: prompt.category_id,
+    is_public: prompt.is_public,
+    user_id: session.user.id,
+  };
 
-    const { data, error } = await supabase
-      .from('prompts')
-      .upsert(promptWithUser)
-      .select();
+  const { error } = await supabase
+    .from('prompts')
+    .upsert(promptToSave);
 
-    if (error) alert(`Failed to save prompt: ${error.message}`);
-    else fetchPrompts();
-    setEditingPrompt(null);
-  }
+  if (error) alert(`Failed to save prompt: ${error.message}`);
+  else fetchPrompts();
+  setEditingPrompt(null);
+}
 
   async function handleDelete(id) {
     const { error } = await supabase.from('prompts').delete().eq('id', id);
@@ -67,45 +81,48 @@ export default function PromptApp() {
   if (!profile) return <div className="p-8 text-center text-gray-500">Loading...</div>;
 
   return (
-  <div className="flex min-h-screen bg-page-bg p-8 gap-8 items-stretch">
-    
-    <div className="flex-shrink-0 flex flex-col" style={{ height: 'calc(100vh - 4rem)' }}>
-      <PromptSidebar
-        search={search}
-        setSearch={setSearch}
-        categoryFilter={categoryFilter}
-        setCategoryFilter={setCategoryFilter}
-        onNew={() => setEditingPrompt({})}
-        categories={[...new Set(prompts.map(p => p.category))]}
-        user={profile}
-      />
-    </div>
-
-    <div className="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start content-start">
-      {profile.role === 'pro' && (
-        <div className="col-span-full px-4 py-2 bg-gray-900 rounded-lg shadow text-gray-200 font-medium text-center">
-          🎖️ Pro Features Enabled! Welcome, {profile.email.split('@')[0]}!
-        </div>
-      )}
-
-      {filtered.map(prompt => (
-        <PromptCard
-          key={prompt.id}
-          prompt={prompt}
-          onCopy={() => navigator.clipboard.writeText(prompt.content)}
-          onEdit={() => setEditingPrompt(prompt)}
-          onDelete={() => handleDelete(prompt.id)}
+    <div className="flex min-h-screen bg-page-bg p-8 gap-8 items-stretch">
+      <div className="flex-shrink-0 flex flex-col" style={{ height: 'calc(100vh - 4rem)' }}>
+        <PromptSidebar
+          search={search}
+          setSearch={setSearch}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          onNew={() => setEditingPrompt({})}
+          categories={['All Categories', ...categories.map(c => c.name)]}
+          user={profile}
         />
-      ))}
-    </div>
+      </div>
 
-    {editingPrompt && (
-      <PromptFormModal
-        prompt={editingPrompt}
-        onClose={() => setEditingPrompt(null)}
-        onSave={handleSave}
-      />
-    )}
-  </div>
-);
+      <div className="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start content-start">
+        {profile.role === 'pro' && (
+          <div className="col-span-full px-4 py-2 bg-gray-900 rounded-lg shadow text-gray-200 font-medium text-center">
+            🎖️ Pro Features Enabled! Welcome, {profile.email.split('@')[0]}!
+          </div>
+        )}
+
+        {filtered.map(prompt => (
+          <PromptCard
+            key={prompt.id}
+            prompt={{
+              ...prompt,
+              category: prompt.categories?.name || 'Uncategorized',
+            }}
+            onCopy={() => navigator.clipboard.writeText(prompt.content)}
+            onEdit={() => setEditingPrompt(prompt)}
+            onDelete={() => handleDelete(prompt.id)}
+          />
+        ))}
+      </div>
+
+      {editingPrompt && (
+        <PromptFormModal
+          prompt={editingPrompt}
+          categories={categories}
+          onClose={() => setEditingPrompt(null)}
+          onSave={handleSave}
+        />
+      )}
+    </div>
+  );
 }
