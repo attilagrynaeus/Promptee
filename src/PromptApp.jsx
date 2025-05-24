@@ -12,13 +12,14 @@ export default function PromptApp() {
   const supabase = useSupabaseClient();
   const profile = useProfile();
 
-  useIdleTimeout(30); // Session timeout: 30 perc
+  useIdleTimeout(30);
 
   const [prompts, setPrompts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
   const [editingPrompt, setEditingPrompt] = useState(null);
+  const [favoriteOnly, setFavoriteOnly] = useState(false); // ← új favorit state hozzáadva
 
   useEffect(() => {
     if (session) {
@@ -36,7 +37,7 @@ export default function PromptApp() {
   async function fetchPrompts() {
     const { data, error } = await supabase
       .from('prompts')
-      .select('*, categories(name)')
+      .select('*, categories(name), favorit')
       .order('inserted_at', { ascending: false });
 
     if (error) alert(`Failed to load prompts: ${error.message}`);
@@ -44,32 +45,44 @@ export default function PromptApp() {
   }
 
   const filtered = useMemo(() => {
+    if (favoriteOnly) {
+      return prompts.filter(p => p.favorit);
+    }
+
     const lowerSearch = search.toLowerCase();
     return prompts.filter(p =>
       (p.title.toLowerCase().includes(lowerSearch) || p.content.toLowerCase().includes(lowerSearch)) &&
       (categoryFilter === 'All Categories' || p.categories?.name === categoryFilter)
     );
-  }, [prompts, search, categoryFilter]);
+  }, [prompts, search, categoryFilter, favoriteOnly]);
 
-async function handleSave(prompt) {
-  const promptToSave = {
-    id: prompt.id,
-    title: prompt.title,
-    description: prompt.description,
-    content: prompt.content,
-    category_id: prompt.category_id,
-    is_public: prompt.is_public,
-    user_id: session.user.id,
-  };
+  async function handleSave(prompt) {
+    const promptToSave = {
+      id: prompt.id,
+      title: prompt.title,
+      description: prompt.description,
+      content: prompt.content,
+      category_id: prompt.category_id,
+      is_public: prompt.is_public,
+      user_id: session.user.id,
+    };
 
-  const { error } = await supabase
-    .from('prompts')
-    .upsert(promptToSave);
+    const { error } = await supabase.from('prompts').upsert(promptToSave);
 
-  if (error) alert(`Failed to save prompt: ${error.message}`);
-  else fetchPrompts();
-  setEditingPrompt(null);
-}
+    if (error) alert(`Failed to save prompt: ${error.message}`);
+    else fetchPrompts();
+    setEditingPrompt(null);
+  }
+
+  async function handleToggleFavorit(prompt) {
+    const { error } = await supabase
+      .from('prompts')
+      .update({ favorit: !prompt.favorit })
+      .eq('id', prompt.id);
+
+    if (error) alert(`Failed to update favorite: ${error.message}`);
+    else fetchPrompts();
+  }
 
   async function handleDelete(id) {
     const { error } = await supabase.from('prompts').delete().eq('id', id);
@@ -91,6 +104,8 @@ async function handleSave(prompt) {
           onNew={() => setEditingPrompt({})}
           categories={['All Categories', ...categories.map(c => c.name)]}
           user={profile}
+          favoriteOnly={favoriteOnly}        // ← hozzáadva a Sidebarhoz
+          setFavoriteOnly={setFavoriteOnly}  // ← hozzáadva a Sidebarhoz
         />
       </div>
 
@@ -111,6 +126,7 @@ async function handleSave(prompt) {
             onCopy={() => navigator.clipboard.writeText(prompt.content)}
             onEdit={() => setEditingPrompt(prompt)}
             onDelete={() => handleDelete(prompt.id)}
+            onToggleFavorit={handleToggleFavorit} // ← favorit funkció integrálva
           />
         ))}
       </div>
