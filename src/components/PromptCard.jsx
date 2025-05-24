@@ -24,7 +24,6 @@ export default function PromptCard({ prompt, onCopy, onEdit, onDelete }) {
   className="field-dark"
 />
 
-
       {/* Category & visibility badges */}
       <div className="flex flex-wrap gap-2">
         <span className="tag-primary">{prompt.category}</span>
@@ -33,11 +32,20 @@ export default function PromptCard({ prompt, onCopy, onEdit, onDelete }) {
         </span>
       </div>
 
-      {/* Action buttons */}
+      {/* Actions */}
       <div className="flex gap-4 justify-end">
         <button onClick={onCopy}   className="btn-blue">Copy</button>
         <button onClick={onEdit}   className="btn-edit">Edit</button>
-        <button onClick={onDelete} className="btn-delete">Delete</button>
+        <button
+          onClick={() => {
+          if (confirm('Are you sure you want to delete this prompt?')) {
+            onDelete();
+          }
+          }}
+            className="btn-delete"
+          >
+          Delete 🗑️
+      </button>
       </div>
     </div>
   );
