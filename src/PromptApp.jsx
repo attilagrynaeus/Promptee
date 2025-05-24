@@ -4,10 +4,13 @@ import PromptSidebar from './components/PromptSidebar';
 import PromptCard from './components/PromptCard';
 import PromptFormModal from './components/PromptFormModal';
 import LoginForm from './components/LoginForm';
+import useProfile from './hooks/useProfile';
 
 export default function PromptApp() {
   const session = useSession();
   const supabase = useSupabaseClient();
+  const profile = useProfile();
+
   const [prompts, setPrompts] = useState([]);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
@@ -22,7 +25,7 @@ export default function PromptApp() {
       .from('prompts')
       .select('*')
       .order('inserted_at', { ascending: false });
-    
+
     if (error) alert(`Failed to load prompts: ${error.message}`);
     else setPrompts(data);
   }
@@ -40,7 +43,7 @@ export default function PromptApp() {
       .from('prompts')
       .upsert(prompt)
       .select();
-    
+
     if (error) alert(`Failed to save prompt: ${error.message}`);
     else fetchPrompts();
     setEditingPrompt(null);
@@ -53,6 +56,7 @@ export default function PromptApp() {
   }
 
   if (!session) return <LoginForm />;
+  if (!profile) return <div className="p-8 text-center text-gray-500">Loading...</div>;
 
   return (
     <div className="flex min-h-screen bg-page-bg p-8 gap-8">
@@ -66,6 +70,13 @@ export default function PromptApp() {
       />
 
       <div className="flex-1 overflow-y-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Conditional rendering Pro feature */}
+        {profile.role === 'pro' && (
+          <div className="col-span-full p-4 bg-gradient-to-r from-yellow-200 to-yellow-400 rounded shadow text-gray-800 font-semibold text-center">
+            🎖️ Pro User: Extra Features Enabled!
+          </div>
+        )}
+
         {filtered.map(prompt => (
           <PromptCard
             key={prompt.id}
