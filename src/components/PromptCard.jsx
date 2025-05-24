@@ -1,8 +1,9 @@
 import React from 'react';
 import { tokensOf } from '../lib/tokenCounter';
 
-export default function PromptCard({ prompt, onCopy, onEdit, onDelete, onToggleFavorit }) {
+export default function PromptCard({ prompt, currentUserId, onCopy, onEdit, onDelete, onToggleFavorit }) {
   const tokenCount = tokensOf(prompt.content);
+  const isOwner = prompt.user_id === currentUserId;
 
   return (
     <div className="bg-gray-900 shadow-xl rounded-xl p-4 flex flex-col gap-3 text-gray-200">
@@ -30,28 +31,45 @@ export default function PromptCard({ prompt, onCopy, onEdit, onDelete, onToggleF
             {prompt.is_public ? 'Public' : 'Private'}
           </span>
           <span className="bg-gray-700 text-sm rounded-lg px-3 py-1">
-            {tokenCount} {tokenCount > 1 ? 'tokens' : 'token'}
+            {tokenCount} tokens
           </span>
         </div>
       </div>
 
-      <div className="flex justify-end gap-2 mt-1">
-        <button onClick={() => onToggleFavorit(prompt)} className="mr-auto text-xl transition-colors">
+      <div className="flex justify-end gap-2 items-center mt-1">
+        <button onClick={() => isOwner && onToggleFavorit(prompt)} className={`mr-auto text-xl transition-colors ${!isOwner ? 'opacity-50 cursor-default' : ''}`}>
           {prompt.favorit ? '⭐️' : '☆'}
         </button>
 
-        <button onClick={onCopy} className="bg-indigo-700 hover:bg-indigo-600 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors">
+        {!isOwner && prompt.profiles?.email && (
+          <span className="text-xs italic text-gray-500">
+            {prompt.profiles.email.split('@')[0]}
+          </span>
+        )}
+
+        <button
+          onClick={onCopy}
+          className="bg-indigo-700 hover:bg-indigo-600 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors"
+        >
           📋 Copy
         </button>
-        <button onClick={onEdit} className="bg-gray-700 hover:bg-gray-600 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors">
+
+        <button
+          onClick={() => isOwner && onEdit()}
+          disabled={!isOwner}
+          className={`bg-gray-700 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors ${!isOwner ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-600'}`}
+        >
           ✏️ Edit
         </button>
-        <button
-          onClick={() => confirm('Delete?') && onDelete(prompt.id)}
-          className="bg-red-700 hover:bg-red-600 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors"
-        >
-          🗑️ Delete
-        </button>
+
+        {isOwner && (
+          <button
+            onClick={() => confirm('Delete?') && onDelete(prompt.id)}
+            className="bg-red-700 hover:bg-red-600 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors"
+          >
+            🗑️ Delete
+          </button>
+        )}
       </div>
     </div>
   );

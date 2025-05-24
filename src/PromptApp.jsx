@@ -19,7 +19,7 @@ export default function PromptApp() {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
   const [editingPrompt, setEditingPrompt] = useState(null);
-  const [favoriteOnly, setFavoriteOnly] = useState(false); // ← új favorit state hozzáadva
+  const [favoriteOnly, setFavoriteOnly] = useState(false);
 
   useEffect(() => {
     if (session) {
@@ -37,7 +37,7 @@ export default function PromptApp() {
   async function fetchPrompts() {
     const { data, error } = await supabase
       .from('prompts')
-      .select('*, categories(name), favorit')
+      .select('*, categories(name), favorit, profiles(email)')
       .order('inserted_at', { ascending: false });
 
     if (error) alert(`Failed to load prompts: ${error.message}`);
@@ -104,8 +104,8 @@ export default function PromptApp() {
           onNew={() => setEditingPrompt({})}
           categories={['All Categories', ...categories.map(c => c.name)]}
           user={profile}
-          favoriteOnly={favoriteOnly}        // ← hozzáadva a Sidebarhoz
-          setFavoriteOnly={setFavoriteOnly}  // ← hozzáadva a Sidebarhoz
+          favoriteOnly={favoriteOnly} 
+          setFavoriteOnly={setFavoriteOnly}
         />
       </div>
 
@@ -123,10 +123,11 @@ export default function PromptApp() {
               ...prompt,
               category: prompt.categories?.name || 'Uncategorized',
             }}
+            currentUserId={session.user.id}
             onCopy={() => navigator.clipboard.writeText(prompt.content)}
             onEdit={() => setEditingPrompt(prompt)}
             onDelete={() => handleDelete(prompt.id)}
-            onToggleFavorit={handleToggleFavorit} // ← favorit funkció integrálva
+            onToggleFavorit={handleToggleFavorit}
           />
         ))}
       </div>
