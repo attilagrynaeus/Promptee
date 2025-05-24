@@ -71,7 +71,7 @@ export default function PromptApp() {
   }
 
 const filtered = useMemo(() => {
-  if (!session || !session.user) return []; // ← itt a fontos változás!
+  if (!session || !session.user) return [];
 
   if (favoriteOnly) {
     return prompts.filter(p => p.favorit && p.user_id === session.user.id);
