@@ -42,7 +42,7 @@ export default function PromptCard({ prompt, currentUserId, onCopy, onEdit, onDe
         </button>
 
         {!isOwner && prompt.profiles?.email && (
-          <span className="text-xs italic text-gray-500">
+          <span className="text-sm italic text-gray-500"> {/* text-xs → text-sm */}
             {prompt.profiles.email.split('@')[0]}
           </span>
         )}

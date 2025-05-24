@@ -37,7 +37,12 @@ export default function PromptApp() {
   async function fetchPrompts() {
     const { data, error } = await supabase
       .from('prompts')
-      .select('*, categories(name), favorit, profiles(email)')
+      .select(`
+        *,
+        categories(name),
+        favorit,
+        profiles(email)
+      `)
       .order('inserted_at', { ascending: false });
 
     if (error) alert(`Failed to load prompts: ${error.message}`);
