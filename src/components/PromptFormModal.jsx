@@ -29,10 +29,11 @@ export default function PromptFormModal({ prompt, onClose, onSave }) {
     onClose();
   };
 
-  return ReactDOM.createPortal(
-    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-      <form onSubmit={handleSubmit} className="panel max-w-md w-full">
-        <h2 className="text-2xl font-bold mb-2">
+   return ReactDOM.createPortal(
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+      <form onSubmit={handleSubmit} className="bg-gray-800 rounded-xl shadow-xl p-6 w-full max-w-md flex flex-col gap-4 text-gray-200">
+
+        <h2 className="text-xl font-semibold">
           {isNewPrompt ? 'New Prompt' : 'Edit Prompt'}
         </h2>
 
@@ -41,7 +42,7 @@ export default function PromptFormModal({ prompt, onClose, onSave }) {
           placeholder="Title"
           value={form.title}
           onChange={handleChange('title')}
-          className="field-dark"
+          className="bg-gray-700 rounded-lg px-4 py-2 text-sm text-gray-200"
         />
 
         <textarea
@@ -49,23 +50,25 @@ export default function PromptFormModal({ prompt, onClose, onSave }) {
           placeholder="Prompt text"
           value={form.content}
           onChange={handleChange('content')}
-          className="field-dark h-24 resize-y"
+          className="bg-gray-700 rounded-lg px-4 py-2 h-32 resize-y text-sm text-gray-200"
         />
 
-        <span className="tag-token self-end">{tokenCount} token</span>
+        <span className="bg-gray-600 text-xs self-end rounded-full px-3 py-1">
+          {tokenCount} token
+        </span>
 
         <input
           placeholder="Short description (optional)"
           value={form.description}
           onChange={handleChange('description')}
-          className="field-dark"
+          className="bg-gray-700 rounded-lg px-4 py-2 text-sm text-gray-200"
         />
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <select
             value={form.category}
             onChange={handleChange('category')}
-            className="field-dark flex-1"
+            className="bg-gray-700 rounded-lg px-3 py-2 text-sm flex-1 text-gray-200"
           >
             <option>Illustration</option>
             <option>Jokes & Humor</option>
@@ -73,20 +76,26 @@ export default function PromptFormModal({ prompt, onClose, onSave }) {
             <option>Other</option>
           </select>
 
-          <label className="flex items-center gap-1">
+          <label className="flex items-center gap-2 text-sm">
             <input
               type="checkbox"
               checked={form.is_public}
               onChange={handleChange('is_public')}
+              className="rounded"
             />
             Public
           </label>
         </div>
 
-        <div className="flex gap-4 justify-end mt-4">
-          <button type="button" onClick={onClose} className="btn-edit">Cancel</button>
-          <button type="submit" className="btn-blue">Save</button>
+        <div className="flex justify-end gap-2 mt-4">
+          <button type="button" onClick={onClose} className="bg-gray-600 rounded-full px-4 py-2 hover:bg-gray-500">
+            Cancel
+          </button>
+          <button type="submit" className="bg-green-600 rounded-full px-4 py-2 hover:bg-green-500">
+            Save
+          </button>
         </div>
+
       </form>
     </div>,
     document.body,
