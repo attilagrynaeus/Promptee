@@ -3,16 +3,24 @@ import ReactDOM from 'react-dom';
 import { tokensOf } from '../lib/tokenCounter';
 
 export default function PromptFormModal({ prompt, categories, onClose, onSave }) {
+  const defaultCategory = categories.find(c => c.name === 'Others')?.id || '';
+
   const [form, setForm] = useState({
     id: prompt.id || crypto.randomUUID(),
     title: prompt.title || '',
     content: prompt.content || '',
     description: prompt.description || '',
-    category_id: prompt.category_id || '',
+    category_id: prompt.category_id || defaultCategory,
     is_public: prompt.is_public || false,
   });
 
-  useEffect(() => setForm(prev => ({ ...prev, ...prompt })), [prompt]);
+  useEffect(() => {
+    setForm(prev => ({
+      ...prev,
+      ...prompt,
+      category_id: prompt.category_id || defaultCategory,
+    }));
+  }, [prompt, defaultCategory]);
 
   const tokenCount = tokensOf(form.content);
 
@@ -34,27 +42,69 @@ export default function PromptFormModal({ prompt, categories, onClose, onSave })
           {prompt.id ? 'Edit Prompt' : 'New Prompt'}
         </h2>
 
-        <input required placeholder="Title" value={form.title} onChange={handleChange('title')} className="field-dark" />
+        <input
+          required
+          placeholder="Title"
+          value={form.title}
+          onChange={handleChange('title')}
+          className="field-dark rounded-none"
+        />
 
-        <textarea required placeholder="Prompt text" value={form.content} onChange={handleChange('content')} className="field-dark h-32 resize-y" />
+        <textarea
+          required
+          placeholder="Prompt text"
+          value={form.content}
+          onChange={handleChange('content')}
+          className="field-dark h-32 resize-y rounded-none"
+        />
 
-        <span className="text-xs self-end bg-gray-700 px-3 py-1 rounded-full">{tokenCount} tokens</span>
+        <span className="text-xs self-end bg-gray-700 px-3 py-1 rounded-full">
+          {tokenCount} tokens
+        </span>
 
-        <input placeholder="Short description" value={form.description} onChange={handleChange('description')} className="field-dark" />
+        <input
+          placeholder="Short description"
+          value={form.description}
+          onChange={handleChange('description')}
+          className="field-dark rounded-none"
+        />
 
-        <select required value={form.category_id} onChange={handleChange('category_id')} className="field-dark">
-          <option value="">Select a Category</option>
-          {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
+        <select
+          required
+          value={form.category_id}
+          onChange={handleChange('category_id')}
+          className="field-dark rounded-none"
+        >
+          {categories.map(cat => (
+            <option key={cat.id} value={cat.id}>
+              {cat.name}
+            </option>
+          ))}
         </select>
 
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={form.is_public} onChange={handleChange('is_public')} />
+          <input
+            type="checkbox"
+            checked={form.is_public}
+            onChange={handleChange('is_public')}
+          />
           Public
         </label>
 
         <div className="flex justify-end gap-2">
-          <button type="button" onClick={onClose} className="btn-red">Cancel</button>
-          <button type="submit" className="btn-green">Save</button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-200 transition"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-md shadow-md transition-colors"
+          >
+            Save
+          </button>
         </div>
       </form>
     </div>,

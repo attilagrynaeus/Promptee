@@ -1,7 +1,7 @@
 import React from 'react';
 import { tokensOf } from '../lib/tokenCounter';
 
-export default function PromptCard({ prompt, currentUserId, onCopy, onEdit, onDelete, onToggleFavorit }) {
+export default function PromptCard({ prompt, currentUserId, onCopy, onEdit, onDelete, onToggleFavorit, onClone }) {
   const tokenCount = tokensOf(prompt.content);
   const isOwner = prompt.user_id === currentUserId;
 
@@ -37,12 +37,15 @@ export default function PromptCard({ prompt, currentUserId, onCopy, onEdit, onDe
       </div>
 
       <div className="flex justify-end gap-2 items-center mt-1">
-        <button onClick={() => isOwner && onToggleFavorit(prompt)} className={`mr-auto text-xl transition-colors ${!isOwner ? 'opacity-50 cursor-default' : ''}`}>
-          {prompt.favorit ? '⭐️' : '☆'}
+        <button
+          onClick={() => isOwner && onToggleFavorit(prompt)}
+          className={`mr-auto text-xl transition-colors ${!isOwner ? 'opacity-50 cursor-default' : 'cursor-pointer'}`}
+        >
+          {prompt.favorit && isOwner ? '⭐️' : '☆'}
         </button>
 
         {!isOwner && prompt.profiles?.email && (
-          <span className="text-sm italic text-gray-500"> {/* text-xs → text-sm */}
+          <span className="text-sm italic text-gray-500">
             {prompt.profiles.email.split('@')[0]}
           </span>
         )}
@@ -55,9 +58,18 @@ export default function PromptCard({ prompt, currentUserId, onCopy, onEdit, onDe
         </button>
 
         <button
+          onClick={() => onClone(prompt)}
+          className="bg-teal-600 hover:bg-teal-500 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors"
+        >
+          🧬 Clone
+        </button>
+
+        <button
           onClick={() => isOwner && onEdit()}
           disabled={!isOwner}
-          className={`bg-gray-700 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors ${!isOwner ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-600'}`}
+          className={`bg-gray-700 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors ${
+            !isOwner ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-600'
+          }`}
         >
           ✏️ Edit
         </button>

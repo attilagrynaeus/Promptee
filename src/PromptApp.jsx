@@ -34,6 +34,27 @@ export default function PromptApp() {
     else alert(`Failed to load categories: ${error.message}`);
   }
 
+  async function handleClonePrompt(prompt) {
+    const clonedPrompt = {
+      title: prompt.title + ' (clone)',
+      content: prompt.content,
+      description: prompt.description,
+      category_id: prompt.category_id,
+      is_public: false,
+      favorit: false,
+      user_id: session.user.id, 
+      inserted_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase.from('prompts').insert(clonedPrompt);
+
+    if (error) {
+      alert(`Failed to clone prompt: ${error.message}`);
+    } else {
+      fetchPrompts();
+    }
+}
+
   async function fetchPrompts() {
     const { data, error } = await supabase
       .from('prompts')
@@ -49,17 +70,20 @@ export default function PromptApp() {
     else setPrompts(data);
   }
 
-  const filtered = useMemo(() => {
-    if (favoriteOnly) {
-      return prompts.filter(p => p.favorit);
-    }
+const filtered = useMemo(() => {
+  if (!session || !session.user) return []; // ← itt a fontos változás!
 
-    const lowerSearch = search.toLowerCase();
-    return prompts.filter(p =>
-      (p.title.toLowerCase().includes(lowerSearch) || p.content.toLowerCase().includes(lowerSearch)) &&
-      (categoryFilter === 'All Categories' || p.categories?.name === categoryFilter)
-    );
-  }, [prompts, search, categoryFilter, favoriteOnly]);
+  if (favoriteOnly) {
+    return prompts.filter(p => p.favorit && p.user_id === session.user.id);
+  }
+
+  const lowerSearch = search.toLowerCase();
+  return prompts.filter(p =>
+    (p.title.toLowerCase().includes(lowerSearch) || p.content.toLowerCase().includes(lowerSearch)) &&
+    (categoryFilter === 'All Categories' || p.categories?.name === categoryFilter)
+  );
+}, [prompts, search, categoryFilter, favoriteOnly, session]);
+
 
   async function handleSave(prompt) {
     const promptToSave = {
@@ -121,20 +145,22 @@ export default function PromptApp() {
           </div>
         )}
 
-        {filtered.map(prompt => (
-          <PromptCard
-            key={prompt.id}
-            prompt={{
-              ...prompt,
-              category: prompt.categories?.name || 'Uncategorized',
-            }}
-            currentUserId={session.user.id}
-            onCopy={() => navigator.clipboard.writeText(prompt.content)}
-            onEdit={() => setEditingPrompt(prompt)}
-            onDelete={() => handleDelete(prompt.id)}
-            onToggleFavorit={handleToggleFavorit}
-          />
-        ))}
+     {filtered.map(prompt => (
+        <PromptCard
+          key={prompt.id}
+          prompt={{
+            ...prompt,
+            category: prompt.categories?.name || 'Uncategorized',
+          }}
+          currentUserId={session.user.id}
+          onCopy={() => navigator.clipboard.writeText(prompt.content)}
+          onEdit={() => setEditingPrompt(prompt)}
+          onDelete={() => handleDelete(prompt.id)}
+          onToggleFavorit={handleToggleFavorit}
+          onClone={handleClonePrompt}
+        />
+      ))}
+
       </div>
 
       {editingPrompt && (
