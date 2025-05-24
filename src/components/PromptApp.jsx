@@ -1,35 +1,32 @@
+import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState, useEffect, useMemo } from 'react';
-import { supabase } from './supabaseClient';
 import PromptSidebar from './components/PromptSidebar';
 import PromptCard from './components/PromptCard';
 import PromptFormModal from './components/PromptFormModal';
-import AuthTest from './components/AuthTest';
+import LoginForm from './components/LoginForm';
 
-export default function App() {
+export default function PromptApp() {
+  const session = useSession();
+  const supabase = useSupabaseClient();
   const [prompts, setPrompts] = useState([]);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
   const [editingPrompt, setEditingPrompt] = useState(null);
 
-  // Load prompts from Supabase
   useEffect(() => {
-    const fetchPrompts = async () => {
-      const { data, error } = await supabase
-        .from('prompts')
-        .select('*')
-        .order('inserted_at', { ascending: false });
+    if (session) fetchPrompts();
+  }, [session]);
 
-      if (error) {
-        alert(`Failed to load prompts: ${error.message}`);
-      } else {
-        setPrompts(data);
-      }
-    };
+  async function fetchPrompts() {
+    const { data, error } = await supabase
+      .from('prompts')
+      .select('*')
+      .order('inserted_at', { ascending: false });
+    
+    if (error) alert(`Failed to load prompts: ${error.message}`);
+    else setPrompts(data);
+  }
 
-    fetchPrompts();
-  }, []);
-
-  // Filter logic
   const filtered = useMemo(() => {
     const lowerSearch = search.toLowerCase();
     return prompts.filter(p =>
@@ -38,40 +35,24 @@ export default function App() {
     );
   }, [prompts, search, categoryFilter]);
 
-  // Save or update prompt
-  const handleSave = async (prompt) => {
+  async function handleSave(prompt) {
     const { data, error } = await supabase
       .from('prompts')
       .upsert(prompt)
       .select();
+    
+    if (error) alert(`Failed to save prompt: ${error.message}`);
+    else fetchPrompts();
+    setEditingPrompt(null);
+  }
 
-    if (error) {
-      alert(`Failed to save prompt: ${error.message}`);
-      return;
-    }
+  async function handleDelete(id) {
+    const { error } = await supabase.from('prompts').delete().eq('id', id);
+    if (error) alert(`Failed to delete prompt: ${error.message}`);
+    else fetchPrompts();
+  }
 
-    setPrompts(prev => {
-      const exists = prev.some(p => p.id === data[0].id);
-      return exists
-        ? prev.map(p => (p.id === data[0].id ? data[0] : p))
-        : [data[0], ...prev];
-    });
-  };
-
-  // Delete prompt
-  const handleDelete = async (id) => {
-    const { error } = await supabase
-      .from('prompts')
-      .delete()
-      .eq('id', id);
-
-    if (error) {
-      alert(`Failed to delete prompt: ${error.message}`);
-      return;
-    }
-
-    setPrompts(prev => prev.filter(p => p.id !== id));
-  };
+  if (!session) return <LoginForm />;
 
   return (
     <div className="flex min-h-screen bg-page-bg p-8 gap-8">
@@ -84,8 +65,6 @@ export default function App() {
         categories={[...new Set(prompts.map(p => p.category))]}
       />
 
-      <AuthTest />
-      
       <div className="flex-1 overflow-y-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {filtered.map(prompt => (
           <PromptCard
@@ -98,7 +77,7 @@ export default function App() {
         ))}
       </div>
 
-      {editingPrompt !== null && (
+      {editingPrompt && (
         <PromptFormModal
           prompt={editingPrompt}
           onClose={() => setEditingPrompt(null)}
