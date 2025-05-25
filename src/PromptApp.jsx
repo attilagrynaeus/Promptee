@@ -8,7 +8,6 @@ import useProfile from './hooks/useProfile';
 import useIdleTimeout from './hooks/useIdleTimeout';
 import { useDialog } from './context/DialogContext';
 import usePromptData from './hooks/usePromptData';
-import useChainView from './hooks/useChainView';
 import { filterPrompts } from './utils/promptFilter';
 
 export default function PromptApp() {
@@ -17,7 +16,7 @@ export default function PromptApp() {
   const profile = useProfile();
   const { showDialog } = useDialog();
 
-  useIdleTimeout(30);
+  useIdleTimeout(60);
 
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
@@ -26,47 +25,32 @@ export default function PromptApp() {
 
   const {
     prompts, categories, handleSave, handleDelete,
-    handleClone, handleToggleFavorit
+    handleClone, handleToggleFavorit, fetchPrompts
   } = usePromptData(supabase, session, showDialog);
 
   const [chainViewActive, setChainViewActive] = useState(false);
   const [currentChain, setCurrentChain] = useState([]);
 
-  const filtered = useMemo(() => filterPrompts({
-    session, prompts, search, categoryFilter, favoriteOnly, chainViewActive, currentChain
-  }), [session, prompts, search, categoryFilter, favoriteOnly, chainViewActive, currentChain]);
+  // Rendezés explicit sort_order szerint
+  const filtered = useMemo(() => {
+    const result = filterPrompts({
+      session, prompts, search, categoryFilter, favoriteOnly, chainViewActive, currentChain
+    });
 
-  // ChainView logikák külön:
-  const activateChainView = (startPrompt) => {
-    const chain = [];
-    let current = startPrompt;
-    while (current) {
-      chain.push(current);
-      current = prompts.find(p => p.id === current.next_prompt_id);
-    }
-    setCurrentChain(chain);
-    setChainViewActive(true);
-    setSearch('');
-    setFavoriteOnly(false);
-    setCategoryFilter('All Categories');
-  };
+    return result.sort((a, b) => a.sort_order - b.sort_order);
+  }, [session, prompts, search, categoryFilter, favoriteOnly, chainViewActive, currentChain]);
 
-  const deactivateChainView = () => {
-    setChainViewActive(false);
-    setCurrentChain([]);
-  };
+  // Color update
+  const handleColorChange = async (promptId, color) => {
+    const { error } = await supabase
+      .from('prompts')
+      .update({ color })
+      .eq('id', promptId);
 
-  const toggleChainView = () => {
-    if (chainViewActive) {
-      deactivateChainView();
-    } else if (filtered.length > 0) {
-      activateChainView(filtered[0]);
+    if (error) {
+      showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
     } else {
-      showDialog({
-        title: 'No prompts available',
-        message: 'You need at least one prompt to activate chain view.',
-        confirmText: 'OK',
-      });
+      fetchPrompts();
     }
   };
 
@@ -74,8 +58,7 @@ export default function PromptApp() {
   if (!profile) return <div className="p-8 text-center text-gray-500">Loading...</div>;
 
   return (
-    <div className="flex min-h-screen bg-page-bg p-8 gap-8 items-stretch">
-      <div className="flex-shrink-0 flex flex-col" style={{ height: 'calc(100vh - 4rem)' }}>
+      <div className="flex min-h-screen h-screen bg-page-bg p-8 gap-8 items-stretch">
         <PromptSidebar
           search={search}
           setSearch={setSearch}
@@ -87,10 +70,9 @@ export default function PromptApp() {
           favoriteOnly={favoriteOnly}
           setFavoriteOnly={setFavoriteOnly}
           chainViewActive={chainViewActive}
-          deactivateChainView={deactivateChainView}
-          toggleChainView={toggleChainView}
+          deactivateChainView={() => setChainViewActive(false)}
+          toggleChainView={() => setChainViewActive(!chainViewActive)}
         />
-      </div>
 
       <div className="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start content-start">
         {profile.role === 'pro' && (
@@ -110,7 +92,8 @@ export default function PromptApp() {
             chainViewActive={chainViewActive}
             onToggleFavorit={handleToggleFavorit}
             onClone={handleClone}
-            activateChainView={activateChainView}
+            activateChainView={() => setChainViewActive(true)}
+            onColorChange={handleColorChange}
           />
         ))}
       </div>

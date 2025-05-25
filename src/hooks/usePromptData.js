@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+// hooks/usePromptData.js
+import { useState, useEffect, useCallback } from 'react';
 import { fetchCategories, fetchPrompts, savePrompt, deletePrompt, clonePrompt, toggleFavorit } from '../utils/promptService';
 
 export default function usePromptData(supabase, session, showDialog) {
@@ -7,29 +8,27 @@ export default function usePromptData(supabase, session, showDialog) {
 
   const loadCategories = async () => {
     const { data, error } = await fetchCategories(supabase);
-    if (error) {
-      showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
-    } else setCategories(data);
+    if (error) showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
+    else setCategories(data);
   };
 
-  const loadPrompts = async () => {
+  const loadPrompts = useCallback(async () => {
     const { data, error } = await fetchPrompts(supabase);
-    if (error) {
-      showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
-    } else setPrompts(data);
-  };
+    if (error) showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
+    else setPrompts(data);
+  }, [supabase, showDialog]);
 
   useEffect(() => {
     if (session) {
       loadCategories();
       loadPrompts();
     }
-  }, [session]);
+  }, [session, loadPrompts]);
 
   return {
     prompts,
     categories,
-    loadPrompts,
+    fetchPrompts: loadPrompts,
     handleSave: async (prompt) => {
       const error = await savePrompt(supabase, prompt, session.user.id);
       if (error) showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });

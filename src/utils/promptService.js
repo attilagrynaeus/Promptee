@@ -1,9 +1,17 @@
-export const fetchCategories = (supabase) => supabase.from('categories').select('*');
+export const fetchCategories = (supabase) => 
+  supabase.from('categories').select('*');
 
 export const fetchPrompts = (supabase) =>
-  supabase.from('prompts').select(`
-    *, categories(name), favorit, profiles(email), next_prompt:next_prompt_id(title)
-  `).order('inserted_at', { ascending: false });
+  supabase
+    .from('prompts')
+    .select(`
+      *,
+      categories(name),
+      favorit,
+      profiles(email),
+      next_prompt:next_prompt_id(title)
+    `)
+    .order('sort_order', { ascending: true }); // ⬅️ sort_order alapján rendezve
 
 export const savePrompt = async (supabase, prompt, userId) => {
   const { error } = await supabase.from('prompts').upsert({
@@ -36,8 +44,22 @@ export const clonePrompt = async (supabase, prompt, userId) => {
   return error;
 };
 
-
 export const toggleFavorit = async (supabase, prompt) => {
-  const { error } = await supabase.from('prompts').update({ favorit: !prompt.favorit }).eq('id', prompt.id);
+  const { error } = await supabase
+    .from('prompts')
+    .update({ favorit: !prompt.favorit })
+    .eq('id', prompt.id);
   return error;
+};
+
+export const updatePromptOrder = async (supabase, reorderedPrompts) => {
+  const updates = reorderedPrompts.map((prompt, index) =>
+    supabase
+      .from('prompts')
+      .update({ sort_order: index })
+      .eq('id', prompt.id)
+  );
+
+  const results = await Promise.all(updates);
+  return results.find(res => res.error)?.error || null;
 };

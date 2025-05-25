@@ -2,18 +2,25 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 export default function CustomDialog({
-  open, title, message, confirmText, cancelText, onConfirm, onCancel, onClose,
+  open,
+  title,
+  message,
+  confirmText,
+  cancelText,
+  onConfirm,
+  onCancel,
+  onClose,
 }) {
   if (!open) return null;
 
   const handleConfirm = () => {
-    onConfirm();
-    onClose();
+    if (onConfirm) onConfirm();
+    if (onClose) onClose();
   };
 
   const handleCancel = () => {
-    onCancel();
-    onClose();
+    if (onCancel) onCancel();
+    if (onClose) onClose();
   };
 
   return ReactDOM.createPortal(
@@ -22,12 +29,14 @@ export default function CustomDialog({
         <h3 className="text-lg font-semibold">{title}</h3>
         <p>{message}</p>
         <div className="flex justify-end gap-3">
-          <button
-            onClick={handleCancel}
-            className="text-gray-400 hover:text-gray-200 transition"
-          >
-            {cancelText}
-          </button>
+          {cancelText && (
+            <button
+              onClick={handleCancel}
+              className="text-gray-400 hover:text-gray-200 transition"
+            >
+              {cancelText}
+            </button>
+          )}
           <button
             onClick={handleConfirm}
             className="bg-indigo-700 hover:bg-indigo-600 rounded-lg px-4 py-2 transition text-white"

@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 @layer base {
   body {
     @apply bg-[#1e2024] text-gray-200;
@@ -11,6 +17,7 @@
 @layer components {
   .sidebar-box {
     @apply w-72 bg-[#2b2e38] rounded-xl p-4 flex flex-col gap-4 shadow-xl;
+    height: 100%; /* Ez a javítás */
   }
 
   .field-dark {
@@ -51,21 +58,19 @@
     @apply bg-white text-gray-800 rounded-xl shadow-xl p-6 flex flex-col gap-4;
   }
 
-.chain-connector {
-  width: 4px; 
-  height: 80px; 
-  background-image: linear-gradient(to bottom, #facc15 50%, transparent 0%); 
-  background-size: 100% 10px;
-  background-repeat: repeat-y;
-  margin: 0 auto;
-  animation: chainAnim 1s linear infinite;
-  z-index: 9999; 
-}
-
+  .chain-connector {
+    width: 4px; 
+    height: 80px; 
+    background-image: linear-gradient(to bottom, #facc15 50%, transparent 0%); 
+    background-size: 100% 10px;
+    background-repeat: repeat-y;
+    margin: 0 auto;
+    animation: chainAnim 1s linear infinite;
+    z-index: 9999; 
+  }
 
   @keyframes chainAnim {
     from { background-position-y: 0; }
     to { background-position-y: 20px; }
   }
-
 }

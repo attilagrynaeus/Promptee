@@ -31,7 +31,7 @@ export default function PromptSidebar({
   const { dump, loading: dumpLoading, error: dumpError } = usePromptDump(supabase, session, username);
 
   return (
-    <aside className="sidebar-box flex flex-col justify-between h-full min-h-full">
+    <aside className="sidebar-box flex flex-col justify-between h-full">
       <div>
         <h2 className="text-4xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 text-center">
           PrompTee 🍵
