@@ -29,23 +29,37 @@ export default function usePromptData(supabase, session, showDialog) {
     prompts,
     categories,
     fetchPrompts: loadPrompts,
+
     handleSave: async (prompt) => {
-      const error = await savePrompt(supabase, prompt, session.user.id);
-      if (error) showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
-      else loadPrompts();
+      const isNewPrompt = !prompt.id;
+      const promptToSave = {
+        ...prompt,
+        favorit: isNewPrompt ? false : prompt.favorit,  // Explicit favorit: false új promptoknál
+        user_id: session.user.id,
+      };
+
+      const error = await savePrompt(supabase, promptToSave, session.user.id);
+      if (error) {
+        showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
+      } else {
+        loadPrompts();
+      }
     },
+
     handleDelete: async (id) => {
       const error = await deletePrompt(supabase, id);
       if (error) showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
       else loadPrompts();
     },
+
     handleClone: async (prompt) => {
       const error = await clonePrompt(supabase, prompt, session.user.id);
       if (error) showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
       else loadPrompts();
     },
+
     handleToggleFavorit: async (prompt) => {
-      const error = await toggleFavorit(supabase, prompt);
+      const error = await toggleFavorit(supabase, prompt, session.user.id);
       if (error) showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
       else loadPrompts();
     },

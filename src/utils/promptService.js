@@ -1,3 +1,4 @@
+// promptService.js
 export const fetchCategories = (supabase) => 
   supabase.from('categories').select('*');
 
@@ -11,7 +12,7 @@ export const fetchPrompts = (supabase) =>
       profiles(email),
       next_prompt:next_prompt_id(title)
     `)
-    .order('sort_order', { ascending: true }); // ⬅️ sort_order alapján rendezve
+    .order('sort_order', { ascending: true });
 
 export const savePrompt = async (supabase, prompt, userId) => {
   const { error } = await supabase.from('prompts').upsert({
@@ -55,27 +56,13 @@ export const toggleFavorit = async (supabase, prompt, userId) => {
       return { error: error ? error.message : 'Maximum number of favorites reached (25).' };
     }
   } else {
-    // If the prompt was already a favourite, take it out of the favourites and put it at the end
-    const { data: maxOrder } = await supabase
-      .from('prompts')
-      .select('sort_order')
-      .order('sort_order', { ascending: false })
-      .limit(1)
-      .single();
-
-    const newOrder = maxOrder ? maxOrder.sort_order + 1 : 1000;
-
-    const { error } = await supabase
-      .from('prompts')
-      .update({ favorit: false, sort_order: newOrder })
-      .eq('id', prompt.id);
-
+    
+    const { error } = await supabase.rpc('bump_sort_order', { p_id: prompt.id });
     if (error) return { error: error.message };
   }
 
   return { error: null };
 };
-
 
 export const updatePromptOrder = async (supabase, reorderedPrompts) => {
   const updates = reorderedPrompts.map((prompt, index) =>

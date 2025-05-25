@@ -22,6 +22,7 @@ export default function PromptApp() {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
   const [editingPrompt, setEditingPrompt] = useState(null);
+  const [viewingPrompt, setViewingPrompt] = useState(null);
   const [favoriteOnly, setFavoriteOnly] = useState(false);
   const [chainViewActive, setChainViewActive] = useState(false);
   const [currentChain, setCurrentChain] = useState([]);
@@ -60,16 +61,35 @@ export default function PromptApp() {
   };
 
   const handleToggleFavorit = async (prompt) => {
-    const { error } = await toggleFavorit(supabase, prompt, session.user.id);
-    if (error) {
-      showDialog({
-        title: 'Cannot set favorite',
-        message: error.message,
-        confirmText: 'OK'
-      });
-    } else {
-      fetchPrompts();
-    }
+  if (!prompt.id || !session.user.id) {
+    showDialog({
+      title: 'Cannot set favorite',
+      message: 'Prompt ID or User ID is missing.',
+      confirmText: 'OK'
+    });
+    return;
+  }
+
+  const { error } = await toggleFavorit(supabase, prompt, session.user.id);
+
+  if (error) {
+    console.error("Supabase error details:", error);
+    showDialog({
+      title: 'Cannot set favorite',
+      message: typeof error === 'string' ? error : error.message,
+      confirmText: 'OK'
+    });
+  } else {
+    fetchPrompts();
+  }
+};
+
+  const handleView = (prompt) => {
+    setViewingPrompt(prompt);
+  };
+
+  const closeViewModal = () => {
+    setViewingPrompt(null);
   };
 
   if (!session) return <LoginForm />;
@@ -107,6 +127,7 @@ export default function PromptApp() {
               currentUserId={session.user.id}
               onCopy={() => navigator.clipboard.writeText(prompt.content)}
               onEdit={() => setEditingPrompt(prompt)}
+              onView={handleView} // új view prop
               onDelete={() => handleDelete(prompt.id)}
               chainViewActive={chainViewActive}
               onToggleFavorit={handleToggleFavorit}
@@ -125,6 +146,16 @@ export default function PromptApp() {
           prompts={prompts}
           onClose={() => setEditingPrompt(null)}
           onSave={handleSave}
+        />
+      )}
+
+      {viewingPrompt && (
+        <PromptFormModal
+          prompt={viewingPrompt}
+          categories={categories}
+          prompts={prompts}
+          onClose={closeViewModal}
+          readOnly={true} // csak olvasható modal nézet
         />
       )}
     </div>

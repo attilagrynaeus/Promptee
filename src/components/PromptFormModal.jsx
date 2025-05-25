@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { tokensOf } from '../lib/tokenCounter';
 
-export default function PromptFormModal({ prompt, categories, prompts, onClose, onSave }) {
+export default function PromptFormModal({ prompt, categories, prompts, onClose, onSave, readOnly = false }) {
   const defaultCategory = categories.find(c => c.name === 'Others')?.id || '';
 
   const [form, setForm] = useState({
@@ -31,29 +31,29 @@ export default function PromptFormModal({ prompt, categories, prompts, onClose, 
     setForm({ ...form, [field]: value });
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  
-  const promptToSave = {
-    id: form.id,
-    title: form.title,
-    content: form.content,
-    description: form.description,
-    category_id: form.category_id || null,
-    is_public: form.is_public,
-    next_prompt_id: form.next_prompt_id || null,
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const promptToSave = {
+      id: form.id,
+      title: form.title,
+      content: form.content,
+      description: form.description,
+      category_id: form.category_id || null,
+      is_public: form.is_public,
+      next_prompt_id: form.next_prompt_id || null,
+      favorit: prompt.favorit ?? false, // Explicit módon beállítva
+    };
+
+    await onSave(promptToSave);
+    onClose();
   };
-
-  await onSave(promptToSave);
-  onClose();
-};
-
 
   return ReactDOM.createPortal(
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
       <form onSubmit={handleSubmit} className="bg-gray-800 rounded-xl shadow-xl p-6 w-full max-w-md flex flex-col gap-4 text-gray-200">
         <h2 className="text-xl font-semibold">
-          {prompt.id ? 'Edit Prompt' : 'New Prompt'}
+          {readOnly ? 'View Prompt' : (prompt.id ? 'Edit Prompt' : 'New Prompt')}
         </h2>
 
         <input
@@ -62,6 +62,7 @@ export default function PromptFormModal({ prompt, categories, prompts, onClose, 
           value={form.title}
           onChange={handleChange('title')}
           className="field-dark rounded-none"
+          disabled={readOnly}
         />
 
         <textarea
@@ -70,6 +71,7 @@ export default function PromptFormModal({ prompt, categories, prompts, onClose, 
           value={form.content}
           onChange={handleChange('content')}
           className="field-dark h-32 resize-y rounded-none"
+          disabled={readOnly}
         />
 
         <span className="text-xs self-end bg-gray-700 px-3 py-1 rounded-full">
@@ -81,6 +83,7 @@ export default function PromptFormModal({ prompt, categories, prompts, onClose, 
           value={form.description}
           onChange={handleChange('description')}
           className="field-dark rounded-none"
+          disabled={readOnly}
         />
 
         <select
@@ -88,6 +91,7 @@ export default function PromptFormModal({ prompt, categories, prompts, onClose, 
           value={form.category_id}
           onChange={handleChange('category_id')}
           className="field-dark rounded-none"
+          disabled={readOnly}
         >
           {categories.map(cat => (
             <option key={cat.id} value={cat.id}>
@@ -101,27 +105,30 @@ export default function PromptFormModal({ prompt, categories, prompts, onClose, 
             type="checkbox"
             checked={form.is_public}
             onChange={handleChange('is_public')}
+            disabled={readOnly}
           />
           Public
         </label>
 
-        <label className="flex flex-col gap-1 text-sm">
-          <span className="text-gray-400">🔗 Next Prompt (optional)</span>
-          <select
-            value={form.next_prompt_id}
-            onChange={handleChange('next_prompt_id')}
-            className="field-dark rounded-none"
-          >
-            <option value="">🔹 No next prompt</option>
-            {prompts
-              .filter(p => p.id !== form.id)
-              .map(p => (
-                <option key={p.id} value={p.id}>
-                  {p.title}
-                </option>
-              ))}
-          </select>
-        </label>
+        {!readOnly && (
+          <label className="flex flex-col gap-1 text-sm">
+            <span className="text-gray-400">🔗 Next Prompt (optional)</span>
+            <select
+              value={form.next_prompt_id}
+              onChange={handleChange('next_prompt_id')}
+              className="field-dark rounded-none"
+            >
+              <option value="">🔹 No next prompt</option>
+              {prompts
+                .filter(p => p.id !== form.id)
+                .map(p => (
+                  <option key={p.id} value={p.id}>
+                    {p.title}
+                  </option>
+                ))}
+            </select>
+          </label>
+        )}
 
         <div className="flex justify-end gap-2">
           <button
@@ -129,14 +136,16 @@ export default function PromptFormModal({ prompt, categories, prompts, onClose, 
             onClick={onClose}
             className="text-gray-400 hover:text-gray-200 transition"
           >
-            Cancel
+            {readOnly ? 'Close' : 'Cancel'}
           </button>
-          <button
-            type="submit"
-            className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-md shadow-md transition-colors"
-          >
-            Save
-          </button>
+          {!readOnly && (
+            <button
+              type="submit"
+              className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-md shadow-md transition-colors"
+            >
+              Save
+            </button>
+          )}
         </div>
       </form>
     </div>,

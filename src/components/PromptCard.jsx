@@ -20,7 +20,8 @@ export default function PromptCard({
   onClone,
   activateChainView,
   chainViewActive,
-  onColorChange
+  onColorChange,
+  onView  // Új prop a View módhoz
 }) {
   const tokenCount = tokensOf(prompt.content);
   const isOwner = prompt.user_id === currentUserId;
@@ -40,6 +41,18 @@ export default function PromptCard({
     if (onColorChange) {
       await onColorChange(prompt.id, color);
     }
+  };
+
+  const handleToggleFavorit = () => {
+    if (!prompt.id) {
+      showDialog({
+        title: 'Cannot set favorite',
+        message: 'Prompt ID is missing.',
+        confirmText: 'OK'
+      });
+      return;
+    }
+    onToggleFavorit(prompt);
   };
 
   return (
@@ -65,8 +78,9 @@ export default function PromptCard({
 
       <div className="prompt-actions">
         <button
-          onClick={() => isOwner && onToggleFavorit(prompt)}
+          onClick={handleToggleFavorit}
           className={`favorite-button ${!isOwner ? 'disabled' : ''}`}
+          disabled={!isOwner}
         >
           {prompt.favorit ? '⭐️' : '☆'}
         </button>
@@ -80,11 +94,10 @@ export default function PromptCard({
         <button onClick={onCopy} className="action-button copy">📋 Copy</button>
         <button onClick={() => onClone(prompt)} className="action-button clone">🧬 Clone</button>
         <button
-          onClick={() => isOwner && onEdit()}
-          disabled={!isOwner}
-          className={`action-button edit ${!isOwner ? 'disabled' : ''}`}
+          onClick={() => isOwner ? onEdit() : onView(prompt)}
+          className="action-button edit"
         >
-          ✏️ Edit
+          {isOwner ? '✏️ Edit' : '👁️ View'}
         </button>
         {isOwner && (
           <button onClick={handleDelete} className="action-button delete">🗑️ Delete</button>
