@@ -14,10 +14,10 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-.card-default { background: rgba(255, 255, 255, 0.1); }
-.card-blue { background: rgba(141, 213, 255, 0.2); }
-.card-green { background: rgba(74, 222, 128, 0.2); }
-.card-violet { background: rgba(139, 92, 246, 0.2); }
+.card-default { background: rgba(255, 255, 255, 0.15); }
+.card-blue { background: rgba(30, 144, 255, 0.4); }
+.card-green { background: rgba(50, 205, 50, 0.4); }
+.card-violet { background: rgba(186, 85, 211, 0.4); }
 
 .prompt-title {
   @apply text-xl font-semibold tracking-wide;
@@ -37,7 +37,6 @@
   opacity: 0.9;
 }
 
-/* ---- ÚJ DESIGN ITT ---- */
 .prompt-tags {
   @apply flex flex-row gap-3 items-center;
   margin-top: 15px;
@@ -85,7 +84,6 @@
   padding: 3px 12px;
   border-radius: 50px;
 }
-/* ---- ÚJ DESIGN VÉGE ---- */
 
 .prompt-actions {
   @apply flex justify-end gap-2 items-center mt-1;
@@ -111,9 +109,9 @@
 }
 
 .color-circle {
-  @apply w-5 h-5 rounded-full cursor-pointer border-2 border-gray-300 opacity-60 hover:opacity-100 transition-opacity;
+  @apply w-6 h-6 rounded-full cursor-pointer border-2 border-white opacity-80 hover:opacity-100 transition-opacity shadow;
 }
 
-.color-circle.blue { background-color: #3b82f6; }
-.color-circle.green { background-color: #22c55e; }
-.color-circle.violet { background-color: #8b5cf6; }
+.color-circle.blue { background-color: #1E90FF; }
+.color-circle.green { background-color: #32CD32; }
+.color-circle.violet { background-color: #BA55D3; } 

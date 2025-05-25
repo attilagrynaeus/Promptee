@@ -37,7 +37,7 @@ export default function PromptCard({
   };
 
   const handleColorSelect = async (color) => {
-    if (onColorChange) { // itt nincs többé isOwner feltétel!
+    if (onColorChange) {
       await onColorChange(prompt.id, color);
     }
   };
@@ -91,7 +91,6 @@ export default function PromptCard({
         )}
       </div>
 
-      {/* Itt vettük ki az isOwner feltételt */}
       <div className="color-selector">
         <span className="color-circle blue" onClick={() => handleColorSelect('blue')}></span>
         <span className="color-circle green" onClick={() => handleColorSelect('green')}></span>
