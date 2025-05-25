@@ -9,6 +9,18 @@
   height: 100%; /* Ez biztosítja, hogy grid-del együtt minden sorban azonos legyen a magasság */
 }
 
+.prompt-owner {
+  color: #000; /* fekete */
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-block;
+  margin-right: auto; /* bal oldalra igazítva marad */
+}
+
+
 .prompt-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 10px 30px rgba(0,0,0,0.4);

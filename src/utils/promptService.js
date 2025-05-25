@@ -1,4 +1,4 @@
-// promptService.js
+
 export const fetchCategories = (supabase) => 
   supabase.from('categories').select('*');
 
@@ -15,11 +15,14 @@ export const fetchPrompts = (supabase) =>
     .order('sort_order', { ascending: true });
 
 export const savePrompt = async (supabase, prompt, userId) => {
+  const { categories, profiles, next_prompt, ...cleanPrompt } = prompt;
+
   const { error } = await supabase.from('prompts').upsert({
-    ...prompt,
+    ...cleanPrompt,
     user_id: userId,
     next_prompt_id: prompt.next_prompt_id || null,
   });
+
   return error;
 };
 
@@ -56,7 +59,6 @@ export const toggleFavorit = async (supabase, prompt, userId) => {
       return { error: error ? error.message : 'Maximum number of favorites reached (25).' };
     }
   } else {
-    
     const { error } = await supabase.rpc('bump_sort_order', { p_id: prompt.id });
     if (error) return { error: error.message };
   }

@@ -87,7 +87,7 @@ export default function PromptCard({
 
         {!isOwner && prompt.profiles?.email && (
           <span className="prompt-owner">
-            {prompt.profiles.email.split('@')[0]}
+            owner: {prompt.profiles.email.split('@')[0]}
           </span>
         )}
 
