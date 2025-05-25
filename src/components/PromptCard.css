@@ -1,11 +1,12 @@
 .prompt-card {
-  @apply rounded-xl flex flex-col gap-3 relative;
+  @apply rounded-xl flex flex-col relative;
   padding: 20px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   color: #ffffff;
+  height: 100%; /* Ez biztosítja, hogy grid-del együtt minden sorban azonos legyen a magasság */
 }
 
 .prompt-card:hover {

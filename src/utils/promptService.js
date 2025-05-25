@@ -44,13 +44,38 @@ export const clonePrompt = async (supabase, prompt, userId) => {
   return error;
 };
 
-export const toggleFavorit = async (supabase, prompt) => {
-  const { error } = await supabase
-    .from('prompts')
-    .update({ favorit: !prompt.favorit })
-    .eq('id', prompt.id);
-  return error;
+export const toggleFavorit = async (supabase, prompt, userId) => {
+  if (!prompt.favorit) {
+    const { data, error } = await supabase.rpc('set_favorite_with_limit', {
+      prompt_id: prompt.id,
+      user_uuid: userId
+    });
+
+    if (error || data === 'limit_reached') {
+      return { error: error ? error.message : 'Maximum number of favorites reached (25).' };
+    }
+  } else {
+    // If the prompt was already a favourite, take it out of the favourites and put it at the end
+    const { data: maxOrder } = await supabase
+      .from('prompts')
+      .select('sort_order')
+      .order('sort_order', { ascending: false })
+      .limit(1)
+      .single();
+
+    const newOrder = maxOrder ? maxOrder.sort_order + 1 : 1000;
+
+    const { error } = await supabase
+      .from('prompts')
+      .update({ favorit: false, sort_order: newOrder })
+      .eq('id', prompt.id);
+
+    if (error) return { error: error.message };
+  }
+
+  return { error: null };
 };
+
 
 export const updatePromptOrder = async (supabase, reorderedPrompts) => {
   const updates = reorderedPrompts.map((prompt, index) =>

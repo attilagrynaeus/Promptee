@@ -9,6 +9,7 @@ import useIdleTimeout from './hooks/useIdleTimeout';
 import { useDialog } from './context/DialogContext';
 import usePromptData from './hooks/usePromptData';
 import { filterPrompts } from './utils/promptFilter';
+import { toggleFavorit } from './utils/promptService';
 
 export default function PromptApp() {
   const session = useSession();
@@ -25,13 +26,12 @@ export default function PromptApp() {
 
   const {
     prompts, categories, handleSave, handleDelete,
-    handleClone, handleToggleFavorit, fetchPrompts
+    handleClone, fetchPrompts
   } = usePromptData(supabase, session, showDialog);
 
   const [chainViewActive, setChainViewActive] = useState(false);
   const [currentChain, setCurrentChain] = useState([]);
 
-  // Rendezés explicit sort_order szerint
   const filtered = useMemo(() => {
     const result = filterPrompts({
       session, prompts, search, categoryFilter, favoriteOnly, chainViewActive, currentChain
@@ -52,6 +52,20 @@ export default function PromptApp() {
       fetchPrompts();
     }
   };
+
+  const handleToggleFavorit = async (prompt) => {
+  const { error } = await toggleFavorit(supabase, prompt, session.user.id);
+
+  if (error) {
+    showDialog({
+      title: 'Cannot set favorite',
+      message: error,
+      confirmText: 'OK'
+    });
+  } else {
+    fetchPrompts();
+  }
+};
 
   if (!session) return <LoginForm />;
   if (!profile) return <div className="p-8 text-center text-gray-500">Loading...</div>;

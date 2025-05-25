@@ -37,14 +37,14 @@ export default function PromptCard({
   };
 
   const handleColorSelect = async (color) => {
-    if (isOwner && onColorChange) {
+    if (onColorChange) { // itt nincs többé isOwner feltétel!
       await onColorChange(prompt.id, color);
     }
   };
 
   return (
     <div className={`prompt-card ${cardColors[prompt.color] || cardColors.default}`}>
-      <div className="prompt-card-content">
+      <div className="prompt-card-content flex-grow">
         <header>
           <h3 className="prompt-title">{prompt.title}</h3>
           {prompt.description && (
@@ -52,7 +52,7 @@ export default function PromptCard({
           )}
         </header>
 
-        <div style={{ marginTop: '20px' }}></div>
+        <div style={{ marginTop: 'auto' }}></div>
 
         <div className="prompt-tags">
           <span className="tag category-tag">{prompt.category}</span>
@@ -91,13 +91,12 @@ export default function PromptCard({
         )}
       </div>
 
-      {isOwner && (
-        <div className="color-selector">
-          <span className="color-circle blue" onClick={() => handleColorSelect('blue')}></span>
-          <span className="color-circle green" onClick={() => handleColorSelect('green')}></span>
-          <span className="color-circle violet" onClick={() => handleColorSelect('violet')}></span>
-        </div>
-      )}
+      {/* Itt vettük ki az isOwner feltételt */}
+      <div className="color-selector">
+        <span className="color-circle blue" onClick={() => handleColorSelect('blue')}></span>
+        <span className="color-circle green" onClick={() => handleColorSelect('green')}></span>
+        <span className="color-circle violet" onClick={() => handleColorSelect('violet')}></span>
+      </div>
     </div>
   );
 }
