@@ -36,14 +36,55 @@
   opacity: 0.9;
 }
 
-.prompt-tags .tag {
-  @apply text-sm rounded-lg px-3 py-1;
+/* ---- ÚJ DESIGN ITT ---- */
+.prompt-tags {
+  @apply flex flex-row gap-3 items-center;
+  margin-top: 15px;
 }
 
-.category-tag { background: #8dd5ff; color: #2b1055; font-weight: 600; }
-.visibility-tag.public { background: #4ade80; }
-.visibility-tag.private { background: #9ca3af; }
-.token-tag { background: rgba(255,255,255,0.2); }
+.category-tag {
+  background: linear-gradient(135deg, #8dd5ff, #5b8cfc);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 4px 14px;
+  border-radius: 50px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.visibility-tag {
+  font-size: 0.75rem;
+  padding: 3px 12px;
+  border-radius: 50px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.visibility-tag.public {
+  background-color: #4ade80; /* zöld */
+}
+
+.visibility-tag.private {
+  background-color: #f87171; /* piros */
+}
+
+.visibility-tag::before {
+  content: '●';
+  font-size: 0.6rem;
+}
+
+.token-tag {
+  background-color: rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 3px 12px;
+  border-radius: 50px;
+}
+/* ---- ÚJ DESIGN VÉGE ---- */
 
 .prompt-actions {
   @apply flex justify-end gap-2 items-center mt-1;
