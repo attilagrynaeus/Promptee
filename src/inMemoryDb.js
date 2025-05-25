@@ -1,15 +1,15 @@
-import { newDb } from 'pg-mem';
-import fs from 'fs';
+const { newDb } = require('pg-mem');
+const fs = require('fs');
+const path = require('path');
 
 export function createInMemoryDb() {
   const db = newDb({ autoCreateForeignKeyIndices: true });
 
-  // UUID gen
-  db.public.none(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
+  db.registerLanguage('plpgsql', () => {}); // plpgsql
 
   db.public.none(`
     CREATE TABLE prompts (
-      id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+      id uuid PRIMARY KEY,
       user_id uuid NOT NULL,
       title text NOT NULL,
       content text NOT NULL,
@@ -24,7 +24,7 @@ export function createInMemoryDb() {
     );
   `);
 
-  const favoriteFnSql = fs.readFileSync('./favorite_fn.sql', 'utf8');
+  const favoriteFnSql = fs.readFileSync(path.join(__dirname, 'favorite_fn.sql'), 'utf8');
   db.public.none(favoriteFnSql);
 
   return db;
