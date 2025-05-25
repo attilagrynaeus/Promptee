@@ -1,34 +1,68 @@
 .prompt-card {
-  @apply shadow-xl rounded-xl p-4 flex flex-col gap-3 text-gray-200 relative;
+  @apply rounded-xl flex flex-col gap-3 relative;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  color: #ffffff;
 }
 
-.card-default { @apply bg-gray-900; }
-.card-blue { @apply bg-blue-900; }
-.card-green { @apply bg-green-900; }
-.card-violet { @apply bg-violet-900; }
+.prompt-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
 
-.prompt-title { @apply text-xl font-semibold tracking-wide; }
-.prompt-description { @apply italic text-sm text-gray-400 line-clamp-2; }
-.prompt-textarea { @apply w-full bg-gray-800 rounded-md px-3 py-2 text-sm resize-y min-h-[80px] text-gray-300 outline-none; }
+.card-default { background: rgba(255, 255, 255, 0.1); }
+.card-blue { background: rgba(141, 213, 255, 0.2); }
+.card-green { background: rgba(74, 222, 128, 0.2); }
+.card-violet { background: rgba(139, 92, 246, 0.2); }
 
-.prompt-tags .tag { @apply text-sm rounded-lg px-3 py-1; }
-.category-tag { @apply bg-indigo-700; }
-.visibility-tag.public { @apply bg-green-700; }
-.visibility-tag.private { @apply bg-gray-600; }
-.token-tag { @apply bg-gray-700; }
+.prompt-title {
+  @apply text-xl font-semibold tracking-wide;
+  font-weight: 800;
+}
 
-.prompt-actions { @apply flex justify-end gap-2 items-center mt-1; }
-.favorite-button { @apply mr-auto text-xl transition-colors cursor-pointer; }
-.favorite-button.disabled { @apply opacity-50 cursor-default; }
-.prompt-owner { @apply text-sm italic text-gray-500; }
+.prompt-description {
+  @apply italic text-sm line-clamp-2;
+  opacity: 0.8;
+}
 
-.action-button { @apply rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-colors; }
-.copy { @apply bg-indigo-700 hover:bg-indigo-600; }
-.clone { @apply bg-teal-600 hover:bg-teal-500; }
-.edit { @apply bg-gray-700 hover:bg-gray-600; }
-.edit.disabled { @apply opacity-50 cursor-not-allowed; }
-.delete { @apply bg-red-800 hover:bg-red-700; }
-.chain { @apply bg-purple-700 hover:bg-purple-600; }
+.prompt-textarea {
+  @apply w-full rounded-md px-3 py-2 text-sm resize-y min-h-[80px] outline-none;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+.prompt-tags .tag {
+  @apply text-sm rounded-lg px-3 py-1;
+}
+
+.category-tag { background: #8dd5ff; color: #2b1055; font-weight: 600; }
+.visibility-tag.public { background: #4ade80; }
+.visibility-tag.private { background: #9ca3af; }
+.token-tag { background: rgba(255,255,255,0.2); }
+
+.prompt-actions {
+  @apply flex justify-end gap-2 items-center mt-1;
+}
+
+.favorite-button {
+  @apply mr-auto text-xl transition-colors cursor-pointer;
+}
+
+.action-button {
+  @apply rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-transform duration-200;
+  background: rgba(255,255,255,0.2);
+}
+
+.action-button:hover {
+  transform: translateY(-3px);
+  background: #8dd5ff;
+  color: #2b1055;
+}
 
 .color-selector {
   @apply flex gap-2 justify-center py-2 border-t border-gray-700 mt-2;
@@ -38,10 +72,6 @@
   @apply w-5 h-5 rounded-full cursor-pointer border-2 border-gray-300 opacity-60 hover:opacity-100 transition-opacity;
 }
 
-.color-circle.blue { @apply bg-blue-400; }
-.color-circle.green { @apply bg-green-400; }
-.color-circle.violet { @apply bg-violet-400; }
-
-.chain-connector {
-  @apply absolute -bottom-16 left-1/2 transform -translate-x-1/2;
-}
+.color-circle.blue { background-color: #3b82f6; }
+.color-circle.green { background-color: #22c55e; }
+.color-circle.violet { background-color: #8b5cf6; }

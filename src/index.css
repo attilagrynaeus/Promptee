@@ -8,6 +8,13 @@ html, body, #root {
   padding: 0;
 }
 
+body {
+  font-family: 'Outfit', sans-serif;
+  background: linear-gradient(135deg, #2b1055, #7597de);
+  color: #fff;
+}
+
+
 @layer base {
   body {
     @apply bg-[#1e2024] text-gray-200;
@@ -15,10 +22,15 @@ html, body, #root {
 }
 
 @layer components {
-  .sidebar-box {
-    @apply w-72 bg-[#2b2e38] rounded-xl p-4 flex flex-col gap-4 shadow-xl;
-    height: 100%; /* Ez a javítás */
-  }
+.sidebar-box {
+    @apply w-72 rounded-xl p-4 flex flex-col gap-4 shadow-xl;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: #ffffff;
+}
 
   .field-dark {
     @apply bg-[#1c1f28] text-gray-200 placeholder-gray-400
@@ -30,10 +42,35 @@ html, body, #root {
            transition duration-150 hover:shadow-sm active:translate-y-0.5;
   }
 
-  .btn-blue {
-    @apply btn-3d bg-green-500 hover:bg-blue-600;
-  }
+ .btn-blue {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #8dd5ff;
+    color: #2b1055;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 25px;
+    transition: transform 0.2s, background-color 0.3s;
+}
 
+.sidebar-box {
+    @apply w-72 rounded-xl p-4 flex flex-col gap-4 shadow-xl;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sidebar-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+.btn-blue:hover {
+    background-color: #ffffff;
+    transform: translateY(-5px);
+}
   .btn-edit {
     @apply btn-3d bg-gray-700 hover:bg-gray-600;
   }
@@ -73,4 +110,24 @@ html, body, #root {
     from { background-position-y: 0; }
     to { background-position-y: 20px; }
   }
+}
+
+@media (max-width: 600px) {
+    .card-container, .sidebar-box {
+        width: 90%;
+        padding: 20px 15px;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+    }
+
+    .card-content {
+        font-size: 0.9rem;
+    }
+
+    .btn-blue {
+        padding: 8px 15px;
+        font-size: 0.85rem;
+    }
 }

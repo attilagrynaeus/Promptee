@@ -42,78 +42,66 @@ export default function PromptCard({
     }
   };
 
-  return (
-    <div className={`prompt-card ${cardColors[prompt.color] || cardColors.default}`}>
-      <div className="prompt-card-content">
-        <header>
-          <h3 className="prompt-title">{prompt.title}</h3>
-          {prompt.description && (
-            <p className="prompt-description">{prompt.description}</p>
-          )}
-        </header>
-
-        <textarea
-          value={prompt.content}
-          readOnly
-          className="prompt-textarea"
-        />
-
-        <div className="prompt-tags">
-          <span className="tag category-tag">{prompt.category}</span>
-          <span className={`tag visibility-tag ${prompt.is_public ? 'public' : 'private'}`}>
-            {prompt.is_public ? 'Public' : 'Private'}
-          </span>
-          <span className="tag token-tag">{tokenCount} tokens</span>
-        </div>
-      </div>
-
-      <div className="prompt-actions">
-        <button
-          onClick={() => isOwner && onToggleFavorit(prompt)}
-          className={`favorite-button ${!isOwner ? 'disabled' : ''}`}
-        >
-          {prompt.favorit ? '⭐️' : '☆'}
-        </button>
-
-        {!isOwner && prompt.profiles?.email && (
-          <span className="prompt-owner">
-            {prompt.profiles.email.split('@')[0]}
-          </span>
+return (
+  <div className={`prompt-card ${cardColors[prompt.color] || cardColors.default}`}>
+    <div className="prompt-card-content">
+      <header>
+        <h3 className="prompt-title">{prompt.title}</h3>
+        {prompt.description && (
+          <p className="prompt-description">{prompt.description}</p>
         )}
+      </header>
 
-        <button onClick={onCopy} className="action-button copy">📋 Copy</button>
-        <button onClick={() => onClone(prompt)} className="action-button clone">🧬 Clone</button>
-        <button
-          onClick={() => isOwner && onEdit()}
-          disabled={!isOwner}
-          className={`action-button edit ${!isOwner ? 'disabled' : ''}`}
-        >
-          ✏️ Edit
-        </button>
-        {isOwner && (
-          <button onClick={handleDelete} className="action-button delete">🗑️ Delete</button>
-        )}
-        
-        {/*{!chainViewActive && prompt.next_prompt_id && (
-          <button onClick={() => activateChainView(prompt)} className="action-button chain">🔗 Chain</button>
-        )}*/}
-        
+      <textarea
+        value={prompt.content}
+        readOnly
+        className="prompt-textarea"
+      />
+
+      <div className="prompt-tags">
+        <span className="tag category-tag">{prompt.category}</span>
+        <span className={`tag visibility-tag ${prompt.is_public ? 'public' : 'private'}`}>
+          {prompt.is_public ? 'Public' : 'Private'}
+        </span>
+        <span className="tag token-tag">{tokenCount} tokens</span>
       </div>
+    </div>
 
-      {isOwner && (
-        <div className="color-selector">
-          <span className="color-circle blue" onClick={() => handleColorSelect('blue')}></span>
-          <span className="color-circle green" onClick={() => handleColorSelect('green')}></span>
-          <span className="color-circle violet" onClick={() => handleColorSelect('violet')}></span>
-        </div>
+    <div className="prompt-actions">
+      <button
+        onClick={() => isOwner && onToggleFavorit(prompt)}
+        className={`favorite-button ${!isOwner ? 'disabled' : ''}`}
+      >
+        {prompt.favorit ? '⭐️' : '☆'}
+      </button>
+
+      {!isOwner && prompt.profiles?.email && (
+        <span className="prompt-owner">
+          {prompt.profiles.email.split('@')[0]}
+        </span>
       )}
 
-{/* ---------- CHAIN VIEW Not YET used ----------
-  {chainViewActive && prompt.next_prompt_id && (
-    <div className="chain-connector"></div>
-  )}
------------------------------------------------- */}
+      <button onClick={onCopy} className="action-button copy">📋 Copy</button>
+      <button onClick={() => onClone(prompt)} className="action-button clone">🧬 Clone</button>
+      <button
+        onClick={() => isOwner && onEdit()}
+        disabled={!isOwner}
+        className={`action-button edit ${!isOwner ? 'disabled' : ''}`}
+      >
+        ✏️ Edit
+      </button>
+      {isOwner && (
+        <button onClick={handleDelete} className="action-button delete">🗑️ Delete</button>
+      )}
+    </div>
 
-   </div>
-  );
+    {isOwner && (
+      <div className="color-selector">
+        <span className="color-circle blue" onClick={() => handleColorSelect('blue')}></span>
+        <span className="color-circle green" onClick={() => handleColorSelect('green')}></span>
+        <span className="color-circle violet" onClick={() => handleColorSelect('violet')}></span>
+      </div>
+    )}
+  </div>
+);
 }

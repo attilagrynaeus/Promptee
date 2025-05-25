@@ -40,7 +40,6 @@ export default function PromptApp() {
     return result.sort((a, b) => a.sort_order - b.sort_order);
   }, [session, prompts, search, categoryFilter, favoriteOnly, chainViewActive, currentChain]);
 
-  // Color update
   const handleColorChange = async (promptId, color) => {
     const { error } = await supabase
       .from('prompts')
@@ -57,22 +56,23 @@ export default function PromptApp() {
   if (!session) return <LoginForm />;
   if (!profile) return <div className="p-8 text-center text-gray-500">Loading...</div>;
 
-  return (
-      <div className="flex min-h-screen h-screen bg-page-bg p-8 gap-8 items-stretch">
-        <PromptSidebar
-          search={search}
-          setSearch={setSearch}
-          categoryFilter={categoryFilter}
-          setCategoryFilter={setCategoryFilter}
-          onNew={() => setEditingPrompt({})}
-          categories={['All Categories', ...categories.map(c => c.name)]}
-          user={profile}
-          favoriteOnly={favoriteOnly}
-          setFavoriteOnly={setFavoriteOnly}
-          chainViewActive={chainViewActive}
-          deactivateChainView={() => setChainViewActive(false)}
-          toggleChainView={() => setChainViewActive(!chainViewActive)}
-        />
+ return (
+    <div className="flex min-h-screen h-screen p-8 gap-8 items-stretch"
+         style={{ background: 'linear-gradient(135deg, #2b1055, #7597de)' }}>
+      <PromptSidebar
+        search={search}
+        setSearch={setSearch}
+        categoryFilter={categoryFilter}
+        setCategoryFilter={setCategoryFilter}
+        onNew={() => setEditingPrompt({})}
+        categories={['All Categories', ...categories.map(c => c.name)]}
+        user={profile}
+        favoriteOnly={favoriteOnly}
+        setFavoriteOnly={setFavoriteOnly}
+        chainViewActive={chainViewActive}
+        deactivateChainView={() => setChainViewActive(false)}
+        toggleChainView={() => setChainViewActive(!chainViewActive)}
+      />
 
       <div className="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start content-start">
         {profile.role === 'pro' && (
