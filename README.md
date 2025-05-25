@@ -34,18 +34,18 @@
 ## 🛠 Tech Stack
 | Layer | Technologies & Tools |
 |-------|----------------------|
-| **Frontend** | React 18, Vite, **TypeScript**, JavaScript, HTML5, CSS3 / CSS Modules, Tailwind CSS |
+| **Frontend** | React 18, Vite, **TypeScript**, JavaScript, HTML5, CSS3 / CSS Modules, Tailwind |
 | **State Mgmt** | React Context API, Custom Hooks |
 | **Backend / API** | Netlify Functions (Node.js 18), Express‑like Middleware, **Supabase Edge Functions** |
 | **Database** | Supabase **PostgreSQL**, SQL, Row‑Level Security |
+| **In-memory DB (testing)**  | **PG-Mem** in-memory PostgreSQL emulator with SQL | |
 | **Authentication** | Supabase Auth (JWT, OAuth2 Google/GitHub/Magic Link) |
 | **Testing** | Jest, React Testing Library, **Vitest** & **MSW** for API mocks |
 | **CI / CD** | GitHub Actions, Netlify Continuous Deployment, Husky + lint‑staged |
-| **Dev Tools** | ESLint, Prettier, Commitlint, npm |
-| **Version Control** | Git & GitHub |
+| **Dev Tools** | ESLint, Prettier, Commitlint, npm | IntelliJ IDEA JetBrains AI Coding Assistant
+| **Version Control** | Git & GitHub & GitBash |
 | **DevOps & DX** | Docker (dev DB), VS Code Dev Containers, Conventional Commits |
 
----
 
 ## 📂 Project Structure
 ```text
