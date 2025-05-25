@@ -42,66 +42,62 @@ export default function PromptCard({
     }
   };
 
-return (
-  <div className={`prompt-card ${cardColors[prompt.color] || cardColors.default}`}>
-    <div className="prompt-card-content">
-      <header>
-        <h3 className="prompt-title">{prompt.title}</h3>
-        {prompt.description && (
-          <p className="prompt-description">{prompt.description}</p>
+  return (
+    <div className={`prompt-card ${cardColors[prompt.color] || cardColors.default}`}>
+      <div className="prompt-card-content">
+        <header>
+          <h3 className="prompt-title">{prompt.title}</h3>
+          {prompt.description && (
+            <p className="prompt-description">{prompt.description}</p>
+          )}
+        </header>
+
+        <div style={{ marginTop: '20px' }}></div>
+
+        <div className="prompt-tags">
+          <span className="tag category-tag">{prompt.category}</span>
+          <span className={`tag visibility-tag ${prompt.is_public ? 'public' : 'private'}`}>
+            {prompt.is_public ? 'Public' : 'Private'}
+          </span>
+          <span className="tag token-tag">{tokenCount} tokens</span>
+        </div>
+      </div>
+
+      <div className="prompt-actions">
+        <button
+          onClick={() => isOwner && onToggleFavorit(prompt)}
+          className={`favorite-button ${!isOwner ? 'disabled' : ''}`}
+        >
+          {prompt.favorit ? '⭐️' : '☆'}
+        </button>
+
+        {!isOwner && prompt.profiles?.email && (
+          <span className="prompt-owner">
+            {prompt.profiles.email.split('@')[0]}
+          </span>
         )}
-      </header>
 
-      <textarea
-        value={prompt.content}
-        readOnly
-        className="prompt-textarea"
-      />
-
-      <div className="prompt-tags">
-        <span className="tag category-tag">{prompt.category}</span>
-        <span className={`tag visibility-tag ${prompt.is_public ? 'public' : 'private'}`}>
-          {prompt.is_public ? 'Public' : 'Private'}
-        </span>
-        <span className="tag token-tag">{tokenCount} tokens</span>
+        <button onClick={onCopy} className="action-button copy">📋 Copy</button>
+        <button onClick={() => onClone(prompt)} className="action-button clone">🧬 Clone</button>
+        <button
+          onClick={() => isOwner && onEdit()}
+          disabled={!isOwner}
+          className={`action-button edit ${!isOwner ? 'disabled' : ''}`}
+        >
+          ✏️ Edit
+        </button>
+        {isOwner && (
+          <button onClick={handleDelete} className="action-button delete">🗑️ Delete</button>
+        )}
       </div>
-    </div>
 
-    <div className="prompt-actions">
-      <button
-        onClick={() => isOwner && onToggleFavorit(prompt)}
-        className={`favorite-button ${!isOwner ? 'disabled' : ''}`}
-      >
-        {prompt.favorit ? '⭐️' : '☆'}
-      </button>
-
-      {!isOwner && prompt.profiles?.email && (
-        <span className="prompt-owner">
-          {prompt.profiles.email.split('@')[0]}
-        </span>
-      )}
-
-      <button onClick={onCopy} className="action-button copy">📋 Copy</button>
-      <button onClick={() => onClone(prompt)} className="action-button clone">🧬 Clone</button>
-      <button
-        onClick={() => isOwner && onEdit()}
-        disabled={!isOwner}
-        className={`action-button edit ${!isOwner ? 'disabled' : ''}`}
-      >
-        ✏️ Edit
-      </button>
       {isOwner && (
-        <button onClick={handleDelete} className="action-button delete">🗑️ Delete</button>
+        <div className="color-selector">
+          <span className="color-circle blue" onClick={() => handleColorSelect('blue')}></span>
+          <span className="color-circle green" onClick={() => handleColorSelect('green')}></span>
+          <span className="color-circle violet" onClick={() => handleColorSelect('violet')}></span>
+        </div>
       )}
     </div>
-
-    {isOwner && (
-      <div className="color-selector">
-        <span className="color-circle blue" onClick={() => handleColorSelect('blue')}></span>
-        <span className="color-circle green" onClick={() => handleColorSelect('green')}></span>
-        <span className="color-circle violet" onClick={() => handleColorSelect('violet')}></span>
-      </div>
-    )}
-  </div>
-);
+  );
 }
