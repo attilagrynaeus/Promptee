@@ -121,3 +121,31 @@
 .color-circle.blue   { background-color: #1E90FF; }
 .color-circle.green  { background-color: #32CD32; }
 .color-circle.violet { background-color: #BA55D3; }
+
+.action-button.copy {
+  position: relative;
+}
+
+.copied-tooltip {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #10b981; 
+  color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  opacity: 0;
+  animation: fadeTooltip 1.5s forwards;
+  pointer-events: none; /* Ne zavarjon a kattintásban */
+}
+
+@keyframes fadeTooltip {
+  0% { opacity: 0; transform: translate(-50%, -10px); }
+  10%, 90% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -10px); }
+}
+
