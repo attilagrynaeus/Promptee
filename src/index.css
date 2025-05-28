@@ -131,3 +131,45 @@ body {
         font-size: 0.85rem;
     }
 }
+
+@layer components {
+  .keycap {
+    @apply inline-flex items-center justify-center text-sm font-medium
+           rounded-md border border-white/30 bg-white/10 text-gray-100
+           shadow-inner px-2 py-0.5 select-none;
+    backdrop-filter: blur(4px);
+  }
+
+  .action-button {
+    background: linear-gradient(135deg, #8dd5ff, #5b8cfc);
+    transition: filter 0.2s;
+  }
+  
+  .action-button:hover {
+    filter: brightness(1.15);
+  }
+
+  .token-tag {
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  .color-circle:hover::after {
+    content: '';
+    @apply absolute inset-0 rounded-full ring-2 ring-white/60;
+  }
+
+  .prompt-card {
+    background: rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  }
+
+}
+
+.hover-effect {
+  transition: transform 0.3s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.hover-effect:hover {
+  transform: translateY(-3px);
+}

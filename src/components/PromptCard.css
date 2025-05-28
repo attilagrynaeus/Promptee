@@ -6,20 +6,16 @@
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   color: #ffffff;
-  height: 100%; /* Ez biztosítja, hogy grid-del együtt minden sorban azonos legyen a magasság */
+  height: 100%;
+  outline: none !important;
 }
 
-.prompt-owner {
-  color: #000; /* fekete */
-  background-color: rgba(255, 255, 255, 0.7);
-  border-radius: 6px;
-  padding: 2px 8px;
-  font-weight: 600;
-  font-size: 0.85rem;
-  display: inline-block;
-  margin-right: auto; /* bal oldalra igazítva marad */
+.prompt-card:focus,
+.prompt-card:focus-within,
+.prompt-card:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }
-
 
 .prompt-card:hover {
   transform: translateY(-8px);
@@ -27,12 +23,12 @@
 }
 
 .card-default { background: rgba(255, 255, 255, 0.15); }
-.card-blue { background: rgba(30, 144, 255, 0.4); }
-.card-green { background: rgba(50, 205, 50, 0.4); }
-.card-violet { background: rgba(186, 85, 211, 0.4); }
+.card-blue    { background: rgba(30, 144, 255, 0.40); }
+.card-green   { background: rgba(50, 205,  50,  0.40); }
+.card-violet  { background: rgba(186, 85, 211, 0.40); }
 
 .prompt-title {
-  @apply text-xl font-semibold tracking-wide;
+  @apply text-xl font-extrabold tracking-wide;
   font-weight: 800;
 }
 
@@ -75,26 +71,12 @@
   color: #fff;
 }
 
-.visibility-tag.public {
-  background-color: #4ade80; /* zöld */
-}
-
-.visibility-tag.private {
-  background-color: #f87171; /* piros */
-}
+.visibility-tag.public  { background-color: #4ade80; }
+.visibility-tag.private { background-color: #f87171; }
 
 .visibility-tag::before {
   content: '●';
   font-size: 0.6rem;
-}
-
-.token-tag {
-  background-color: rgba(255,255,255,0.3);
-  color: #fff;
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 3px 12px;
-  border-radius: 50px;
 }
 
 .prompt-actions {
@@ -107,23 +89,35 @@
 
 .action-button {
   @apply rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-transform duration-200;
-  background: rgba(255,255,255,0.2);
+  background: linear-gradient(135deg, #8dd5ff, #5b8cfc);
 }
 
 .action-button:hover {
   transform: translateY(-3px);
-  background: #8dd5ff;
-  color: #2b1055;
+  filter: brightness(1.15);
 }
 
 .color-selector {
-  @apply flex gap-2 justify-center py-2 border-t border-gray-700 mt-2;
+  @apply flex gap-1 items-center;
+  padding: 0; /* padding törölve */
+  border: none; /* border törölve */
+  margin: 0;
 }
 
 .color-circle {
-  @apply w-6 h-6 rounded-full cursor-pointer border-2 border-white opacity-80 hover:opacity-100 transition-opacity shadow;
+  @apply w-6 h-6 rounded-full cursor-pointer border-2 border-white
+          opacity-80 hover:opacity-100 transition-opacity shadow;
+  position: relative;
+  outline: none !important;
 }
 
-.color-circle.blue { background-color: #1E90FF; }
-.color-circle.green { background-color: #32CD32; }
-.color-circle.violet { background-color: #BA55D3; } 
+.color-circle::after {
+  content: '';
+  position: absolute;
+  inset: -4px; /* további kattintható terület növelése */
+  border-radius: 50%;
+}
+
+.color-circle.blue   { background-color: #1E90FF; }
+.color-circle.green  { background-color: #32CD32; }
+.color-circle.violet { background-color: #BA55D3; }

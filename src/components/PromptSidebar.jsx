@@ -9,8 +9,10 @@ export default function PromptSidebar({
   chainViewActive, deactivateChainView
 }) {
   const supabase = useSupabaseClient();
-  const session = useSession();
-  const username = user?.email?.split('@')[0] || 'Guest';
+  const session   = useSession();
+  const username  = user?.email?.split('@')[0] || 'Guest';
+
+  const shortcutLabel = ['⌘'];
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -28,8 +30,18 @@ export default function PromptSidebar({
     }
   };
 
-  const { dump, loading: dumpLoading, error: dumpError } = usePromptDump(supabase, session, username);
+  /** 🗑️  Minden szűrő törlése */
+  const clearFilters = () => {
+    setSearch('');
+    setCategoryFilter('All Categories');
+    deactivateChainView();
+    setFavoriteOnly(false);
+  };
 
+  const { dump, loading: dumpLoading, error: dumpError } =
+    usePromptDump(supabase, session, username);
+
+  /* ----------  JSX  ---------- */
   return (
     <aside className="sidebar-box flex flex-col justify-between h-full">
       <div>
@@ -37,27 +49,43 @@ export default function PromptSidebar({
           PrompTee 🍵
         </h2>
 
-        <button onClick={onNew} className="btn-blue mt-4 w-full">
+        <button onClick={onNew} className="btn-blue mt-4 w-full shadow-lg">
           New prompt
         </button>
 
         {!favoriteOnly && !chainViewActive && (
           <>
-            <input
-              type="text"
-              placeholder="Search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value.toLowerCase())}
-              className="field-dark mt-4 w-full"
-            />
+            {/* --- Search mező shortcut-ikonokkal --- */}
+            <div className="relative mt-4">
+              <input
+                type="text"
+                placeholder="Search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value.toLowerCase())}
+                className="field-dark w-full pr-20"
+              />
+              <div className="absolute inset-y-0 right-3 flex items-center gap-1 pointer-events-none">
+                {shortcutLabel.map(c => (
+                  <span key={c} className="keycap">{c}</span>
+                ))}
+              </div>
+            </div>
 
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
               className="field-dark mt-2 w-full"
             >
-              {categories.map((c) => <option key={c}>{c}</option>)}
+              {categories.map(c => <option key={c}>{c}</option>)}
             </select>
+
+            {/* --- CLEAR BUTTON --- */}
+            <button
+              onClick={clearFilters}
+              className="mt-2 w-full py-2 rounded-lg bg-gray-600 hover:bg-gray-500 transition-colors font-semibold"
+            >
+              🗑️  Clear filters
+            </button>
           </>
         )}
 
@@ -65,7 +93,9 @@ export default function PromptSidebar({
           <button
             onClick={toggleFavoriteOnly}
             className={`mt-4 w-full py-2 rounded-lg transition-colors font-semibold ${
-              favoriteOnly ? 'bg-yellow-500 text-gray-800' : 'bg-gray-700 text-gray-200'
+              favoriteOnly
+                ? 'bg-yellow-500 text-gray-800'
+                : 'bg-gray-700 text-gray-200'
             }`}
           >
             {favoriteOnly ? '⭐ Showing Favorites' : '☆ Show Favorites'}

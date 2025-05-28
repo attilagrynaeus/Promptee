@@ -34,7 +34,7 @@ export default function PromptApp() {
   } = usePromptData(supabase, session, showDialog);
 
   useEffect(() => {
-    if (profile) {
+    if (profile && profile.role === 'Master') {
       setShowWelcome(true);
       const timer = setTimeout(() => setShowWelcome(false), 2000);
       return () => clearTimeout(timer);
