@@ -70,55 +70,66 @@ export default function PromptFormModal({
     onClose();
   };
 
-  return ReactDOM.createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <form
-        onSubmit={submit}
-        className="w-full max-w-3xl min-h-[70vh] flex flex-col
-                   bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl
-                   shadow-[0_25px_80px_rgba(0,0,0,0.4)] text-gray-200 overflow-hidden"
-      >
+return ReactDOM.createPortal(
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+    <form
+      onSubmit={submit}
+      className="w-full max-w-3xl min-h-[70vh] max-h-[90vh]
+                 flex flex-col overflow-y-auto          /* modal scroll */
+                 bg-white/5 backdrop-blur-md border border-white/10
+                 rounded-2xl shadow-[0_25px_80px_rgba(0,0,0,0.4)]
+                 text-gray-200"
+    >
+      {/* színes fejléc-csík */}
+      <div style={{ backgroundColor: headColor }} className="h-2 w-full" />
 
-        <div style={{ backgroundColor: headColor }} className="h-2 w-full" />
+      <div className="p-6 flex flex-col flex-1">
+        {/* fejléc cím */}
+        <h2 className="text-2xl font-semibold mb-4">
+          {readOnly
+            ? "View Prompt"
+            : prompt.id
+            ? "Edit Prompt"
+            : "New Prompt"}
+        </h2>
 
-        <div className="p-6 flex flex-col flex-1">
-          <h2 className="text-2xl font-semibold mb-4">
-            {readOnly
-              ? 'View Prompt'
-              : prompt.id
-              ? 'Edit Prompt'
-              : 'New Prompt'}
-          </h2>
+        {/* Title mező */}
+        <input
+          required
+          placeholder="Title"
+          value={form.title}
+          onChange={chg("title")}
+          disabled={readOnly}
+          className="field-dark rounded-none mb-3"
+        />
 
-          {/* Title */}
-          <input
+        {/* -----------  Content blokk ------------- */}
+        <div
+          className="flex flex-1 mb-4 bg-gray-900 rounded
+                     max-h-[50vh] overflow-hidden"
+        >
+          {/* sorszámok */}
+          <pre
+            className="w-16 pr-4 py-2 text-right select-none
+                       text-gray-500 text-xs leading-7 overflow-hidden"
+          >
+            {numbers}
+          </pre>
+
+          {/* textarea */}
+          <textarea
             required
-            placeholder="Title"
-            value={form.title}
-            onChange={chg('title')}
+            wrap="soft"
             disabled={readOnly}
-            className="field-dark rounded-none mb-3"
+            value={form.content}
+            onChange={chg("content")}
+            className="flex-1 field-dark rounded-none resize-none
+                       py-2 pl-0 text-base font-mono leading-7
+                       min-h-[18rem]     /* legalább ~10-14 sor látszik */
+                       overflow-y-auto   /* saját scroll */
+                       scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent"
           />
-
-          <div className="flex flex-1 mb-4 bg-gray-900 rounded">
-            <pre
-              className="w-16 pr-4 py-2 text-right select-none
-                         text-gray-500 text-xs leading-7 overflow-hidden"
-            >
-              {numbers}
-            </pre>
-
-            <textarea
-              required
-              wrap="soft"
-              disabled={readOnly}
-              value={form.content}
-              onChange={chg('content')}
-              className="flex-1 field-dark rounded-none resize-none
-                         py-2 pl-0 text-base font-mono leading-7
-                         scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent"
-            />
-          </div>
+        </div>
 
           {/* token badge */}
           <span className="self-end -mt-2 mb-4 bg-indigo-600/90
@@ -185,7 +196,6 @@ export default function PromptFormModal({
             </label>
           )}
 
-          {/* action buttons */}
           <div className="mt-auto flex justify-end gap-3">
             <button
               type="button"
