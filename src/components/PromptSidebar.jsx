@@ -30,7 +30,6 @@ export default function PromptSidebar({
     }
   };
 
-  /** 🗑️  Minden szűrő törlése */
   const clearFilters = () => {
     setSearch('');
     setCategoryFilter('All Categories');
@@ -55,7 +54,7 @@ export default function PromptSidebar({
 
         {!favoriteOnly && !chainViewActive && (
           <>
-            {/* --- Search mező shortcut-ikonokkal --- */}
+
             <div className="relative mt-4">
               <input
                 type="text"

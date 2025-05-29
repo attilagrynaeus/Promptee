@@ -99,8 +99,8 @@
 
 .color-selector {
   @apply flex gap-1 items-center;
-  padding: 0; /* padding törölve */
-  border: none; /* border törölve */
+  padding: 0;
+  border: none;
   margin: 0;
 }
 
@@ -114,7 +114,7 @@
 .color-circle::after {
   content: '';
   position: absolute;
-  inset: -4px; /* további kattintható terület növelése */
+  inset: -4px;
   border-radius: 50%;
 }
 
