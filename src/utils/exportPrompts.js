@@ -16,7 +16,6 @@ import { saveAs } from "file-saver";
  * • Category: (#00AA00)
  */
 export async function exportPrompts({ supabase, userId, username }) {
-  /* 1️⃣   */
   const { data: prompts, error } = await supabase
     .from("prompts")
     .select(
@@ -33,20 +32,20 @@ export async function exportPrompts({ supabase, userId, username }) {
 
   if (error) throw new Error(error.message);
 
-  /* 2️⃣  */
-  const makePara = ({
-    label,
-    value,
-    bold = false,
-    bigger = false,
-    color, // opcionális hex (pl. "FFA500")
-  }) =>
+  const sorted = prompts.sort((a, b) => {
+    const catA = a.categories?.name?.toLowerCase() || "";
+    const catB = b.categories?.name?.toLowerCase() || "";
+    if (catA !== catB) return catA.localeCompare(catB);
+    return (a.title || "").localeCompare(b.title || "");
+  });
+
+  const makePara = ({ label, value, bold = false, bigger = false, color }) =>
     new Paragraph({
       children: [
         new TextRun({
           text: `${label}: `,
           bold: true,
-          size: bigger ? 32 : 28, // 16 pt vagy 14 pt
+          size: bigger ? 32 : 28,
         }),
         new TextRun({
           text: value ?? "N/A",
@@ -55,23 +54,20 @@ export async function exportPrompts({ supabase, userId, username }) {
           color,
         }),
       ],
-      spacing: { after: 200 }, // empty line
+      spacing: { after: 200 },
     });
 
-  /* 3️⃣  Header */
   const header = new Paragraph({
     children: [
       new TextRun({
-        text: `All prompts printed:  (${prompts.length}) `,
+        text: `All prompts printed (${sorted.length})`,
         bold: true,
       }),
     ],
     spacing: { after: 300 },
   });
 
-  /* 4️⃣  Prompt */
-  const blocks = prompts.flatMap((p, i) => [
-
+  const blocks = sorted.flatMap((p, i) => [
     new Paragraph({
       text: `Prompt #${i + 1}`,
       spacing: { after: 200 },
@@ -82,23 +78,20 @@ export async function exportPrompts({ supabase, userId, username }) {
       value: p.title,
       bold: true,
       bigger: true,
-      color: "FFA500", // narancs
+      color: "FFA500",
     }),
 
-    // Description
     makePara({
       label: "Description",
       value: p.description,
     }),
 
-    // Category
     makePara({
       label: "Category",
       value: p.categories?.name,
       color: "00AA00",
     }),
 
-    // Content
     new Paragraph({
       children: [new TextRun({ text: "Content:", bold: true })],
       spacing: { after: 200 },
@@ -112,24 +105,15 @@ export async function exportPrompts({ supabase, userId, username }) {
     }),
   ]);
 
-  /* 5️⃣  DOCX  */
   const doc = new Document({
     styles: {
       default: {
-        document: {
-          run: { font: "Arial", size: 28 }, // 14 pt (half-points)
-        },
+        document: { run: { font: "Arial", size: 28 } }, // 14 pt
       },
     },
-    sections: [
-      {
-        properties: {},
-        children: [header, ...blocks],
-      },
-    ],
+    sections: [{ properties: {}, children: [header, ...blocks] }],
   });
 
-  /* 6️⃣  download */
   const blob = await Packer.toBlob(doc);
   saveAs(
     blob,

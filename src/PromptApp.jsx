@@ -36,7 +36,6 @@ export default function PromptApp() {
     handleClone, fetchPrompts
   } = usePromptData(supabase, session, showDialog);
 
-  // Chains fetch itt történik (JAVÍTÁS ✅)
   useEffect(() => {
     const uid = session?.user?.id;
     if (!uid) {
@@ -131,7 +130,7 @@ export default function PromptApp() {
   if (loading || !profile) return <div className="p-8 text-center text-gray-500">Loading...</div>;
 
   return (
-    <div className="flex min-h-screen h-screen p-8 gap-8 items-stretch bg-[#1e2024]">
+    <div className="flex min-h-screen p-8 gap-8 items-stretch bg-[#1e2024]">
       <PromptSidebar
         search={search}
         setSearch={setSearch}
@@ -154,7 +153,7 @@ export default function PromptApp() {
         }}
       />
 
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-max items-start">
           {filtered.map(prompt => (
             <PromptCard

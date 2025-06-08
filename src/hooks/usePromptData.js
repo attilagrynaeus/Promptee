@@ -34,7 +34,7 @@ export default function usePromptData(supabase, session, showDialog) {
       const isNewPrompt = !prompt.id;
       const promptToSave = {
         ...prompt,
-        favorit: isNewPrompt ? false : prompt.favorit,  // Explicit favorit: false új promptoknál
+        favorit: isNewPrompt ? false : prompt.favorit,
         user_id: session.user.id,
       };
 

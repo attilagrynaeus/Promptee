@@ -57,8 +57,7 @@ export default function PromptSidebar({
   } = usePromptDump(supabase, session, username);
 
   return (
-    <aside className="sidebar-box flex flex-col justify-between sticky top-0 self-start min-h-screen">
-
+    <aside className="sidebar-box flex flex-col justify-between">
       <div>
         <h2 className="text-4xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 text-center">
           PrompTee 🍵
