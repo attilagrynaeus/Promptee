@@ -51,29 +51,54 @@
 ```text
 src/
 ├── components/
-│   ├── ChainConnector.jsx
-│   ├── CustomDialog.jsx
-│   ├── LoginForm.jsx
-│   ├── PromptCard.jsx
-│   ├── PromptFormModal.jsx
-│   └── PromptSidebar.jsx
+│   ├── ChainConnector.jsx      # decorative dotted line between chained cards
+│   ├── CustomDialog.jsx        # modal wrapper driven by DialogContext
+│   ├── FavoritesToggle.jsx     # filter switch
+│   ├── LoginForm.jsx           # Supabase email-magic-link auth UI
+│   ├── PromptCard.jsx          # glass-style card + color selector
+│   ├── PromptCard.css          # scoped styles for PromptCard
+│   ├── PromptFormModal.jsx     # create / edit / view prompt modal
+│   ├── PromptSidebar.jsx       # sidebar: filters, chains, export, logout
+│   └── SearchFilters.jsx       # search box + category dropdown
 ├── context/
-│   └── DialogContext.jsx
+│   └── DialogContext.jsx       # global confirm / alert dialog provider
 ├── hooks/
-│   └── useAuth.js
-├── lib/
-│   └── tokenCounter.js
+│   ├── useAuth.js              # (WIP) higher-level auth helper
+│   ├── useIdleTimeout.js       # auto-logout after X minutes of inactivity
+│   ├── useProfile.js           # fetch + cache user profile row
+│   ├── usePromptData.js        # CRUD + caching for prompts / categories
+│   ├── usePromptDump.js        # export DOCX / JSON hook
+│   ├── usePromptDump.test.js   # unit-test (if exists)
+│   ├── usePromptDump.js        # token count util (wrapper around gpt-3.5 est.)
+│   └── useTokenCount.js        # fast tokenizer approximation
 ├── utils/
-│   ├── exportPrompts.js
-│   ├── promptFilter.js
-│   └── promptService.js
-├── __tests__/
-│   └── *.test.jsx
-├── App.jsx
-├── PromptApp.jsx
-├── index.css
-├── main.jsx
-└── setupTests.js
+│   ├── ChainModeToggle.jsx     # checkbox + <select> extracted from sidebar
+│   ├── exportPrompts.js        # builds DOCX (sorted by category) or JSON
+│   ├── promptFilter.js         # client-side search / category / favorite filter
+│   ├── promptService.js        # Supabase service layer (CRUD helpers)
+│   ├── promptService2.test.js  # edge-case unit-tests
+│   └── tokenCounter.js         # rough GPT token estimator (moved here)
+├── lib/
+│   └── inMemoryDb.js           # local mock repo (fallback without Supabase)
+├── __tests__/                  # Vitest + RTL test suite
+│   ├── exportPrompts.test.js
+│   ├── favorite_fn.sql         # fixture for Supabase function test
+│   ├── PromptCard.test.jsx
+│   ├── PromptFormModal.test.jsx
+│   ├── PromptSidebar.test.jsx
+│   ├── promptService.test.js
+│   └── promptService2.test.js
+├── supabase/                   # SQL migrations / edge functions
+│   └── (SQL & TypeScript edge-function files)
+├── App.jsx                     # <Router> wrapper (could host routes later)
+├── PromptApp.jsx               # main application once user is logged in
+├── supabaseClient.js           # singleton Supabase browser client
+├── main.jsx                    # React 18 entry (creates root)
+├── index.css                   # Tailwind base + custom layers
+├── setupTests.js               # Vitest global setup
+└── vite.config.js              # Vite + Tailwind + alias config
+
+
 ```
 
 ## Getting Started
@@ -108,6 +133,11 @@ npm run dev   # Vite dev server on http://localhost:5173
 ```bash
 npm run test          # runs Jest & React Testing Library
 npm run coverage      # generates coverage report
+```
+
+## 🧪 Production build
+```bash
+pnpm build && pnpm preview
 ```
 
 ---
