@@ -161,6 +161,7 @@ export default function PromptApp() {
               key={prompt.id}
               prompt={{ ...prompt, category: prompt.categories?.name || 'Uncategorized' }}
               currentUserId={session.user.id}
+              chainViewActive={chainView}          /* ✅ új prop átadása */
               onCopy={() => navigator.clipboard.writeText(prompt.content)}
               onEdit={() => setEditingPrompt(prompt)}
               onView={handleView}

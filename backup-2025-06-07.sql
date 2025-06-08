@@ -86,7 +86,7 @@ declare
   fav_cnt   int;
   new_order bigint;
 begin
-  -- 25-ös limit ellenőrzés
+
   select count(*) into fav_cnt
   from prompts
   where favorit = true
@@ -96,14 +96,13 @@ begin
     return 'limit_reached';
   end if;
 
-  -- egyedi, legkisebb sort_order–1
   select coalesce(min(sort_order),0) - 1
     into new_order
   from prompts;
 
   update prompts
   set favorit    = true,
-      sort_order = new_order      -- <-- mindig egyedi!
+      sort_order = new_order  
   where id = prompt_id;
 
   return 'success';

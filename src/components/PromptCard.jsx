@@ -14,7 +14,8 @@ export default function PromptCard({
   prompt, currentUserId,
   onCopy, onEdit, onDelete,
   onToggleFavorit, onClone,
-  onColorChange, onView
+  onColorChange, onView,
+  chainViewActive     
 }) {
   const tokenCount = tokensOf(prompt.content);
   const isOwner = prompt.user_id === currentUserId;
@@ -66,11 +67,18 @@ export default function PromptCard({
 
   return (
     <div
-      className="prompt-card"
+      className="prompt-card relative"      /* relative ⇒ badge pozícionálás */
       style={{ background: bgMap[color] }}
       tabIndex={-1}
       onFocus={(e) => e.currentTarget.blur()}
     >
+      {/* 🔗 chain-badge only in chain-view */}
+      {chainViewActive && prompt.chain_order != null && (
+        <div className="chain-order-badge">
+          {prompt.chain_order}
+        </div>
+      )}
+
       <header>
         <h3 className="prompt-title">{prompt.title}</h3>
         {prompt.description && (
@@ -87,10 +95,7 @@ export default function PromptCard({
       </div>
 
       <div className="prompt-actions">
-        <button
-          onClick={handleToggleFavorit}
-          className="favorite-button"
-        >
+        <button onClick={handleToggleFavorit} className="favorite-button">
           {prompt.favorit ? '⭐️' : '☆'}
         </button>
 
@@ -106,20 +111,13 @@ export default function PromptCard({
           ))}
         </div>
 
-        <button
-          onClick={handleCopy}
-          className="action-button copy relative"
-        >
+        <button onClick={handleCopy} className="action-button copy relative">
           📋 Copy
-          {copied && (
-            <span className="copied-tooltip">✅ Copied!</span>
-          )}
+          {copied && <span className="copied-tooltip">✅ Copied!</span>}
         </button>
 
-        <button
-          onClick={(e) => { e.stopPropagation(); onClone(prompt); }}
-          className="action-button clone"
-        >
+        <button onClick={(e) => { e.stopPropagation(); onClone(prompt); }}
+                className="action-button clone">
           🧬 Clone
         </button>
 
@@ -131,10 +129,7 @@ export default function PromptCard({
         </button>
 
         {isOwner && (
-          <button
-            onClick={handleDelete}
-            className="action-button delete"
-          >
+          <button onClick={handleDelete} className="action-button delete">
             🗑️ Delete
           </button>
         )}
