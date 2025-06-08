@@ -131,7 +131,7 @@ export default function PromptApp() {
   if (loading || !profile) return <div className="p-8 text-center text-gray-500">Loading...</div>;
 
   return (
-    <div className="flex min-h-screen h-screen p-8 gap-8 items-stretch bg-gradient-to-br from-indigo-900 to-blue-400">
+    <div className="flex min-h-screen h-screen p-8 gap-8 items-stretch bg-[#1e2024]">
       <PromptSidebar
         search={search}
         setSearch={setSearch}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { tokensOf } from '../lib/tokenCounter';
+import { tokensOf } from '../utils/tokenCounter';
 import { useDialog } from '../context/DialogContext';
 import './PromptCard.css';
 
@@ -100,7 +100,7 @@ export default function PromptCard({
         </button>
 
         <div className="color-selector ml-2">
-          {['blue', 'green', 'violet'].map(clr => (
+          {['default', 'blue', 'green', 'violet'].map(clr => (
             <button
               key={clr}
               type="button"

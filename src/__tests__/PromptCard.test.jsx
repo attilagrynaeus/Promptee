@@ -8,7 +8,7 @@ jest.mock('../context/DialogContext', () => ({
   useDialog: () => ({ showDialog: jest.fn() })
 }));
 
-jest.mock('../lib/tokenCounter', () => ({
+jest.mock('../utils/tokenCounter', () => ({
   tokensOf: () => 3
 }));
 

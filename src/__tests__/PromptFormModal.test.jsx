@@ -9,7 +9,7 @@ jest.mock('react-dom', () => ({
   createPortal: (node) => node,
 }));
 
-jest.mock('../lib/tokenCounter', () => ({
+jest.mock('../utils/tokenCounter', () => ({
   tokensOf: () => 42,
 }));
 

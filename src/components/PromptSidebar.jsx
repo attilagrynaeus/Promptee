@@ -2,13 +2,16 @@ import { useEffect } from 'react';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
 import usePromptDump from '../hooks/usePromptDump';
 
+import ChainModeToggle from '../utils/ChainModeToggle';
+import SearchFilters   from './SearchFilters';
+import FavoritesToggle from './FavoritesToggle';
+
 export default function PromptSidebar({
   search, setSearch,
   categoryFilter, setCategoryFilter,
   onNew, categories,
   user, favoriteOnly, setFavoriteOnly,
-  chains,  // <-- propként érkezik a fő komponensből!
-
+  chains,
   chainViewActive, deactivateChainView,
   chainView, setChainView,
   chainFilter, setChainFilter
@@ -17,13 +20,12 @@ export default function PromptSidebar({
   const session  = useSession();
   const username = user?.email?.split('@')[0] || 'Guest';
 
+  /* default chain */
   useEffect(() => {
     if (chainView && !chainFilter && chains.length) {
       setChainFilter(chains[0].id);
     }
   }, [chainView, chainFilter, chains, setChainFilter]);
-
-  const shortcutLabel = ['⌘'];
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -51,12 +53,11 @@ export default function PromptSidebar({
   const {
     dump,
     loading: dumpLoading,
-    error: dumpError
+    error:   dumpError
   } = usePromptDump(supabase, session, username);
 
-  /* UI */
   return (
-    <aside className="sidebar-box flex flex-col justify-between h-full">
+    <aside className="sidebar-box flex flex-col justify-between sticky top-0 self-start min-h-screen">
 
       <div>
         <h2 className="text-4xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 text-center">
@@ -67,90 +68,30 @@ export default function PromptSidebar({
           New prompt
         </button>
 
-        <div className="mt-4">
-      <label className="flex items-center gap-2">
-  <input
-    type="checkbox"
-    checked={chainView}
-    onChange={(e) => {
-      const on = e.target.checked;
-      setChainView(on);
-      if (!on) {
-        setChainFilter('');
-      } else if (!chainFilter && chains.length) {
-        setChainFilter(chains[0].id);
-      }
-    }}
-  />
-  Chain mode
-</label>
+        <ChainModeToggle
+          chainView={chainView}
+          setChainView={setChainView}
+          chainFilter={chainFilter}
+          setChainFilter={setChainFilter}
+          chains={chains}
+        />
 
-          {/* dropdown csak, ha a mód aktív */}
-          {chainView && (
-            <select
-              className="mt-2 w-full field-dark"
-              value={chainFilter || ''}
-              onChange={(e) => setChainFilter(e.target.value)}
-            >
-              <option value="">— válassz chain-t —</option>
-              {chains.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-          )}
-        </div>
-
-        {/* kereső + kategória – csak ha NEM chain-/favorite-nézet */}
         {!favoriteOnly && !chainView && (
-          <>
-            <div className="relative mt-4">
-              <input
-                type="text"
-                placeholder="Search"
-                value={search}
-                onChange={(e) =>
-                  setSearch(e.target.value.toLowerCase())
-                }
-                className="field-dark w-full pr-20"
-              />
-              <div className="absolute inset-y-0 right-3 flex items-center gap-1 pointer-events-none">
-                {shortcutLabel.map((c) => (
-                  <span key={c} className="keycap">{c}</span>
-                ))}
-              </div>
-            </div>
-
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="field-dark mt-2 w-full"
-            >
-              {categories.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-
-            <button
-              onClick={clearFilters}
-              className="mt-2 w-full py-2 rounded-lg bg-gray-600 hover:bg-gray-500 transition-colors font-semibold"
-            >
-              🗑️ Clear filters
-            </button>
-          </>
+          <SearchFilters
+            search={search}
+            setSearch={setSearch}
+            categoryFilter={categoryFilter}
+            setCategoryFilter={setCategoryFilter}
+            categories={categories}
+            clearFilters={clearFilters}
+          />
         )}
 
-        {/* favorites toggle */}
         {!chainViewActive && (
-          <button
-            onClick={toggleFavoriteOnly}
-            className={`mt-4 w-full py-2 rounded-lg transition-colors font-semibold ${
-              favoriteOnly
-                ? 'bg-yellow-500 text-gray-800'
-                : 'bg-gray-700 text-gray-200'
-            }`}
-          >
-            {favoriteOnly ? '⭐ Showing Favorites' : '☆ Show Favorites'}
-          </button>
+          <FavoritesToggle
+            favoriteOnly={favoriteOnly}
+            toggleFavoriteOnly={toggleFavoriteOnly}
+          />
         )}
 
         {/* Exit Chain View */}

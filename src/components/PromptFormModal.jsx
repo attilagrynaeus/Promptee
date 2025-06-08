@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { tokensOf } from '../lib/tokenCounter';
+import { tokensOf } from '../utils/tokenCounter';
 import { supabase } from '../supabaseClient';        
 
 function hashColor(str = '') {
