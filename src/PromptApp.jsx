@@ -24,14 +24,51 @@ export default function PromptApp() {
   const [editingPrompt, setEditingPrompt] = useState(null);
   const [viewingPrompt, setViewingPrompt] = useState(null);
   const [favoriteOnly, setFavoriteOnly] = useState(false);
-  const [chainViewActive, setChainViewActive] = useState(false);
+
+  const [chainView, setChainView] = useState(false);
+  const [chainFilter, setChainFilter] = useState('');
   const [currentChain, setCurrentChain] = useState([]);
+  const [chains, setChains] = useState([]);
   const [showWelcome, setShowWelcome] = useState(false);
 
   const {
     prompts, categories, handleSave, handleDelete,
     handleClone, fetchPrompts
   } = usePromptData(supabase, session, showDialog);
+
+  // Chains fetch itt történik (JAVÍTÁS ✅)
+  useEffect(() => {
+    const uid = session?.user?.id;
+    if (!uid) {
+      setChains([]);
+      return;
+    }
+
+    supabase
+      .from('chains')
+      .select('*')
+      .eq('user_id', uid)
+      .order('name', { ascending: true })
+      .then(({ data, error }) => {
+        if (error) console.error('Chains fetch error', error);
+        setChains(data || []);
+      });
+  }, [session?.user?.id, supabase]);
+
+  useEffect(() => {
+    if (chainView && !chainFilter && chains.length) {
+      setChainFilter(chains[0].id);
+    }
+
+    if (chainView && chainFilter) {
+      const chainPrompts = prompts
+        .filter(p => p.chain_id === chainFilter)
+        .sort((a, b) => (a.chain_order ?? 999) - (b.chain_order ?? 999));
+      setCurrentChain(chainPrompts);
+    } else {
+      setCurrentChain([]);
+    }
+  }, [chainView, chainFilter, chains, prompts]);
 
   useEffect(() => {
     if (profile && profile.role === 'Master') {
@@ -42,17 +79,23 @@ export default function PromptApp() {
   }, [profile]);
 
   const filtered = useMemo(() => {
+    if (chainView && chainFilter) {
+      return currentChain;
+    }
+
     return filterPrompts({
-      session, prompts, search, categoryFilter, favoriteOnly, chainViewActive, currentChain
+      session, prompts, search, categoryFilter, favoriteOnly
     }).sort((a, b) => a.sort_order - b.sort_order);
-  }, [session, prompts, search, categoryFilter, favoriteOnly, chainViewActive, currentChain]);
+  }, [
+    session, prompts, search, categoryFilter,
+    favoriteOnly, chainView, chainFilter, currentChain
+  ]);
 
   const handleColorChange = async (promptId, color) => {
     const { error } = await supabase
       .from('prompts')
       .update({ color })
       .eq('id', promptId);
-
     if (error) {
       showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
     } else {
@@ -61,36 +104,28 @@ export default function PromptApp() {
   };
 
   const handleToggleFavorit = async (prompt) => {
-  if (!prompt.id || !session.user.id) {
-    showDialog({
-      title: 'Cannot set favorite',
-      message: 'Prompt ID or User ID is missing.',
-      confirmText: 'OK'
-    });
-    return;
-  }
-
-  const { error } = await toggleFavorit(supabase, prompt, session.user.id);
-
-  if (error) {
-    console.error("Supabase error details:", error);
-    showDialog({
-      title: 'Cannot set favorite',
-      message: typeof error === 'string' ? error : error.message,
-      confirmText: 'OK'
-    });
-  } else {
-    fetchPrompts();
-  }
-};
-
-  const handleView = (prompt) => {
-    setViewingPrompt(prompt);
+    if (!prompt.id || !session.user.id) {
+      showDialog({
+        title: 'Cannot set favorite',
+        message: 'Prompt ID or User ID is missing.',
+        confirmText: 'OK'
+      });
+      return;
+    }
+    const { error } = await toggleFavorit(supabase, prompt, session.user.id);
+    if (error) {
+      showDialog({
+        title: 'Cannot set favorite',
+        message: error.message || 'Error setting favorite.',
+        confirmText: 'OK'
+      });
+    } else {
+      fetchPrompts();
+    }
   };
 
-  const closeViewModal = () => {
-    setViewingPrompt(null);
-  };
+  const handleView = (prompt) => setViewingPrompt(prompt);
+  const closeViewModal = () => setViewingPrompt(null);
 
   if (!session) return <LoginForm />;
   if (loading || !profile) return <div className="p-8 text-center text-gray-500">Loading...</div>;
@@ -102,24 +137,25 @@ export default function PromptApp() {
         setSearch={setSearch}
         categoryFilter={categoryFilter}
         setCategoryFilter={setCategoryFilter}
+        chains={chains}
         onNew={() => setEditingPrompt({})}
         categories={['All Categories', ...categories.map(c => c.name)]}
         user={profile}
         favoriteOnly={favoriteOnly}
         setFavoriteOnly={setFavoriteOnly}
-        chainViewActive={chainViewActive}
-        deactivateChainView={() => setChainViewActive(false)}
-        toggleChainView={() => setChainViewActive(prev => !prev)}
+        chainView={chainView}
+        setChainView={setChainView}
+        chainFilter={chainFilter}
+        setChainFilter={setChainFilter}
+        chainViewActive={chainView && chainFilter !== ''}
+        deactivateChainView={() => {
+          setChainView(false);
+          setChainFilter('');
+        }}
       />
 
       <main className="flex-1 overflow-y-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-max items-start">
-          {showWelcome && profile.role === 'pro' && (
-            <div className="col-span-full px-4 py-2 bg-blue-900 rounded-lg shadow text-gray-200 font-extrabold text-center text-2xl animate-fadeOut">
-              💜 PRO features enabled! Welcome {profile.email.split('@')[0].toUpperCase()}! 💜
-            </div>
-          )}
-
           {filtered.map(prompt => (
             <PromptCard
               key={prompt.id}
@@ -127,12 +163,10 @@ export default function PromptApp() {
               currentUserId={session.user.id}
               onCopy={() => navigator.clipboard.writeText(prompt.content)}
               onEdit={() => setEditingPrompt(prompt)}
-              onView={handleView} // új view prop
+              onView={handleView}
               onDelete={() => handleDelete(prompt.id)}
-              chainViewActive={chainViewActive}
               onToggleFavorit={handleToggleFavorit}
               onClone={handleClone}
-              activateChainView={() => setChainViewActive(true)}
               onColorChange={handleColorChange}
             />
           ))}
@@ -155,7 +189,7 @@ export default function PromptApp() {
           categories={categories}
           prompts={prompts}
           onClose={closeViewModal}
-          readOnly={true} // csak olvasható modal nézet
+          readOnly={true}
         />
       )}
     </div>

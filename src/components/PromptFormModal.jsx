@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { tokensOf } from '../lib/tokenCounter';
-import { supabase } from '../supabaseClient';        // NEW
+import { supabase } from '../supabaseClient';        
 
 function hashColor(str = '') {
   let h = 0;
@@ -22,7 +22,6 @@ export default function PromptFormModal({
   const defCat =
     categories.find((c) => c.name === 'Others')?.id || '';
 
-  /* ---------- NEW: lánc-lista betöltése ---------- */
   const [chains, setChains] = useState([]);
   useEffect(() => {
     supabase
@@ -30,7 +29,6 @@ export default function PromptFormModal({
       .select('*')
       .then(({ data }) => setChains(data || []));
   }, []);
-  /* ---------------------------------------------- */
 
   const [form, setForm] = useState({
     id: prompt.id || crypto.randomUUID(),
@@ -40,8 +38,8 @@ export default function PromptFormModal({
     category_id: prompt.category_id || defCat,
     is_public: prompt.is_public || false,
     next_prompt_id: prompt.next_prompt_id || '',
-    chain_id: prompt.chain_id || null,      // NEW
-    chain_order: prompt.chain_order || '',  // NEW
+    chain_id: prompt.chain_id || null,      
+    chain_order: prompt.chain_order || '',  
   });
 
   useEffect(() => {
@@ -50,13 +48,11 @@ export default function PromptFormModal({
       ...prompt,
       category_id: prompt.category_id || defCat,
       next_prompt_id: prompt.next_prompt_id || '',
-      chain_id: prompt.chain_id || null,       // NEW
-      chain_order: prompt.chain_order || '',   // NEW
+      chain_id: prompt.chain_id || null,       
+      chain_order: prompt.chain_order || '',   
     }));
-    // eslint-disable-next-line
   }, [prompt]);
 
-  /* ---------- segédek ---------- */
   const tokenCount = tokensOf(form.content);
   const catName =
     categories.find((c) => c.id === form.category_id)?.name ??
@@ -74,35 +70,35 @@ export default function PromptFormModal({
       [f]:
         e.target.type === 'checkbox'
           ? e.target.checked
-          : e.target.type === 'number'    // NEW: szám konverzió
+          : e.target.type === 'number'
           ? +e.target.value
           : e.target.value,
     });
 
-  /* ---------- NEW: mentés + lánc-validáció ---------- */
+
   const submit = async (e) => {
     e.preventDefault();
 
     let { chain_id, chain_order } = form;
 
     if (chain_id) {
-      // lekérjük hány elem van már ebben a láncban
+
       const { count } = await supabase
         .from('prompts')
         .select('id', { head: true, count: 'exact' })
         .eq('chain_id', chain_id);
 
-      // automatikus sorszám, ha üres
+
       if (!chain_order) {
         if (count >= 10) {
-          alert('Max. 10 prompt lehet ebben a láncban.');
+          alert('There can be 10 prompts in this chain.');
           return;
         }
         chain_order = count + 1;
       } else {
-        // manuális sorszám – tartomány- és ütközés-ellenőrzés
+
         if (chain_order < 1 || chain_order > 10) {
-          alert('A sorszám 1 és 10 között lehet.');
+          alert('The number can range from 1 to 10.');
           return;
         }
         const { data: dup } = await supabase
@@ -113,13 +109,12 @@ export default function PromptFormModal({
           .neq('id', form.id);
         if (dup.length > 0) {
           alert(
-            'Ez a sorszám már foglalt ebben a láncban!'
+            'This number is already taken in this chain!'
           );
           return;
         }
       }
     } else {
-      // nincs lánc → null-á állítjuk a sorszámot
       chain_order = null;
     }
 
@@ -132,9 +127,7 @@ export default function PromptFormModal({
     });
     onClose();
   };
-  /* ---------------------------------------------- */
 
-  /* ==============  UI  ============== */
   return ReactDOM.createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
       <form
@@ -152,7 +145,7 @@ export default function PromptFormModal({
         />
 
         <div className="p-6 flex flex-col flex-1">
-          {/* fejléc cím */}
+
           <h2 className="text-2xl font-semibold mb-4">
             {readOnly
               ? 'View Prompt'
@@ -161,7 +154,6 @@ export default function PromptFormModal({
               : 'New Prompt'}
           </h2>
 
-          {/* Title mező */}
           <input
             required
             placeholder="Title"
@@ -176,7 +168,6 @@ export default function PromptFormModal({
             className="flex flex-1 mb-4 bg-gray-900 rounded
                        max-h-[50vh] overflow-hidden"
           >
-            {/* sorszámok */}
             <pre
               className="w-16 pr-4 py-2 text-right select-none
                          text-gray-500 text-xs leading-7 overflow-hidden"
@@ -232,11 +223,11 @@ export default function PromptFormModal({
             </select>
           </div>
 
-          {/* -----------  NEW: Chain selector blokk ------------- */}
+          {/* -----------  Chain selector blokk ------------- */}
           {!readOnly && (
             <>
               <label className="flex flex-col gap-1 text-sm mb-4">
-                <span className="text-gray-400">🔗 Chain type</span>
+                <span className="text-gray-400">🔗 Chain Type  (optional) </span>
                 <select
                   value={form.chain_id || ''}
                   onChange={chg('chain_id')}
@@ -280,29 +271,6 @@ export default function PromptFormModal({
             />
             Public
           </label>
-
-          {/* next-prompt selector */}
-          {!readOnly && (
-            <label className="flex flex-col gap-1 text-sm mb-6">
-              <span className="text-gray-400">
-                🔗 Next Prompt (optional)
-              </span>
-              <select
-                value={form.next_prompt_id}
-                onChange={chg('next_prompt_id')}
-                className="field-dark rounded-none"
-              >
-                <option value="">🔹 No next prompt</option>
-                {prompts
-                  .filter((p) => p.id !== form.id)
-                  .map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.title}
-                    </option>
-                  ))}
-              </select>
-            </label>
-          )}
 
           <div className="mt-auto flex justify-end gap-3">
             <button

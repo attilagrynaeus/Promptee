@@ -11,7 +11,7 @@ export const filterPrompts = ({ session, prompts, search, categoryFilter, favori
   } else {
     const lowerSearch = search.toLowerCase();
     filteredPrompts = prompts.filter(p =>
-      (p.title.toLowerCase().includes(lowerSearch) || p.content.toLowerCase().includes(lowerSearch)) &&
+      (p.title.toLowerCase().includes(lowerSearch) || p.description.toLowerCase().includes(lowerSearch)) &&
       (categoryFilter === 'All Categories' || p.categories?.name === categoryFilter)
     );
   }
