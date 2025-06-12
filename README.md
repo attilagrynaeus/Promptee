@@ -67,14 +67,14 @@ src/
 │   ├── useIdleTimeout.tsx      # auto-logout after X minutes of inactivity
 │   ├── useProfile.ts           # fetch + cache user profile row
 │   ├── usePromptData.js        # CRUD + caching for prompts / categories
-│   ├── usePromptDump.js        # export DOCX / JSON hook
+│   ├── usePromptDump.ts        # export DOCX / JSON hook
 │   ├── usePromptDump.test.js   # unit-test (if exists)
 │   ├── useTokenCount.ts        # token count util (wrapper around gpt-3.5 est.)
 │   └── useTokenCount.ts        # fast tokenizer approximation
 ├── utils/
 │   ├── ChainModeToggle.jsx     # checkbox + <select> extracted from sidebar
 │   ├── exportPrompts.tsx       # builds DOCX (sorted by category) or JSON
-│   ├── promptFilter.js         # client-side search / category / favorite filter
+│   ├── promptFilter.ts         # client-side search / category / favorite filter
 │   ├── promptService.ts        # Supabase service layer (CRUD helpers)
 │   ├── promptService2.test.js  # edge-case unit-tests
 │   └── tokenCounter.ts         # rough GPT token estimator (moved here)
