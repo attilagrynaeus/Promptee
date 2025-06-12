@@ -1,8 +1,10 @@
 
-export const fetchCategories = (supabase) => 
+import { SupabaseClient } from '@supabase/supabase-js';
+
+export const fetchCategories = (supabase: SupabaseClient) =>
   supabase.from('categories').select('*');
 
-export const fetchPrompts = (supabase) =>
+export const fetchPrompts = (supabase: SupabaseClient) =>
   supabase
     .from('prompts')
     .select(`
@@ -14,7 +16,11 @@ export const fetchPrompts = (supabase) =>
     `)
     .order('sort_order', { ascending: true });
 
-export const savePrompt = async (supabase, prompt, userId) => {
+export const savePrompt = async (
+  supabase: SupabaseClient,
+  prompt: any,
+  userId: string,
+): Promise<any> => {
   const { categories, profiles, next_prompt, ...cleanPrompt } = prompt;
 
   const { error } = await supabase.from('prompts').upsert({
@@ -26,12 +32,16 @@ export const savePrompt = async (supabase, prompt, userId) => {
   return error;
 };
 
-export const deletePrompt = async (supabase, id) => {
+export const deletePrompt = async (supabase: SupabaseClient, id: string) => {
   const { error } = await supabase.from('prompts').delete().eq('id', id);
   return error;
 };
 
-export const clonePrompt = async (supabase, prompt, userId) => {
+export const clonePrompt = async (
+  supabase: SupabaseClient,
+  prompt: any,
+  userId: string,
+): Promise<any> => {
   const clonedPrompt = {
     title: `${prompt.title} (clone)`,
     content: prompt.content,
@@ -48,7 +58,11 @@ export const clonePrompt = async (supabase, prompt, userId) => {
   return error;
 };
 
-export const toggleFavorit = async (supabase, prompt, userId) => {
+export const toggleFavorit = async (
+  supabase: SupabaseClient,
+  prompt: any,
+  userId: string,
+): Promise<{ error: string | null }> => {
   if (!prompt.favorit) {
     const { data, error } = await supabase.rpc('set_favorite_with_limit', {
       prompt_id: prompt.id,
@@ -66,7 +80,10 @@ export const toggleFavorit = async (supabase, prompt, userId) => {
   return { error: null };
 };
 
-export const updatePromptOrder = async (supabase, reorderedPrompts) => {
+export const updatePromptOrder = async (
+  supabase: SupabaseClient,
+  reorderedPrompts: any[],
+) => {
   const updates = reorderedPrompts.map((prompt, index) =>
     supabase
       .from('prompts')

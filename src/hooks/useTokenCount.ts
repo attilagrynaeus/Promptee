@@ -1,9 +1,9 @@
-// src/hooks/useTokenCount.js
+// src/hooks/useTokenCount.ts
 import { useEffect, useState } from 'react';
 import { tokensOf } from '../utils/tokenCounter';
 
-export default function useTokenCount(text, delay = 120) {
-  const [tokens, setTokens] = useState(() => tokensOf(text));
+export default function useTokenCount(text: string, delay: number = 120): number {
+  const [tokens, setTokens] = useState<number>(() => tokensOf(text));
 
   useEffect(() => {
     const handle = setTimeout(() => {
