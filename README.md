@@ -64,20 +64,20 @@ src/
 │   └── DialogContext.jsx       # global confirm / alert dialog provider
 ├── hooks/
 │   ├── useAuth.js              # (WIP) higher-level auth helper
-│   ├── useIdleTimeout.js       # auto-logout after X minutes of inactivity
-│   ├── useProfile.js           # fetch + cache user profile row
+│   ├── useIdleTimeout.tsx      # auto-logout after X minutes of inactivity
+│   ├── useProfile.ts           # fetch + cache user profile row
 │   ├── usePromptData.js        # CRUD + caching for prompts / categories
 │   ├── usePromptDump.js        # export DOCX / JSON hook
 │   ├── usePromptDump.test.js   # unit-test (if exists)
-│   ├── useTokenCount.js        # token count util (wrapper around gpt-3.5 est.)
-│   └── useTokenCount.js        # fast tokenizer approximation
+│   ├── useTokenCount.ts        # token count util (wrapper around gpt-3.5 est.)
+│   └── useTokenCount.ts        # fast tokenizer approximation
 ├── utils/
 │   ├── ChainModeToggle.jsx     # checkbox + <select> extracted from sidebar
-│   ├── exportPrompts.js        # builds DOCX (sorted by category) or JSON
+│   ├── exportPrompts.tsx       # builds DOCX (sorted by category) or JSON
 │   ├── promptFilter.js         # client-side search / category / favorite filter
-│   ├── promptService.js        # Supabase service layer (CRUD helpers)
+│   ├── promptService.ts        # Supabase service layer (CRUD helpers)
 │   ├── promptService2.test.js  # edge-case unit-tests
-│   └── tokenCounter.js         # rough GPT token estimator (moved here)
+│   └── tokenCounter.ts         # rough GPT token estimator (moved here)
 ├── lib/
 │   └── inMemoryDb.js           # local mock repo (fallback without Supabase)
 ├── __tests__/                  # Vitest + RTL test suite
