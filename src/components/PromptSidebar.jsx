@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
 import usePromptDump from '../hooks/usePromptDump';
 
-import ChainModeToggle from '../utils/ChainModeToggle';
+import ChainModeToggle from './ChainModeToggle';
 import SearchFilters   from './SearchFilters';
 import FavoritesToggle from './FavoritesToggle';
 

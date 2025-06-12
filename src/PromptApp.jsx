@@ -17,7 +17,7 @@ export default function PromptApp() {
   const { profile, loading } = useProfile();
   const { showDialog } = useDialog();
 
-  useIdleTimeout(60);
+  useIdleTimeout(90);
 
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
