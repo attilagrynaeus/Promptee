@@ -154,9 +154,9 @@
 /* --- chain-view badge ------------------------------------------------------- */
 .chain-order-badge {
   position: absolute;
-  top: 8px;  
+  top: 8px;
   right: 8px;
-  width: 28px;   
+  width: 28px;
   height: 28px;
   display: flex;
   align-items: center;
@@ -164,10 +164,27 @@
   font-size: 0.85rem;
   font-weight: 700;
 
-  background: rgba(255,255,255,0.16);   
+  background: rgba(255,255,255,0.16);
   color: #fff;
   backdrop-filter: blur(4px);
 
   border-radius: 6px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+}
+
+/* --- chain hover line ------------------------------------------------------ */
+.chain-hover-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -14px;
+  height: 2px;
+  background-image: repeating-linear-gradient(90deg, #fff, #fff 6px, transparent 6px, transparent 12px);
+  animation: chain-dash 0.6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes chain-dash {
+  from { background-position: 0 0; }
+  to   { background-position: 12px 0; }
 }
