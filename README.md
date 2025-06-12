@@ -69,7 +69,7 @@ src/
 │   ├── usePromptData.js        # CRUD + caching for prompts / categories
 │   ├── usePromptDump.js        # export DOCX / JSON hook
 │   ├── usePromptDump.test.js   # unit-test (if exists)
-│   ├── usePromptDump.js        # token count util (wrapper around gpt-3.5 est.)
+│   ├── useTokenCount.js        # token count util (wrapper around gpt-3.5 est.)
 │   └── useTokenCount.js        # fast tokenizer approximation
 ├── utils/
 │   ├── ChainModeToggle.jsx     # checkbox + <select> extracted from sidebar
