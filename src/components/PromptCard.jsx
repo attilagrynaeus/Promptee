@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { tokensOf } from '../utils/tokenCounter';
 import { useDialog } from '../context/DialogContext';
 import { t } from '../i18n';
@@ -24,16 +24,11 @@ export default function PromptCard({
 
   const [color, setColor] = useState(prompt.color || 'default');
   const [copied, setCopied] = useState(false);
-  const [showLine, setShowLine] = useState(false);
-  const lineTimer = useRef(null);
 
   useEffect(() => {
     setColor(prompt.color || 'default');
   }, [prompt.color]);
 
-  useEffect(() => {
-    return () => clearTimeout(lineTimer.current);
-  }, []);
 
   const handleColorSelect = async (e, clr) => {
     e.stopPropagation();
@@ -72,20 +67,14 @@ export default function PromptCard({
     onToggleFavorit(prompt);
   };
 
-  const handleMouseEnter = () => {
-    if (!chainViewActive) return;
-    clearTimeout(lineTimer.current);
-    setShowLine(true);
-    lineTimer.current = setTimeout(() => setShowLine(false), 3000);
-  };
 
   return (
     <div
-      className="prompt-card relative"      /* relative ⇒ badge pozícionálás */
+      className={`prompt-card relative ${chainViewActive ? 'chain-view-mode' : ''}`}
+      /* relative ⇒ badge pozícionálás */
       style={{ background: bgMap[color] }}
       tabIndex={-1}
       onFocus={(e) => e.currentTarget.blur()}
-      onMouseEnter={handleMouseEnter}
     >
       {/* 🔗 chain-badge only in chain-view */}
       {chainViewActive && prompt.chain_order != null && (
@@ -151,7 +140,6 @@ export default function PromptCard({
           </button>
         )}
       </div>
-      {showLine && <div className="chain-hover-line" />}
     </div>
   );
 }
