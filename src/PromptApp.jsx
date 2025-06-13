@@ -1,5 +1,5 @@
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
-import { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import PromptSidebar from './components/PromptSidebar';
 import PromptCard from './components/PromptCard';
 import PromptFormModal from './components/PromptFormModal';
