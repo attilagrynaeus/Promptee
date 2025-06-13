@@ -164,10 +164,10 @@ PrompTee is built for **serverless** hosting. Push to `main` and Netlify:
 ---
 
 ## Roadmap
-- [ ] i18n & localisation  
-- [ ] Role‑based access control  
+- [x] ✅ i18n & localisation  
+- [ ] Role-based access control  
 - [ ] Prompt version history  
-- [ ] VS Code extension  
+- [ ] VS Code extension  
 
 Feel free to check the [issues](../../issues) page
 
