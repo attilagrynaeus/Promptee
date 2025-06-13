@@ -1,0 +1,83 @@
+{
+  "LoginForm": {
+    "Title": "PrompTee \u2615",
+    "Register": "Register",
+    "Login": "Login",
+    "CreateAccount": "Create account",
+    "ToggleToLogin": "Have an account? Log in",
+    "ToggleToRegister": "No account? Register",
+    "EmailPlaceholder": "Email",
+    "PasswordPlaceholder": "Password"
+  },
+  "PromptCard": {
+    "DeleteTitle": "Delete Prompt",
+    "DeleteMessage": "Are you sure you want to delete this prompt?",
+    "DeleteConfirm": "Yes, Delete",
+    "DeleteCancel": "No, Cancel",
+    "FavErrorTitle": "Cannot set favorite",
+    "FavIdMissing": "Prompt ID is missing.",
+    "OK": "OK",
+    "Public": "Public",
+    "Private": "Private",
+    "TokensSuffix": "tokens",
+    "Copy": "\ud83d\uDCCB Copy",
+    "Copied": "\u2705 Copied!",
+    "Clone": "\ud83e\uddec Clone",
+    "Edit": "\u270f\ufe0f Edit",
+    "View": "\ud83d\udc41\ufe0f View",
+    "Delete": "\ud83d\udc9b Delete" 
+  },
+  "PromptForm": {
+    "View": "View Prompt",
+    "Edit": "Edit Prompt",
+    "New": "New Prompt",
+    "TitlePlaceholder": "Title",
+    "ContentPlaceholder": "Prompt text",
+    "DescriptionPlaceholder": "Short description",
+    "ChainType": "\ud83d\udd17 Chain Type  (optional)",
+    "ChainNone": "\u2014 none \u2014",
+    "ChainOrderLabel": "\ud83d\udcc1 Chain order (1\u201310)",
+    "Public": "Public",
+    "Close": "Close",
+    "Cancel": "Cancel",
+    "Save": "Save",
+    "Warning": "Warning",
+    "ChainLimit": "There can be 10 prompts in this chain.",
+    "ChainRange": "The number can range from 1 to 10.",
+    "ChainDup": "This number is already taken in this chain!",
+    "TokensSuffix": "tokens",
+    "OK": "OK"
+  },
+  "PromptSidebar": {
+    "Title": "PrompTee \ud83c\udf75",
+    "NewPrompt": "New prompt",
+    "ExitChain": "\ud83d\udd17 Exit Chain View",
+    "LoggedInAs": "Logged in as",
+    "Logout": "Logout",
+    "DumpPrompts": "\ud83d\udce5 Dump Prompts",
+    "Dumping": "\u23f3 Dumping\u2026",
+    "LogoutTitle": "Logout",
+    "LogoutMsg": "Successfully logged out.",
+    "OK": "OK"
+  },
+  "SearchFilters": {
+    "SearchPlaceholder": "Search",
+    "Clear": "\ud83d\udd1a Clear filters"
+  },
+  "FavoritesToggle": {
+    "Show": "\u2606 Show Favorites",
+    "Showing": "\u2b50 Showing Favorites"
+  },
+  "ChainMode": {
+    "Label": "Chain mode",
+    "None": "\u2014 choose chain \u2014"
+  },
+  "IdleTimeout": {
+    "ExpiredTitle": "Session Expired",
+    "ExpiredMsg": "You were logged out due to inactivity.",
+    "OK": "OK"
+  },
+  "Errors": {
+    "Error": "Error"
+  }
+}

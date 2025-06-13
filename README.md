@@ -135,6 +135,13 @@ npm run test          # runs Jest & React Testing Library
 npm run coverage      # generates coverage report
 ```
 
+### i18n
+All user-facing copy lives in `src/i18n/messages.en.json`. To add or edit text:
+1. Update the appropriate key in that file.
+2. Copy the file to `messages.<locale>.json` and translate the values to add a new language.
+3. Reference strings in code via the `t(key)` helper.
+4. Run `npm run lint:strings` to ensure no hard-coded text was introduced.
+
 ## 🧪 Production build
 ```bash
 pnpm build && pnpm preview

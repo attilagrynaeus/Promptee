@@ -6,7 +6,8 @@
     "dev": "vite --open",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "jest"
+    "test": "jest",
+    "lint:strings": "node scripts/check-messages.js"
   },
   "jest": {
     "testEnvironment": "jsdom",

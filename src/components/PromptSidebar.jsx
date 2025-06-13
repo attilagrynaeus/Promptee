@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
 import usePromptDump from '../hooks/usePromptDump';
+import { t } from '../i18n';
 
 import { useDialog } from '../context/DialogContext';
 
@@ -33,9 +34,9 @@ export default function PromptSidebar({
   const handleLogout = async () => {
     await supabase.auth.signOut();
     showDialog({
-      title: 'Logout',
-      message: 'Successfully logged out.',
-      confirmText: 'OK'
+      title: t('PromptSidebar.LogoutTitle'),
+      message: t('PromptSidebar.LogoutMsg'),
+      confirmText: t('PromptSidebar.OK')
     });
   };
 
@@ -67,11 +68,11 @@ export default function PromptSidebar({
     <aside className="sidebar-box flex flex-col justify-between">
       <div>
         <h2 className="text-4xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 text-center">
-          PrompTee 🍵
+          {t('PromptSidebar.Title')}
         </h2>
 
         <button onClick={onNew} className="btn-blue mt-4 w-full shadow-lg">
-          New prompt
+          {t('PromptSidebar.NewPrompt')}
         </button>
 
         <ChainModeToggle
@@ -110,13 +111,13 @@ export default function PromptSidebar({
               : 'bg-gray-700 text-gray-400 cursor-not-allowed'
           }`}
         >
-          🔗 Exit Chain View
+          {t('PromptSidebar.ExitChain')}
         </button>
 
         {/* user info */}
         <div className="border-t border-gray-700 my-4" />
         <div className="text-center text-sm text-gray-400">
-          Logged in as{' '}
+          {t('PromptSidebar.LoggedInAs')}{' '}
           <span className="font-semibold text-indigo-400">{username}</span>
         </div>
       </div>
@@ -126,7 +127,7 @@ export default function PromptSidebar({
           onClick={handleLogout}
           className="mt-2 text-sm font-semibold bg-red-700 hover:bg-red-600 transition-colors text-white rounded-lg py-1 px-3"
         >
-          Logout
+          {t('PromptSidebar.Logout')}
         </button>
 
         <button
@@ -134,7 +135,7 @@ export default function PromptSidebar({
           disabled={dumpLoading}
           className="mt-2 ml-2 text-sm bg-gray-700 hover:bg-gray-600 transition-colors text-white rounded-lg py-1 px-3"
         >
-          {dumpLoading ? '⏳ Dumping…' : '📥 Dump Prompts'}
+          {dumpLoading ? t('PromptSidebar.Dumping') : t('PromptSidebar.DumpPrompts')}
         </button>
 
         {dumpError && (

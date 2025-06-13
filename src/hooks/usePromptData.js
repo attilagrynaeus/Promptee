@@ -1,6 +1,7 @@
 // hooks/usePromptData.js
 import { useState, useEffect, useCallback } from 'react';
 import { fetchCategories, fetchPrompts, savePrompt, deletePrompt, clonePrompt, toggleFavorit } from '../utils/promptService';
+import { t } from '../i18n';
 
 export default function usePromptData(supabase, session, showDialog) {
   const [prompts, setPrompts] = useState([]);
@@ -8,13 +9,13 @@ export default function usePromptData(supabase, session, showDialog) {
 
   const loadCategories = async () => {
     const { data, error } = await fetchCategories(supabase);
-    if (error) showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
+    if (error) showDialog({ title: t('Errors.Error'), message: error.message, confirmText: t('PromptCard.OK') });
     else setCategories(data);
   };
 
   const loadPrompts = useCallback(async () => {
     const { data, error } = await fetchPrompts(supabase);
-    if (error) showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
+    if (error) showDialog({ title: t('Errors.Error'), message: error.message, confirmText: t('PromptCard.OK') });
     else setPrompts(data);
   }, [supabase, showDialog]);
 
@@ -40,7 +41,7 @@ export default function usePromptData(supabase, session, showDialog) {
 
       const error = await savePrompt(supabase, promptToSave, session.user.id);
       if (error) {
-        showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
+        showDialog({ title: t('Errors.Error'), message: error.message, confirmText: t('PromptCard.OK') });
       } else {
         loadPrompts();
       }
@@ -48,19 +49,19 @@ export default function usePromptData(supabase, session, showDialog) {
 
     handleDelete: async (id) => {
       const error = await deletePrompt(supabase, id);
-      if (error) showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
+      if (error) showDialog({ title: t('Errors.Error'), message: error.message, confirmText: t('PromptCard.OK') });
       else loadPrompts();
     },
 
     handleClone: async (prompt) => {
       const error = await clonePrompt(supabase, prompt, session.user.id);
-      if (error) showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
+      if (error) showDialog({ title: t('Errors.Error'), message: error.message, confirmText: t('PromptCard.OK') });
       else loadPrompts();
     },
 
     handleToggleFavorit: async (prompt) => {
       const error = await toggleFavorit(supabase, prompt, session.user.id);
-      if (error) showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
+      if (error) showDialog({ title: t('Errors.Error'), message: error.message, confirmText: t('PromptCard.OK') });
       else loadPrompts();
     },
   };

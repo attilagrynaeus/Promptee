@@ -1,4 +1,5 @@
 import React from 'react';
+import { t } from '../i18n';
 
 export default function ChainModeToggle({
   chainView, setChainView,
@@ -19,7 +20,7 @@ export default function ChainModeToggle({
           checked={chainView}
           onChange={handleToggle}
           className="h-4 w-4 text-indigo-500 bg-gray-700 border-gray-600 rounded accent-indigo-500"/>
-        Chain mode
+        {t('ChainMode.Label')}
       </label>
 
       {chainView && (
@@ -28,7 +29,7 @@ export default function ChainModeToggle({
           value={chainFilter || ''}
           onChange={(e) => setChainFilter(e.target.value)}
         >
-          <option value="">— válassz chain-t —</option>
+          <option value="">{t('ChainMode.None')}</option>
           {chains.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}

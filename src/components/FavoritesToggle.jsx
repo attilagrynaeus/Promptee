@@ -1,4 +1,5 @@
 import React from 'react';
+import { t } from '../i18n';
 
 export default function FavoritesToggle({ favoriteOnly, toggleFavoriteOnly }) {
   return (
@@ -10,7 +11,7 @@ export default function FavoritesToggle({ favoriteOnly, toggleFavoriteOnly }) {
           : 'bg-gray-700 text-gray-200'
       }`}
     >
-      {favoriteOnly ? '⭐ Showing Favorites' : '☆ Show Favorites'}
+      {favoriteOnly ? t('FavoritesToggle.Showing') : t('FavoritesToggle.Show')}
     </button>
   );
 }
