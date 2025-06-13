@@ -5,12 +5,11 @@ export default function ChainModeToggle({
   chainFilter, setChainFilter,
   chains = []
 }) {
-  const handleToggle = (e) => {
-    const on = e.target.checked;
-    setChainView(on);
-    if (!on) setChainFilter('');
-    else if (!chainFilter && chains.length) setChainFilter(chains[0].id);
-  };
+    const handleToggle = (e) => {
+      const on = e.target.checked;
+      setChainView(on);
+      if (on && !chainFilter && chains.length) setChainFilter(chains[0].id);
+    };
 
   return (
     <div className="mt-4">
