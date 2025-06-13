@@ -69,81 +69,86 @@ export default function PromptCard({
   };
 
 
-  return (
-    <div
-      className={`prompt-card relative ${chainViewActive ? 'chain-view-mode' : ''} ${(!chainViewActive && prompt.chain_order != null) ? 'hover-enabled' : ''}`}
-      style={{ background: bgMap[color] }}
-      tabIndex={-1}
-      onFocus={(e) => e.currentTarget.blur()}
-    >
-      {/* 🔗 chain-badge only in chain-view */}
-      {chainViewActive && prompt.chain_order != null && (
-        <div className="chain-order-badge">
-          {prompt.chain_order}
-        </div>
-      )}
+return (
+  <div
+    className={`prompt-card relative ${chainViewActive ? 'chain-view-mode' : ''} ${!chainViewActive ? 'hover-enabled' : ''}`}
+    style={{ background: bgMap[color] }}
+    tabIndex={-1}
+    onFocus={(e) => e.currentTarget.blur()}
+  >
+    {/* 🔗 chain-badge only in chain-view */}
+    {chainViewActive && prompt.chain_order != null && (
+      <div className="chain-order-badge">
+        {prompt.chain_order}
+      </div>
+    )}
 
+    {/* Hover icon only visible if NOT in chainView */}
+    {!chainViewActive && (
       <span className="hover-icon">
-        <img src={hoverIconUrl} alt="" width={20} height={20} />
+        <img src={hoverIconUrl} alt="Hover icon" width={20} height={20} />
       </span>
-    
-      <header>
-        <h3 className="prompt-title">{prompt.title}</h3>
-        {prompt.description && (
-          <p className="prompt-description">{prompt.description}</p>
-        )}
-      </header>
+    )}
 
-      <div className="prompt-tags mt-auto">
-        <span className="tag category-tag">{prompt.category}</span>
-        <span className={`tag visibility-tag ${prompt.is_public ? 'public' : 'private'}`}>
-          {prompt.is_public ? t('PromptCard.Public') : t('PromptCard.Private')}
-        </span>
-        <span className="tag token-tag">{tokenCount} {t('PromptCard.TokensSuffix')}</span>
-      </div>
+    <header>
+      <h3 className="prompt-title">{prompt.title}</h3>
+      {prompt.description && (
+        <p className="prompt-description">{prompt.description}</p>
+      )}
+    </header>
 
-      <div className="prompt-actions">
-        <button onClick={handleToggleFavorit} className="favorite-button">
-          {prompt.favorit ? '⭐️' : '☆'}
-        </button>
-
-        <div className="color-selector ml-2">
-          {['default', 'blue', 'green', 'violet'].map(clr => (
-            <button
-              key={clr}
-              type="button"
-              className={`color-circle ${clr}`}
-              onClick={(e) => handleColorSelect(e, clr)}
-              aria-label={`Set ${clr} background`}
-            />
-          ))}
-        </div>
-
-        <button onClick={handleCopy} className="action-button copy relative">
-          {t('PromptCard.Copy')}
-          {copied && (
-            <span className="copied-tooltip">{t('PromptCard.Copied')}</span>
-          )}
-        </button>
-
-        <button onClick={(e) => { e.stopPropagation(); onClone(prompt); }}
-                className="action-button clone">
-          {t('PromptCard.Clone')}
-        </button>
-
-        <button
-          onClick={(e) => { e.stopPropagation(); isOwner ? onEdit() : onView(prompt); }}
-          className="action-button edit"
-        >
-          {isOwner ? t('PromptCard.Edit') : t('PromptCard.View')}
-        </button>
-
-        {isOwner && (
-          <button onClick={handleDelete} className="action-button delete">
-            {t('PromptCard.Delete')}
-          </button>
-        )}
-      </div>
+    <div className="prompt-tags mt-auto">
+      <span className="tag category-tag">{prompt.category}</span>
+      <span className={`tag visibility-tag ${prompt.is_public ? 'public' : 'private'}`}>
+        {prompt.is_public ? t('PromptCard.Public') : t('PromptCard.Private')}
+      </span>
+      <span className="tag token-tag">
+        {tokenCount} {t('PromptCard.TokensSuffix')}
+      </span>
     </div>
-  );
+
+    <div className="prompt-actions">
+      <button onClick={handleToggleFavorit} className="favorite-button">
+        {prompt.favorit ? '⭐️' : '☆'}
+      </button>
+
+      <div className="color-selector ml-2">
+        {['default', 'blue', 'green', 'violet'].map(clr => (
+          <button
+            key={clr}
+            type="button"
+            className={`color-circle ${clr}`}
+            onClick={(e) => handleColorSelect(e, clr)}
+            aria-label={`Set ${clr} background`}
+          />
+        ))}
+      </div>
+
+      <button onClick={handleCopy} className="action-button copy relative">
+        {t('PromptCard.Copy')}
+        {copied && (
+          <span className="copied-tooltip">{t('PromptCard.Copied')}</span>
+        )}
+      </button>
+
+      <button onClick={(e) => { e.stopPropagation(); onClone(prompt); }}
+              className="action-button clone">
+        {t('PromptCard.Clone')}
+      </button>
+
+      <button
+        onClick={(e) => { e.stopPropagation(); isOwner ? onEdit() : onView(prompt); }}
+        className="action-button edit"
+      >
+        {isOwner ? t('PromptCard.Edit') : t('PromptCard.View')}
+      </button>
+
+      {isOwner && (
+        <button onClick={handleDelete} className="action-button delete">
+          {t('PromptCard.Delete')}
+        </button>
+      )}
+    </div>
+  </div>
+);
 }
