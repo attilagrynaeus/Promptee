@@ -26,10 +26,19 @@ export default function PromptApp() {
   const [favoriteOnly, setFavoriteOnly] = useState(false);
 
   const [chainView, setChainView] = useState(false);
-  const [chainFilter, setChainFilter] = useState('');
+  const [chainFilter, setChainFilter] = useState(() => {
+    if (typeof sessionStorage === 'undefined') return '';
+    return sessionStorage.getItem('chainFilter') || '';
+  });
   const [currentChain, setCurrentChain] = useState([]);
   const [chains, setChains] = useState([]);
   const [showWelcome, setShowWelcome] = useState(false);
+
+  useEffect(() => {
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem('chainFilter', chainFilter);
+    }
+  }, [chainFilter]);
 
   const {
     prompts, categories, handleSave, handleDelete,
@@ -149,7 +158,6 @@ export default function PromptApp() {
         chainViewActive={chainView && chainFilter !== ''}
         deactivateChainView={() => {
           setChainView(false);
-          setChainFilter('');
         }}
       />
 
