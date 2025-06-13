@@ -78,7 +78,7 @@
   pointer-events: none;
 }
 
-.prompt-card:hover .hover-icon {
+.prompt-card.hover-enabled:hover .hover-icon {
   opacity: 1;
   transform: translateY(-3px);
 }

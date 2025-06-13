@@ -3,6 +3,7 @@ import { tokensOf } from '../utils/tokenCounter';
 import { useDialog } from '../context/DialogContext';
 import { t } from '../i18n';
 import './PromptCard.css';
+import hoverIconUrl from '../assets/hover-icon.svg';
 
 const bgMap = {
   default: '#313338',
@@ -70,7 +71,7 @@ export default function PromptCard({
 
   return (
     <div
-      className={`prompt-card relative ${chainViewActive ? 'chain-view-mode' : ''}`}
+      className={`prompt-card relative ${chainViewActive ? 'chain-view-mode' : ''} ${(!chainViewActive && prompt.chain_order != null) ? 'hover-enabled' : ''}`}
       style={{ background: bgMap[color] }}
       tabIndex={-1}
       onFocus={(e) => e.currentTarget.blur()}
@@ -83,12 +84,8 @@ export default function PromptCard({
       )}
 
       <span className="hover-icon">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-           xmlns="http://www.w3.org/2000/svg">
-        <path d="M13 2L3 14H12L11 22L21 10H13L13 2Z" stroke="#00FFFF"
-              strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    </span>
+        <img src={hoverIconUrl} alt="" width={20} height={20} />
+      </span>
     
       <header>
         <h3 className="prompt-title">{prompt.title}</h3>
