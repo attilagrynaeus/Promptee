@@ -3,6 +3,7 @@ import { tokensOf } from '../utils/tokenCounter';
 import { useDialog } from '../context/DialogContext';
 import { t } from '../i18n';
 import './PromptCard.css';
+import hoverIcon from '../assets/hover-icon.svg';
 
 const bgMap = {
   default: '#313338',
@@ -70,7 +71,7 @@ export default function PromptCard({
 
   return (
     <div
-      className={`prompt-card relative ${chainViewActive ? 'chain-view-mode' : ''}`}
+      className={`prompt-card relative ${chainViewActive ? 'chain-view-mode' : ''} ${prompt.chain_order != null ? 'has-chain-order' : ''}`}
       /* relative ⇒ badge pozícionálás */
       style={{ background: bgMap[color] }}
       tabIndex={-1}
@@ -81,6 +82,9 @@ export default function PromptCard({
         <div className="chain-order-badge">
           {prompt.chain_order}
         </div>
+      )}
+      {!chainViewActive && prompt.chain_order != null && (
+        <img src={hoverIcon} alt="" className="hover-icon" />
       )}
 
       <header>

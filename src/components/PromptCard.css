@@ -172,6 +172,24 @@
   box-shadow: 0 1px 4px rgba(0,0,0,0.35);
 }
 
+/* arrow shown when hovering cards outside chain view */
+.hover-icon {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  opacity: 0;
+  transform: translateX(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.prompt-card.has-chain-order:not(.chain-view-mode):hover .hover-icon {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 /* --- chain hover line ------------------------------------------------------ */
 /* line connecting chained cards */
 .chain-separator {
