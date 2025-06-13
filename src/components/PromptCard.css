@@ -23,6 +23,84 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
+.prompt-card:hover::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border: 2px solid #00ffff;
+  border-radius: 10px;
+  animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.6;
+  }
+}
+
+.prompt-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.prompt-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(120deg, rgba(0, 255, 200, 0.2), rgba(0, 150, 255, 0.2), rgba(0, 255, 200, 0.2));
+  animation: shine 3s infinite;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.prompt-card:hover::before {
+  opacity: 1;
+}
+
+.hover-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 20px;
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+
+.prompt-card:hover .hover-icon {
+  opacity: 1;
+  transform: translateY(-3px);
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-50%);
+  }
+  50% {
+    transform: translateX(50%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.prompt-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 12px rgba(0, 200, 255, 0.4);
+}
+
+
 .card-default { background: rgba(49, 51, 56, 0.50); }   
 .card-blue    { background: rgba(30, 144, 255, 0.40); }
 .card-green   { background: rgba(50, 205,  50,  0.40); }
@@ -151,7 +229,6 @@
   100% { opacity: 0; transform: translate(-50%, -10px); }
 }
 
-/* --- chain-view badge ------------------------------------------------------- */
 .chain-order-badge {
   position: absolute;
   top: 8px;
@@ -170,35 +247,4 @@
 
   border-radius: 6px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.35);
-}
-
-/* --- chain hover line ------------------------------------------------------ */
-/* line connecting chained cards */
-.chain-separator {
-  grid-column: 1 / -1;
-  position: relative;
-  height: 0;
-  margin-top: -1.5rem; /* overlap grid gap */
-  pointer-events: none;
-}
-
-.chain-separator::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0.75rem; /* center inside 1.5rem gap */
-  height: 2px;
-  background-image: repeating-linear-gradient(90deg, #fff, #fff 6px, transparent 6px, transparent 12px);
-  opacity: 0;
-}
-
-.chain-view-mode:hover + .chain-separator::before {
-  opacity: 1;
-  animation: chain-dash 0.6s linear infinite;
-}
-
-@keyframes chain-dash {
-  from { background-position: 0 0; }
-  to   { background-position: 12px 0; }
 }
