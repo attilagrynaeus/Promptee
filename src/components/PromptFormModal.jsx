@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { tokensOf } from '../utils/tokenCounter';
-import { supabase } from '../supabaseClient';        
+import { supabase } from '../supabaseClient';
+import { useDialog } from '../context/DialogContext';
 
 function hashColor(str = '') {
   let h = 0;
@@ -21,6 +22,8 @@ export default function PromptFormModal({
 }) {
   const defCat =
     categories.find((c) => c.name === 'Others')?.id || '';
+
+  const { showDialog } = useDialog();
 
   const [chains, setChains] = useState([]);
   useEffect(() => {
@@ -91,14 +94,22 @@ export default function PromptFormModal({
 
       if (!chain_order) {
         if (count >= 10) {
-          alert('There can be 10 prompts in this chain.');
+          showDialog({
+            title: 'Warning',
+            message: 'There can be 10 prompts in this chain.',
+            confirmText: 'OK'
+          });
           return;
         }
         chain_order = count + 1;
       } else {
 
         if (chain_order < 1 || chain_order > 10) {
-          alert('The number can range from 1 to 10.');
+          showDialog({
+            title: 'Warning',
+            message: 'The number can range from 1 to 10.',
+            confirmText: 'OK'
+          });
           return;
         }
         const { data: dup } = await supabase
@@ -108,9 +119,11 @@ export default function PromptFormModal({
           .eq('chain_order', chain_order)
           .neq('id', form.id);
         if (dup.length > 0) {
-          alert(
-            'This number is already taken in this chain!'
-          );
+          showDialog({
+            title: 'Warning',
+            message: 'This number is already taken in this chain!',
+            confirmText: 'OK'
+          });
           return;
         }
       }
