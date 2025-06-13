@@ -1,5 +1,6 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState } from 'react';
+import { t } from '../i18n';
 
 export default function LoginForm() {
   const supabase = useSupabaseClient();
@@ -26,15 +27,15 @@ export default function LoginForm() {
         onSubmit={handleSubmit}
       >
         <h2 className="text-4xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 text-center">
-          PrompTee ☕
+          {t('LoginForm.Title')}
         </h2>
         <h3 className="text-center text-xl font-semibold">
-          {isRegistering ? 'Register' : 'Login'}
+          {isRegistering ? t('LoginForm.Register') : t('LoginForm.Login')}
         </h3>
         {error && <p className="text-red-400 text-center">{error}</p>}
         <input
           type="email"
-          placeholder="Email"
+          placeholder={t('LoginForm.EmailPlaceholder')}
           className="field-dark mb-3 w-full"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -42,21 +43,21 @@ export default function LoginForm() {
         />
         <input
           type="password"
-          placeholder="Password"
+          placeholder={t('LoginForm.PasswordPlaceholder')}
           className="field-dark mb-3 w-full"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
         <button type="submit" className="btn-blue w-full">
-          {isRegistering ? 'Create account' : 'Login'}
+          {isRegistering ? t('LoginForm.CreateAccount') : t('LoginForm.Login')}
         </button>
         <button
           type="button"
           onClick={() => setIsRegistering(!isRegistering)}
           className="w-full text-sm text-indigo-400 hover:underline focus:outline-none"
         >
-          {isRegistering ? 'Have an account? Log in' : 'No account? Register'}
+          {isRegistering ? t('LoginForm.ToggleToLogin') : t('LoginForm.ToggleToRegister')}
         </button>
       </form>
     </div>

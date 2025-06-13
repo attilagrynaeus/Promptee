@@ -3,6 +3,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import PromptCard from '../components/PromptCard';
+import { t } from '../i18n';
 
 jest.mock('../context/DialogContext', () => ({
   useDialog: () => ({ showDialog: jest.fn() })
@@ -43,7 +44,7 @@ describe('PromptCard Component', () => {
     renderCard();
     expect(screen.getByText('Test Prompt')).toBeInTheDocument();
     expect(screen.getByText('A test description')).toBeInTheDocument();
-    expect(screen.getByText('Public')).toBeInTheDocument();
+    expect(screen.getByText(t('PromptCard.Public'))).toBeInTheDocument();
     expect(screen.getByText('General')).toBeInTheDocument();
   });
 

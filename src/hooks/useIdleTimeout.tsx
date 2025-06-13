@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useDialog } from '../context/DialogContext';
+import { t } from '../i18n';
 
 export default function useIdleTimeout(timeoutMinutes = 30) {
   const supabase = useSupabaseClient();
@@ -18,9 +19,9 @@ export default function useIdleTimeout(timeoutMinutes = 30) {
     clear();
     await supabase.auth.signOut();
     showDialog({
-      title: 'Session Expired',
-      message: 'You were logged out due to inactivity.',
-      confirmText: 'OK',
+      title: t('IdleTimeout.ExpiredTitle'),
+      message: t('IdleTimeout.ExpiredMsg'),
+      confirmText: t('IdleTimeout.OK'),
       onConfirm: hideDialog,
     });
   }, [supabase, showDialog, hideDialog]);

@@ -1,4 +1,5 @@
 import React from 'react';
+import { t } from '../i18n';
 
 export default function SearchFilters({
   search, setSearch,
@@ -13,7 +14,7 @@ export default function SearchFilters({
       <div className="relative mt-4">
         <input
           type="text"
-          placeholder="Search"
+          placeholder={t('SearchFilters.SearchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value.toLowerCase())}
           className="field-dark w-full pr-20"
@@ -41,7 +42,7 @@ export default function SearchFilters({
         onClick={clearFilters}
         className="mt-2 w-full py-2 rounded-lg bg-gray-600 hover:bg-gray-500 transition-colors font-semibold"
       >
-        🗑️ Clear filters
+        {t('SearchFilters.Clear')}
       </button>
     </>
   );

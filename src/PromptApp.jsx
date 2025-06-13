@@ -10,6 +10,7 @@ import { useDialog } from './context/DialogContext';
 import usePromptData from './hooks/usePromptData';
 import { filterPrompts } from './utils/promptFilter';
 import { toggleFavorit } from './utils/promptService';
+import { t } from './i18n';
 
 export default function PromptApp() {
   const session = useSession();
@@ -105,7 +106,7 @@ export default function PromptApp() {
       .update({ color })
       .eq('id', promptId);
     if (error) {
-      showDialog({ title: 'Error', message: error.message, confirmText: 'OK' });
+      showDialog({ title: t('Errors.Error'), message: error.message, confirmText: t('PromptCard.OK') });
     } else {
       fetchPrompts();
     }
@@ -114,18 +115,18 @@ export default function PromptApp() {
   const handleToggleFavorit = async (prompt) => {
     if (!prompt.id || !session.user.id) {
       showDialog({
-        title: 'Cannot set favorite',
-        message: 'Prompt ID or User ID is missing.',
-        confirmText: 'OK'
+        title: t('PromptCard.FavErrorTitle'),
+        message: t('PromptCard.FavIdMissing'),
+        confirmText: t('PromptCard.OK')
       });
       return;
     }
     const { error } = await toggleFavorit(supabase, prompt, session.user.id);
     if (error) {
       showDialog({
-        title: 'Cannot set favorite',
-        message: error.message || 'Error setting favorite.',
-        confirmText: 'OK'
+        title: t('PromptCard.FavErrorTitle'),
+        message: error.message || t('Errors.Error'),
+        confirmText: t('PromptCard.OK')
       });
     } else {
       fetchPrompts();

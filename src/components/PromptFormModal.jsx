@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { tokensOf } from '../utils/tokenCounter';
 import { supabase } from '../supabaseClient';
 import { useDialog } from '../context/DialogContext';
+import { t } from '../i18n';
 
 function hashColor(str = '') {
   let h = 0;
@@ -95,9 +96,9 @@ export default function PromptFormModal({
       if (!chain_order) {
         if (count >= 10) {
           showDialog({
-            title: 'Warning',
-            message: 'There can be 10 prompts in this chain.',
-            confirmText: 'OK'
+            title: t('PromptForm.Warning'),
+            message: t('PromptForm.ChainLimit'),
+            confirmText: t('PromptForm.OK')
           });
           return;
         }
@@ -106,9 +107,9 @@ export default function PromptFormModal({
 
         if (chain_order < 1 || chain_order > 10) {
           showDialog({
-            title: 'Warning',
-            message: 'The number can range from 1 to 10.',
-            confirmText: 'OK'
+            title: t('PromptForm.Warning'),
+            message: t('PromptForm.ChainRange'),
+            confirmText: t('PromptForm.OK')
           });
           return;
         }
@@ -120,9 +121,9 @@ export default function PromptFormModal({
           .neq('id', form.id);
         if (dup.length > 0) {
           showDialog({
-            title: 'Warning',
-            message: 'This number is already taken in this chain!',
-            confirmText: 'OK'
+            title: t('PromptForm.Warning'),
+            message: t('PromptForm.ChainDup'),
+            confirmText: t('PromptForm.OK')
           });
           return;
         }
@@ -161,15 +162,15 @@ export default function PromptFormModal({
 
           <h2 className="text-2xl font-semibold mb-4">
             {readOnly
-              ? 'View Prompt'
+              ? t('PromptForm.View')
               : prompt.id
-              ? 'Edit Prompt'
-              : 'New Prompt'}
+              ? t('PromptForm.Edit')
+              : t('PromptForm.New')}
           </h2>
 
           <input
             required
-            placeholder="Title"
+            placeholder={t('PromptForm.TitlePlaceholder')}
             value={form.title}
             onChange={chg('title')}
             disabled={readOnly}
@@ -195,6 +196,7 @@ export default function PromptFormModal({
               disabled={readOnly}
               value={form.content}
               onChange={chg('content')}
+              placeholder={t('PromptForm.ContentPlaceholder')}
               className="flex-1 field-dark rounded-none resize-none
                          py-2 pl-0 text-base font-mono leading-7
                          min-h-[18rem]
@@ -208,13 +210,13 @@ export default function PromptFormModal({
             className="self-end -mt-2 mb-4 bg-indigo-600/90
                        px-3 py-1 rounded-full text-xs font-semibold"
           >
-            {tokenCount} tokens
+            {tokenCount} {t('PromptForm.TokensSuffix')}
           </span>
 
           {/* description + category */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <input
-              placeholder="Short description"
+              placeholder={t('PromptForm.DescriptionPlaceholder')}
               value={form.description}
               onChange={chg('description')}
               disabled={readOnly}
@@ -240,13 +242,13 @@ export default function PromptFormModal({
           {!readOnly && (
             <>
               <label className="flex flex-col gap-1 text-sm mb-4">
-                <span className="text-gray-400">🔗 Chain Type  (optional) </span>
+                <span className="text-gray-400">{t('PromptForm.ChainType')}</span>
                 <select
                   value={form.chain_id || ''}
                   onChange={chg('chain_id')}
                   className="field-dark rounded-none"
                 >
-                  <option value="">— none —</option>
+                  <option value="">{t('PromptForm.ChainNone')}</option>
                   {chains.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
@@ -258,7 +260,7 @@ export default function PromptFormModal({
               {form.chain_id && (
                 <label className="flex flex-col gap-1 text-sm mb-4">
                   <span className="text-gray-400">
-                    📑 Chain order (1–10)
+                    {t('PromptForm.ChainOrderLabel')}
                   </span>
                   <input
                     type="number"
@@ -282,7 +284,7 @@ export default function PromptFormModal({
               onChange={chg('is_public')}
               disabled={readOnly}
             />
-            Public
+            {t('PromptForm.Public')}
           </label>
 
           <div className="mt-auto flex justify-end gap-3">
@@ -291,7 +293,7 @@ export default function PromptFormModal({
               onClick={onClose}
               className="text-gray-400 hover:text-gray-200"
             >
-              {readOnly ? 'Close' : 'Cancel'}
+              {readOnly ? t('PromptForm.Close') : t('PromptForm.Cancel')}
             </button>
             {!readOnly && (
               <button
@@ -299,7 +301,7 @@ export default function PromptFormModal({
                 className="bg-green-600 hover:bg-green-500 px-6 py-2
                            rounded-md font-semibold shadow"
               >
-                Save
+                {t('PromptForm.Save')}
               </button>
             )}
           </div>

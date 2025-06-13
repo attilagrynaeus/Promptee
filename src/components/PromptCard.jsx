@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { tokensOf } from '../utils/tokenCounter';
 import { useDialog } from '../context/DialogContext';
+import { t } from '../i18n';
 import './PromptCard.css';
 
 const bgMap = {
@@ -50,10 +51,10 @@ export default function PromptCard({
   const handleDelete = (e) => {
     e.stopPropagation();
     showDialog({
-      title: 'Delete Prompt',
-      message: 'Are you sure you want to delete this prompt?',
-      confirmText: 'Yes, Delete',
-      cancelText: 'No, Cancel',
+      title: t('PromptCard.DeleteTitle'),
+      message: t('PromptCard.DeleteMessage'),
+      confirmText: t('PromptCard.DeleteConfirm'),
+      cancelText: t('PromptCard.DeleteCancel'),
       onConfirm: () => onDelete(prompt.id),
     });
   };
@@ -62,9 +63,9 @@ export default function PromptCard({
     e.stopPropagation();
     if (!prompt.id) {
       showDialog({
-        title: 'Cannot set favorite',
-        message: 'Prompt ID is missing.',
-        confirmText: 'OK'
+        title: t('PromptCard.FavErrorTitle'),
+        message: t('PromptCard.FavIdMissing'),
+        confirmText: t('PromptCard.OK')
       });
       return;
     }
@@ -103,9 +104,9 @@ export default function PromptCard({
       <div className="prompt-tags mt-auto">
         <span className="tag category-tag">{prompt.category}</span>
         <span className={`tag visibility-tag ${prompt.is_public ? 'public' : 'private'}`}>
-          {prompt.is_public ? 'Public' : 'Private'}
+          {prompt.is_public ? t('PromptCard.Public') : t('PromptCard.Private')}
         </span>
-        <span className="tag token-tag">{tokenCount} tokens</span>
+        <span className="tag token-tag">{tokenCount} {t('PromptCard.TokensSuffix')}</span>
       </div>
 
       <div className="prompt-actions">
@@ -126,25 +127,27 @@ export default function PromptCard({
         </div>
 
         <button onClick={handleCopy} className="action-button copy relative">
-          📋 Copy
-          {copied && <span className="copied-tooltip">✅ Copied!</span>}
+          {t('PromptCard.Copy')}
+          {copied && (
+            <span className="copied-tooltip">{t('PromptCard.Copied')}</span>
+          )}
         </button>
 
         <button onClick={(e) => { e.stopPropagation(); onClone(prompt); }}
                 className="action-button clone">
-          🧬 Clone
+          {t('PromptCard.Clone')}
         </button>
 
         <button
           onClick={(e) => { e.stopPropagation(); isOwner ? onEdit() : onView(prompt); }}
           className="action-button edit"
         >
-          {isOwner ? '✏️ Edit' : '👁️ View'}
+          {isOwner ? t('PromptCard.Edit') : t('PromptCard.View')}
         </button>
 
         {isOwner && (
           <button onClick={handleDelete} className="action-button delete">
-            🗑️ Delete
+            {t('PromptCard.Delete')}
           </button>
         )}
       </div>
