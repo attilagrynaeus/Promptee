@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
 import usePromptDump from '../hooks/usePromptDump';
 
+import { useDialog } from '../context/DialogContext';
+
 import ChainModeToggle from './ChainModeToggle';
 import SearchFilters   from './SearchFilters';
 import FavoritesToggle from './FavoritesToggle';
@@ -19,6 +21,7 @@ export default function PromptSidebar({
   const supabase = useSupabaseClient();
   const session  = useSession();
   const username = user?.email?.split('@')[0] || 'Guest';
+  const { showDialog } = useDialog();
 
   /* default chain */
   useEffect(() => {
@@ -29,7 +32,11 @@ export default function PromptSidebar({
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    alert('Successfully logged out.');
+    showDialog({
+      title: 'Logout',
+      message: 'Successfully logged out.',
+      confirmText: 'OK'
+    });
   };
 
   const toggleFavoriteOnly = () => {
