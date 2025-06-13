@@ -173,15 +173,29 @@
 }
 
 /* --- chain hover line ------------------------------------------------------ */
-.chain-hover-line {
+/* line connecting chained cards */
+.chain-separator {
+  grid-column: 1 / -1;
+  position: relative;
+  height: 0;
+  margin-top: -1.5rem; /* overlap grid gap */
+  pointer-events: none;
+}
+
+.chain-separator::before {
+  content: '';
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -14px;
+  top: 0.75rem; /* center inside 1.5rem gap */
   height: 2px;
   background-image: repeating-linear-gradient(90deg, #fff, #fff 6px, transparent 6px, transparent 12px);
+  opacity: 0;
+}
+
+.chain-view-mode:hover + .chain-separator::before {
+  opacity: 1;
   animation: chain-dash 0.6s linear infinite;
-  pointer-events: none;
 }
 
 @keyframes chain-dash {

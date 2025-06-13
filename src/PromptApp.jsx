@@ -2,6 +2,7 @@ import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState, useMemo, useEffect } from 'react';
 import PromptSidebar from './components/PromptSidebar';
 import PromptCard from './components/PromptCard';
+import ChainSeparator from './components/ChainSeparator';
 import PromptFormModal from './components/PromptFormModal';
 import LoginForm from './components/LoginForm';
 import useProfile from './hooks/useProfile';
@@ -164,20 +165,22 @@ export default function PromptApp() {
 
       <main className="flex-1">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-max items-start">
-          {filtered.map(prompt => (
-            <PromptCard
-              key={prompt.id}
-              prompt={{ ...prompt, category: prompt.categories?.name || 'Uncategorized' }}
-              currentUserId={session.user.id}
-              chainViewActive={chainView}          /* ✅ új prop átadása */
-              onCopy={() => navigator.clipboard.writeText(prompt.content)}
-              onEdit={() => setEditingPrompt(prompt)}
-              onView={handleView}
-              onDelete={() => handleDelete(prompt.id)}
-              onToggleFavorit={handleToggleFavorit}
-              onClone={handleClone}
-              onColorChange={handleColorChange}
-            />
+          {filtered.map((prompt, idx) => (
+            <React.Fragment key={prompt.id}>
+              <PromptCard
+                prompt={{ ...prompt, category: prompt.categories?.name || 'Uncategorized' }}
+                currentUserId={session.user.id}
+                chainViewActive={chainView}
+                onCopy={() => navigator.clipboard.writeText(prompt.content)}
+                onEdit={() => setEditingPrompt(prompt)}
+                onView={handleView}
+                onDelete={() => handleDelete(prompt.id)}
+                onToggleFavorit={handleToggleFavorit}
+                onClone={handleClone}
+                onColorChange={handleColorChange}
+              />
+              {chainView && idx < filtered.length - 1 && <ChainSeparator />}
+            </React.Fragment>
           ))}
         </div>
       </main>
