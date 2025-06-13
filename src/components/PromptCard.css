@@ -185,22 +185,20 @@
 .chain-separator::before {
   content: '';
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 2px;
-  transform: translateX(-50%);
-  background-image: repeating-linear-gradient(#fff, #fff 6px, transparent 6px, transparent 12px);
-  background-repeat: repeat-y;
+  left: 0;
+  right: 0;
+  top: 0.75rem; /* center inside 1.5rem gap */
+  height: 2px;
+  background-image: repeating-linear-gradient(90deg, #fff, #fff 6px, transparent 6px, transparent 12px);
   opacity: 0;
 }
 
-.chain-view-mode:hover ~ .chain-separator::before {
+.chain-view-mode:hover + .chain-separator::before {
   opacity: 1;
-  animation: chain-dash-vert 0.6s linear infinite;
+  animation: chain-dash 0.6s linear infinite;
 }
 
-@keyframes chain-dash-vert {
+@keyframes chain-dash {
   from { background-position: 0 0; }
-  to   { background-position: 0 12px; }
+  to   { background-position: 12px 0; }
 }
