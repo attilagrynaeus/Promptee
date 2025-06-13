@@ -195,7 +195,33 @@
   opacity: 0;
 }
 
-.chain-view-mode:hover ~ .chain-separator::before {
+
+/* Show chain line when the card container is hovered */
+.cards-container:hover .chain-separator::before {
+  opacity: 1;
+  animation: chain-dash-vert 0.6s linear infinite;
+}
+
+/* Container level dashed line */
+.cards-container {
+  position: relative;
+}
+
+.cards-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background-image: repeating-linear-gradient(#fff, #fff 6px, transparent 6px, transparent 12px);
+  background-repeat: repeat-y;
+  opacity: 0;
+}
+
+.cards-container:hover::before {
   opacity: 1;
   animation: chain-dash-vert 0.6s linear infinite;
 }
