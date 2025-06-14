@@ -26,6 +26,7 @@ export default function PromptCard({
 
   const [color, setColor] = useState(prompt.color || 'default');
   const [copied, setCopied] = useState(false);
+  const [cloned, setCloned] = useState(false);
 
   useEffect(() => {
     setColor(prompt.color || 'default');
@@ -43,6 +44,13 @@ export default function PromptCard({
     onCopy();
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
+  };
+
+  const handleClone = (e) => {
+    e.stopPropagation();
+    onClone(prompt);
+    setCloned(true);
+    setTimeout(() => setCloned(false), 1500);
   };
 
   const handleDelete = (e) => {
@@ -151,9 +159,11 @@ return (
         )}
       </button>
 
-      <button onClick={(e) => { e.stopPropagation(); onClone(prompt); }}
-              className="action-button clone">
+      <button onClick={handleClone} className="action-button clone relative">
         {t('PromptCard.Clone')}
+        {cloned && (
+          <span className="cloned-tooltip">{t('PromptCard.Cloned')}</span>
+        )}
       </button>
 
       {!prompt.archived_at ? (
