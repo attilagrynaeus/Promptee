@@ -5,10 +5,10 @@ import { t } from '../i18n';
 
 import { useDialog } from '../context/DialogContext';
 
-import ChainModeToggle from './ChainModeToggle';
-import SearchFilters   from './SearchFilters';
-import FavoritesToggle from './FavoritesToggle';
-import ArchivedToggle from './ArchivedToggle';
+import ChainModeToggle   from './ChainModeToggle';
+import SearchFilters     from './SearchFilters';
+import FavoritesToggle   from './FavoritesToggle';
+import ArchivedToggle    from './ArchivedToggle';
 
 export default function PromptSidebar({
   search, setSearch,
@@ -25,7 +25,6 @@ export default function PromptSidebar({
   const username = user?.email?.split('@')[0] || 'Guest';
   const { showDialog } = useDialog();
 
-  /* default chain */
   useEffect(() => {
     if (chainView && !chainFilter && chains.length) {
       setChainFilter(chains[0].id);
@@ -106,7 +105,6 @@ export default function PromptSidebar({
 
         {!chainView && <ArchivedToggle />}
 
-        {/* Exit Chain View */}
         <button
           onClick={deactivateChainView}
           disabled={!chainViewActive}
@@ -119,7 +117,7 @@ export default function PromptSidebar({
           {t('PromptSidebar.ExitChain')}
         </button>
 
-        {/* user info */}
+        {/* felhasználói információ */}
         <div className="border-t border-gray-700 my-4" />
         <div className="text-center text-sm text-gray-400">
           {t('PromptSidebar.LoggedInAs')}{' '}
@@ -127,6 +125,7 @@ export default function PromptSidebar({
         </div>
       </div>
 
+      {/* lábléc gombok */}
       <div className="mt-auto pt-4 text-center text-sm text-gray-400 border-t border-gray-700">
         <button
           onClick={handleLogout}
