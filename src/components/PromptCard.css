@@ -1,3 +1,4 @@
+
 .prompt-card {
   @apply rounded-xl flex flex-col relative;
   padding: 20px;
@@ -11,6 +12,7 @@
   position: relative;
 }
 
+/* focus reset */
 .prompt-card:focus,
 .prompt-card:focus-within,
 .prompt-card:focus-visible {
@@ -18,11 +20,13 @@
   box-shadow: none !important;
 }
 
+/* lift on hover */
 .prompt-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
+/* ---------- outer pulsing border ---------- */
 .prompt-card:hover::after {
   content: '';
   position: absolute;
@@ -33,17 +37,12 @@
   border: 2px solid #00ffff;
   border-radius: 10px;
   animation: pulse-border 2s infinite;
+  pointer-events: none;           
 }
 
 @keyframes pulse-border {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 0.6;
-  }
+  0%, 100% { transform: scale(1);   opacity: 1; }
+  50%      { transform: scale(1.05); opacity: 0.6; }
 }
 
 .prompt-card {
@@ -52,17 +51,22 @@
   transition: transform 0.3s ease;
 }
 
-
 .prompt-card::before {
   content: '';
   position: absolute;
   top: 0; left: -100%;
   width: 200%;
   height: 100%;
-  background: linear-gradient(120deg, rgba(0, 255, 200, 0.2), rgba(0, 150, 255, 0.2), rgba(0, 255, 200, 0.2));
-  animation: none;
+  background: linear-gradient(
+    120deg,
+    rgba(0,255,200,0.20),
+    rgba(0,150,255,0.20),
+    rgba(0,255,200,0.20)
+  );
   opacity: 0;
   transition: opacity 0.5s ease;
+  animation: none;
+  pointer-events: none;      
 }
 
 .prompt-card:hover::before {
@@ -70,183 +74,104 @@
   animation: shine 3.5s forwards;
 }
 
+@keyframes shine {
+  0%   { transform: translateX(-50%); }
+  50%  { transform: translateX( 50%); }
+  100% { transform: translateX(-50%); }
+}
+
+.prompt-card::before,
+.prompt-card::after {
+  pointer-events: none !important;
+}
+
+/* ---------- hover icon ---------- */
 .hover-icon {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 8px; right: 8px;
   font-size: 20px;
   opacity: 0;
   transition: opacity 0.5s ease, transform 0.5s ease;
   pointer-events: none;
 }
-
 .prompt-card.hover-enabled:hover .hover-icon {
   opacity: 1;
   transform: translateY(-3px);
 }
 
-@keyframes shine {
-  0% {
-    transform: translateX(-50%);
-  }
-  50% {
-    transform: translateX(50%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.prompt-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 0 12px rgba(0, 200, 255, 0.4);
-}
-
-
-.card-default { background: rgba(49, 51, 56, 0.50); }   
+.card-default { background: rgba(49, 51, 56, 0.50); }
 .card-blue    { background: rgba(30, 144, 255, 0.40); }
-.card-green   { background: rgba(50, 205,  50,  0.40); }
+.card-green   { background: rgba(50, 205,  50, 0.40); }
 .card-violet  { background: rgba(186, 85, 211, 0.40); }
 
-.prompt-title {
-  @apply text-xl font-extrabold tracking-wide;
-  font-weight: 800;
-}
-
-.prompt-description {
-  @apply italic text-sm line-clamp-2;
-  opacity: 0.8;
-}
-
-.prompt-textarea {
+/* ---------- typography ---------- */
+.prompt-title       { @apply text-xl font-extrabold tracking-wide; font-weight: 800; }
+.prompt-description { @apply italic text-sm line-clamp-2; opacity: 0.8; }
+.prompt-textarea    {
   @apply w-full rounded-md px-3 py-2 text-sm resize-y min-h-[80px] outline-none;
-  background: transparent;
-  border: none;
-  color: #ffffff;
-  opacity: 0.9;
+  background: transparent; border: none; color: #fff; opacity: 0.9;
 }
 
-.prompt-tags {
-  @apply flex flex-row gap-3 items-center;
-  margin-top: 15px;
-}
-
+/* ---------- tags ---------- */
+.prompt-tags { @apply flex flex-row gap-3 items-center; margin-top: 15px; }
 .category-tag {
   background: linear-gradient(135deg, #8dd5ff, #5b8cfc);
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.85rem;
-  padding: 4px 14px;
-  border-radius: 50px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  color:#fff; font-weight:700; font-size:0.85rem;
+  padding:4px 14px; border-radius:50px; box-shadow:0 2px 5px rgba(0,0,0,0.2);
 }
-
 .visibility-tag {
-  font-size: 0.75rem;
-  padding: 3px 12px;
-  border-radius: 50px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: 500;
-  color: #fff;
+  font-size:0.75rem; padding:3px 12px; border-radius:50px;
+  display:inline-flex; align-items:center; gap:4px; font-weight:500; color:#fff;
 }
+.visibility-tag.public  { background-color:#4ade80; }
+.visibility-tag.private { background-color:#f87171; }
+.visibility-tag::before { content:'●'; font-size:0.6rem; }
 
-.visibility-tag.public  { background-color: #4ade80; }
-.visibility-tag.private { background-color: #f87171; }
+.prompt-actions { @apply flex justify-end gap-2 items-center mt-1; }
 
-.visibility-tag::before {
-  content: '●';
-  font-size: 0.6rem;
-}
-
-.prompt-actions {
-  @apply flex justify-end gap-2 items-center mt-1;
-}
-
-.favorite-button {
-  @apply mr-auto text-xl transition-colors cursor-pointer;
-}
+.favorite-button { @apply mr-auto text-xl transition-colors cursor-pointer; }
 
 .action-button {
   @apply rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-transform duration-200;
-  background: linear-gradient(135deg, #8dd5ff, #5b8cfc);
+  background-color: #1c9887;
 }
 
-.action-button:hover {
-  transform: translateY(-3px);
-  filter: brightness(1.15);
+.prompt-card .prompt-actions .action-button:hover {
+  transform: translateY(-2px);
+  background-color: #91b75e;   
+  box-shadow: 0 6px 15px rgba(0,0,0,0.25),
+              inset 0 1px 2px rgba(255,255,255,0.20);
 }
 
-.color-selector {
-  @apply flex gap-1 items-center;
-  padding: 0;
-  border: none;
-  margin: 0;
-}
-
+.color-selector { @apply flex gap-1 items-center; }
 .color-circle {
-  @apply w-6 h-6 rounded-full cursor-pointer border-2 border-white
-          opacity-80 hover:opacity-100 transition-opacity shadow;
-  position: relative;
-  outline: none !important;
+  @apply w-6 h-6 rounded-full cursor-pointer border-2 border-white opacity-80 hover:opacity-100 transition-opacity shadow;
+  position:relative;
 }
+.color-circle::after { content:''; position:absolute; inset:-4px; border-radius:50%; }
+.color-circle.default { background:#313338; }
+.color-circle.blue    { background:#1e90ff; }
+.color-circle.green   { background:#32cd32; }
+.color-circle.violet  { background:#ba55d3; }
 
-.color-circle::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-}
-
-.color-circle.default { background-color: #313338; }   /* ⬅ új pötty */
-.color-circle.blue    { background-color: #1E90FF; }
-.color-circle.green   { background-color: #32CD32; }
-.color-circle.violet  { background-color: #BA55D3; }
-
-.action-button.copy {
-  position: relative;
-}
-
+/* ---------- copy tooltip ---------- */
+.action-button.copy { position:relative; }
 .copied-tooltip {
-  position: absolute;
-  top: -35px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #10b981; 
-  color: white;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  white-space: nowrap;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-  opacity: 0;
-  animation: fadeTooltip 1.5s forwards;
-  pointer-events: none;
+  position:absolute; top:-35px; left:50%; transform:translateX(-50%);
+  background:#10b981; color:#fff; padding:4px 10px; border-radius:6px;
+  font-size:0.8rem; white-space:nowrap; box-shadow:0 2px 6px rgba(0,0,0,0.25);
+  opacity:0; animation:fadeTooltip 1.5s forwards; pointer-events:none;
 }
-
 @keyframes fadeTooltip {
-  0%   { opacity: 0; transform: translate(-50%, -10px); }
-  10%,90% { opacity: 1; transform: translate(-50%, 0); }
-  100% { opacity: 0; transform: translate(-50%, -10px); }
+  0%{ opacity:0; transform:translate(-50%,-10px); }
+  10%,90%{ opacity:1; transform:translate(-50%,0); }
+  100%{ opacity:0; transform:translate(-50%,-10px); }
 }
 
 .chain-order-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  font-weight: 700;
-
-  background: rgba(255,255,255,0.16);
-  color: #fff;
-  backdrop-filter: blur(4px);
-
-  border-radius: 6px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+  position:absolute; top:8px; right:8px; width:28px; height:28px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.85rem; font-weight:700;
+  background:rgba(255,255,255,0.16); color:#fff; backdrop-filter:blur(4px);
+  border-radius:6px; box-shadow:0 1px 4px rgba(0,0,0,0.35);
 }
