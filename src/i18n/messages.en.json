@@ -1,6 +1,6 @@
 {
   "LoginForm": {
-    "Title": "PrompTee \u2615",
+    "Title": "PrompTee ☕",
     "Register": "Register",
     "Login": "Login",
     "CreateAccount": "Create account",
@@ -20,12 +20,15 @@
     "Public": "Public",
     "Private": "Private",
     "TokensSuffix": "tokens",
-    "Copy": "\ud83d\uDCCB Copy",
-    "Copied": "\u2705 Copied!",
-    "Clone": "\ud83e\uddec Clone",
-    "Edit": "\u270f\ufe0f Edit",
-    "View": "\ud83d\udc41\ufe0f View",
-    "Delete": "\ud83d\udc9b Delete" 
+    "Copy": "📋 Copy",
+    "Copied": "✅ Copied!",
+    "Clone": "🧬 Clone",
+    "Edit": "✏️ Edit",
+    "View": "👁️ View",
+    "Delete": "💛 Delete",
+    "ArchiveTooltip": "Archive prompt",
+    "RestoreTooltip": "Restore prompt",
+    "ArchivedBadge": "ARCHIVED"
   },
   "PromptForm": {
     "View": "View Prompt",
@@ -34,9 +37,9 @@
     "TitlePlaceholder": "Title",
     "ContentPlaceholder": "Prompt text",
     "DescriptionPlaceholder": "Short description",
-    "ChainType": "\ud83d\udd17 Chain Type  (optional)",
-    "ChainNone": "\u2014 none \u2014",
-    "ChainOrderLabel": "\ud83d\udcc1 Chain order (1\u201310)",
+    "ChainType": "🔗 Chain Type  (optional)",
+    "ChainNone": "— none —",
+    "ChainOrderLabel": "📁 Chain order (1–10)",
     "Public": "Public",
     "Close": "Close",
     "Cancel": "Cancel",
@@ -49,28 +52,28 @@
     "OK": "OK"
   },
   "PromptSidebar": {
-    "Title": "PrompTee \ud83c\udf75",
+    "Title": "PrompTee 🍵",
     "NewPrompt": "New prompt",
-    "ExitChain": "\ud83d\udd17 Exit Chain View",
+    "ExitChain": "🔗 Exit Chain View",
     "LoggedInAs": "Logged in as",
     "Logout": "Logout",
-    "DumpPrompts": "\ud83d\udce5 Dump Prompts",
-    "Dumping": "\u23f3 Dumping\u2026",
+    "DumpPrompts": "📥 Dump Prompts",
+    "Dumping": "⏳ Dumping…",
     "LogoutTitle": "Logout",
     "LogoutMsg": "Successfully logged out.",
     "OK": "OK"
   },
   "SearchFilters": {
     "SearchPlaceholder": "Search",
-    "Clear": "\ud83d\udd1a Clear filters"
+    "Clear": "🔚 Clear filters"
   },
   "FavoritesToggle": {
-    "Show": "\u2606 Show Favorites",
-    "Showing": "\u2b50 Showing Favorites"
+    "Show": "☆ Show Favorites",
+    "Showing": "⭐ Showing Favorites"
   },
   "ChainMode": {
     "Label": "Chain mode",
-    "None": "\u2014 choose chain \u2014"
+    "None": "— choose chain —"
   },
   "IdleTimeout": {
     "ExpiredTitle": "Session Expired",
@@ -79,5 +82,8 @@
   },
   "Errors": {
     "Error": "Error"
+  },
+  "ArchivedToggle": {
+    "Label": "Archived view"
   }
 }

@@ -8,6 +8,7 @@ import { useDialog } from '../context/DialogContext';
 import ChainModeToggle from './ChainModeToggle';
 import SearchFilters   from './SearchFilters';
 import FavoritesToggle from './FavoritesToggle';
+import ArchivedToggle from './ArchivedToggle';
 
 export default function PromptSidebar({
   search, setSearch,
@@ -100,6 +101,8 @@ export default function PromptSidebar({
             toggleFavoriteOnly={toggleFavoriteOnly}
           />
         )}
+
+        <ArchivedToggle />
 
         {/* Exit Chain View */}
         <button

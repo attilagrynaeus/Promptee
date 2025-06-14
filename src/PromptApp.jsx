@@ -11,6 +11,7 @@ import { useDialog } from './context/DialogContext';
 import usePromptData from './hooks/usePromptData';
 import { filterPrompts } from './utils/promptFilter';
 import { toggleFavorit } from './utils/promptService';
+import { useUI } from './context/UIContext';
 import { t } from './i18n';
 
 export default function PromptApp() {
@@ -18,6 +19,7 @@ export default function PromptApp() {
   const supabase = useSupabaseClient();
   const { profile, loading } = useProfile();
   const { showDialog } = useDialog();
+  const { archiveMode } = useUI();
 
   useIdleTimeout(90);
 
@@ -44,8 +46,8 @@ export default function PromptApp() {
 
   const {
     prompts, categories, handleSave, handleDelete,
-    handleClone, fetchPrompts
-  } = usePromptData(supabase, session, showDialog);
+    handleClone, handleArchive, fetchPrompts
+  } = usePromptData(supabase, session, showDialog, archiveMode);
 
   useEffect(() => {
     const uid = session?.user?.id;
@@ -176,6 +178,7 @@ export default function PromptApp() {
                 onView={handleView}
                 onDelete={() => handleDelete(prompt.id)}
                 onToggleFavorit={handleToggleFavorit}
+                onArchive={() => handleArchive(prompt)}
                 onClone={handleClone}
                 onColorChange={handleColorChange}
               />

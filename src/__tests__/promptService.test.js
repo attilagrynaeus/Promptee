@@ -42,27 +42,12 @@ describe('toggleFavorit', () => {
   });
 
   it('should remove prompt from favorites correctly', async () => {
-    const mockUpdate = jest.fn().mockReturnThis();
-    const mockEq = jest.fn().mockResolvedValue({ error: null });
-    const mockSelect = jest.fn().mockReturnThis();
-    const mockOrder = jest.fn().mockReturnThis();
-    const mockLimit = jest.fn().mockReturnThis();
-    const mockSingle = jest.fn().mockResolvedValue({ data: { sort_order: 10 } });
-
-    mockFrom.mockImplementation(() => ({
-      select: mockSelect,
-      order: mockOrder,
-      limit: mockLimit,
-      single: mockSingle,
-      update: mockUpdate,
-      eq: mockEq,
-    }));
+    mockRpc.mockResolvedValue({ error: null });
 
     const prompt = { id: '123', favorit: true };
     const result = await toggleFavorit(mockSupabase, prompt, 'user-uuid');
 
-    expect(mockEq).toHaveBeenCalledWith('id', '123');
-    expect(mockUpdate).toHaveBeenCalledWith({ favorit: false, sort_order: 11 });
+    expect(mockRpc).toHaveBeenCalledWith('bump_sort_order', { p_id: '123' });
     expect(result.error).toBeNull();
   });
 });
