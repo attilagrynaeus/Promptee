@@ -11,7 +11,7 @@ const mockSupabase = {
 
 describe('toggleFavorit', () => {
 
-  // UUID MOCK CSAK EBBEN A BLOKKBAN ÉRVÉNYES
+  // UUID mock is valid only within this block
   jest.mock('uuid', () => ({ v4: () => 'test-uuid' }), { virtual: true });
 
   beforeEach(() => {

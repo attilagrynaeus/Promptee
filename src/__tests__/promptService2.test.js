@@ -3,7 +3,7 @@ import { createInMemoryDb } from '../inMemoryDb';
 let db, client;
 let uuidv4, TEST_USER_ID;
 
-// Az egész describe blokk ki lesz hagyva, semmi se fut le belőle.
+// The entire describe block is skipped; nothing will run.
 describe.skip('Prompt Favorites Logic Integration Tests (Full table & logic)', () => {
   
   beforeEach(async () => {

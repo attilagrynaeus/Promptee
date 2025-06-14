@@ -75,16 +75,6 @@ export default function PromptSidebar({
           {t('PromptSidebar.NewPrompt')}
         </button>
 
-        {!chainView && (
-          <ChainModeToggle
-            chainView={chainView}
-            setChainView={setChainView}
-            chainFilter={chainFilter}
-            setChainFilter={setChainFilter}
-            chains={chains}
-          />
-        )}
-
         {!favoriteOnly && !chainView && (
           <SearchFilters
             search={search}
@@ -103,6 +93,16 @@ export default function PromptSidebar({
           />
         )}
 
+        {!chainView && (
+          <ChainModeToggle
+            chainView={chainView}
+            setChainView={setChainView}
+            chainFilter={chainFilter}
+            setChainFilter={setChainFilter}
+            chains={chains}
+          />
+        )}
+
         {!chainView && <ArchivedToggle />}
 
         <button
@@ -117,7 +117,7 @@ export default function PromptSidebar({
           {t('PromptSidebar.ExitChain')}
         </button>
 
-        {/* felhasználói információ */}
+        {/* user information */}
         <div className="border-t border-gray-700 my-4" />
         <div className="text-center text-sm text-gray-400">
           {t('PromptSidebar.LoggedInAs')}{' '}
@@ -125,7 +125,7 @@ export default function PromptSidebar({
         </div>
       </div>
 
-      {/* lábléc gombok */}
+      {/* footer buttons */}
       <div className="mt-auto pt-4 text-center text-sm text-gray-400 border-t border-gray-700">
         <button
           onClick={handleLogout}
