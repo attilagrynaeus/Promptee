@@ -109,3 +109,20 @@ export const updatePromptOrder = async (
   const results = await Promise.all(updates);
   return results.find(res => res.error)?.error || null;
 };
+
+export const archivePrompt = async (
+  supabase: SupabaseClient,
+  prompt: any,
+) => {
+  const fields = {
+    id: prompt.id,
+    archived_at: new Date().toISOString(),
+    favorit: false,
+    color: 'default',
+    chain_id: null,
+    chain_order: null,
+  };
+
+  const { error } = await supabase.from('prompts').update(fields).eq('id', prompt.id);
+  return error;
+};

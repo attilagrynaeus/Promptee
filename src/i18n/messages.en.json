@@ -28,6 +28,10 @@
     "Delete": "💛 Delete",
     "ArchiveTooltip": "Archive prompt",
     "RestoreTooltip": "Restore prompt",
+    "ArchiveTitle": "Archive Prompt",
+    "ArchiveMessage": "Are you sure you want to archive \"{title}\"?",
+    "ArchiveConfirm": "Yes, Archive",
+    "ArchiveCancel": "No, Cancel",
     "ArchivedBadge": "ARCHIVED"
   },
   "PromptForm": {

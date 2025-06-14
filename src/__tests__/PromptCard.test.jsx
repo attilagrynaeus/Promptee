@@ -5,9 +5,15 @@ import '@testing-library/jest-dom';
 import PromptCard from '../components/PromptCard';
 import { t } from '../i18n';
 
-jest.mock('../context/DialogContext', () => ({
-  useDialog: () => ({ showDialog: jest.fn() })
-}));
+jest.mock('../context/DialogContext', () => {
+  const showDialogMock = jest.fn();
+  return {
+    __esModule: true,
+    useDialog: () => ({ showDialog: showDialogMock }),
+    showDialogMock,
+  };
+});
+const { showDialogMock } = require('../context/DialogContext');
 
 jest.mock('../assets/hover-icon.svg', () => 'icon.svg', { virtual: true });
 
@@ -65,10 +71,13 @@ describe('PromptCard Component', () => {
     expect(handlers.onColorChange).toHaveBeenCalledWith('1', 'default');
   });
 
-  it('calls onArchive when archive button clicked', () => {
+  it('prompts before archiving the prompt', () => {
     renderCard();
     const archiveButton = screen.getByTitle(t('PromptCard.ArchiveTooltip'));
     fireEvent.click(archiveButton);
+    expect(showDialogMock).toHaveBeenCalled();
+    const args = showDialogMock.mock.calls[0][0];
+    args.onConfirm();
     expect(handlers.onArchive).toHaveBeenCalledWith(prompt);
   });
 

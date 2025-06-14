@@ -71,7 +71,17 @@ export default function PromptCard({
 
   const handleArchive = (e) => {
     e.stopPropagation();
-    onArchive?.(prompt);
+    if (!prompt.archived_at) {
+      showDialog({
+        title: t('PromptCard.ArchiveTitle'),
+        message: t('PromptCard.ArchiveMessage', { title: prompt.title }),
+        confirmText: t('PromptCard.ArchiveConfirm'),
+        cancelText: t('PromptCard.ArchiveCancel'),
+        onConfirm: () => onArchive?.(prompt),
+      });
+    } else {
+      onArchive?.(prompt);
+    }
   };
 
 
