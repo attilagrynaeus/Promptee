@@ -16,7 +16,11 @@ export default function LoginForm() {
     if (isRegistering) {
       const { error } = await supabase.auth.signUp({ email, password });
       resultError = error;
-      if (!error) setSuccess(t('LoginForm.RegisterSuccess'));
+      if (!error) {
+        setSuccess(t('LoginForm.RegisterSuccess'));
+        setEmail('');
+        setPassword('');
+      }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       resultError = error;

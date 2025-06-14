@@ -1,6 +1,6 @@
 
 .prompt-card {
-  @apply rounded-xl flex flex-col relative;
+  @apply rounded-xl flex flex-col relative min-h-60 min-w-[280px];
   padding: 20px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
