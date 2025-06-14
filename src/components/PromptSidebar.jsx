@@ -76,13 +76,6 @@ export default function PromptSidebar({
           {t('PromptSidebar.NewPrompt')}
         </button>
 
-        <ChainModeToggle
-          chainView={chainView}
-          setChainView={setChainView}
-          chainFilter={chainFilter}
-          setChainFilter={setChainFilter}
-          chains={chains}
-        />
 
         {!favoriteOnly && !chainView && (
           <SearchFilters
@@ -103,6 +96,14 @@ export default function PromptSidebar({
         )}
 
         <ArchivedToggle />
+
+        <ChainModeToggle
+          chainView={chainView}
+          setChainView={setChainView}
+          chainFilter={chainFilter}
+          setChainFilter={setChainFilter}
+          chains={chains}
+        />
 
         {/* Exit Chain View */}
         <button
