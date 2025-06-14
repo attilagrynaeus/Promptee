@@ -37,7 +37,7 @@ export default function useIdleTimeout(timeoutMinutes = 30) {
       'touchstart', 'touchmove', 'scroll', 'visibilitychange'
     ];
     events.forEach(e => window.addEventListener(e, resetTimeout));
-    resetTimeout();               // indítás mountkor
+    resetTimeout();               // start on mount
 
     return () => {
       events.forEach(e => window.removeEventListener(e, resetTimeout));

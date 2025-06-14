@@ -152,7 +152,7 @@ export default function PromptFormModal({
                    rounded-2xl shadow-[0_25px_80px_rgba(0,0,0,0.4)]
                    text-gray-200"
       >
-        {/* színes fejléc-csík */}
+        {/* colored header stripe */}
         <div
           style={{ backgroundColor: headColor }}
           className="h-2 w-full"

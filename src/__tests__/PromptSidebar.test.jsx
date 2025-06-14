@@ -121,7 +121,7 @@ describe('PromptSidebar', () => {
       </UIProvider>
     );
     fireEvent.click(screen.getByText(t('PromptSidebar.DumpPrompts')));
-    // a mockDump-ot a factory-n belül hoztuk létre → 1 hívás
+    // mockDump was created inside the factory → one call
     expect(require('../hooks/usePromptDump').default().dump).toHaveBeenCalled();
   });
 
