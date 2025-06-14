@@ -11,11 +11,13 @@ jest.mock('../utils/promptService', () => ({
   clonePrompt: jest.fn(),
   toggleFavorit: jest.fn(),
   updatePrompt: jest.fn(),
+  archivePrompt: jest.fn(),
 }));
 
 const {
   fetchPrompts,
   updatePrompt,
+  archivePrompt,
 } = require('../utils/promptService');
 
 const wrapper = ({ children }) => <UIProvider>{children}</UIProvider>;
@@ -38,8 +40,15 @@ test('archiving moves prompt to archived list', async () => {
   await act(async () => {}); // wait for initial load
   expect(result.current.prompts).toHaveLength(1);
 
-  updatePrompt.mockImplementation(() => {
-    store[0] = { ...store[0], archived_at: '2021-01-01T00:00:00Z' };
+  archivePrompt.mockImplementation(() => {
+    store[0] = {
+      ...store[0],
+      archived_at: '2021-01-01T00:00:00Z',
+      favorit: false,
+      color: 'default',
+      chain_id: null,
+      chain_order: null,
+    };
     return Promise.resolve(null);
   });
   fetchPrompts.mockImplementation(() => Promise.resolve({ data: [], error: null }));
@@ -47,6 +56,7 @@ test('archiving moves prompt to archived list', async () => {
   await act(async () => {
     await result.current.handleArchive(prompt);
   });
+  expect(archivePrompt).toHaveBeenCalledWith(supabase, prompt);
   expect(result.current.prompts).toHaveLength(0);
 
   fetchPrompts.mockImplementation(() => Promise.resolve({ data: [...store], error: null }));

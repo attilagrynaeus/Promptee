@@ -1,6 +1,6 @@
 // hooks/usePromptData.js
 import { useState, useEffect, useCallback } from 'react';
-import { fetchCategories, fetchPrompts, savePrompt, deletePrompt, clonePrompt, toggleFavorit, updatePrompt } from '../utils/promptService';
+import { fetchCategories, fetchPrompts, savePrompt, deletePrompt, clonePrompt, toggleFavorit, updatePrompt, archivePrompt } from '../utils/promptService';
 import { t } from '../i18n';
 
 export default function usePromptData(supabase, session, showDialog, archiveMode) {
@@ -60,12 +60,16 @@ export default function usePromptData(supabase, session, showDialog, archiveMode
     },
 
     handleArchive: async (prompt) => {
-      const fields = prompt.archived_at
-        ? { id: prompt.id, archived_at: null }
-        : { id: prompt.id, archived_at: new Date().toISOString() };
-      const error = await updatePrompt(supabase, fields);
-      if (error) showDialog({ title: t('Errors.Error'), message: error.message, confirmText: t('PromptCard.OK') });
-      else loadPrompts();
+      const archiving = !prompt.archived_at;
+      const error = archiving
+        ? await archivePrompt(supabase, prompt)
+        : await updatePrompt(supabase, { id: prompt.id, archived_at: null });
+
+      if (error) {
+        showDialog({ title: t('Errors.Error'), message: error.message, confirmText: t('PromptCard.OK') });
+      } else {
+        loadPrompts();
+      }
     },
 
     handleToggleFavorit: async (prompt) => {
