@@ -14,6 +14,18 @@ jest.mock('../utils/tokenCounter', () => ({
   tokensOf: () => 42,
 }));
 
+jest.mock('../context/DialogContext', () => ({
+  useDialog: () => ({ showDialog: jest.fn() }),
+}));
+
+jest.mock('../supabaseClient', () => ({
+  supabase: {
+    from: () => ({
+      select: () => ({ then: (cb) => { cb({ data: [] }); return Promise.resolve(); } })
+    })
+  }
+}));
+
 describe('PromptFormModal', () => {
   const baseProps = {
     prompt: {},

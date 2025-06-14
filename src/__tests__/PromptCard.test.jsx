@@ -9,6 +9,8 @@ jest.mock('../context/DialogContext', () => ({
   useDialog: () => ({ showDialog: jest.fn() })
 }));
 
+jest.mock('../assets/hover-icon.svg', () => 'icon.svg', { virtual: true });
+
 jest.mock('../utils/tokenCounter', () => ({
   tokensOf: () => 3
 }));
@@ -23,7 +25,8 @@ describe('PromptCard Component', () => {
     favorit: false,
     is_public: true,
     category: 'General',
-    color: 'blue'
+    color: 'blue',
+    archived_at: null,
   };
 
   const handlers = {
@@ -33,6 +36,7 @@ describe('PromptCard Component', () => {
     onToggleFavorit: jest.fn(),
     onClone:     jest.fn(),
     onColorChange: jest.fn(),
+    onArchive: jest.fn(),
   };
 
   const renderCard = () =>
@@ -58,6 +62,21 @@ describe('PromptCard Component', () => {
     const { container } = renderCard();
     const firstCircle = container.querySelector('.color-circle');
     fireEvent.click(firstCircle);
-    expect(handlers.onColorChange).toHaveBeenCalledWith('1', 'blue');
+    expect(handlers.onColorChange).toHaveBeenCalledWith('1', 'default');
+  });
+
+  it('calls onArchive when archive button clicked', () => {
+    renderCard();
+    const archiveButton = screen.getByTitle(t('PromptCard.ArchiveTooltip'));
+    fireEvent.click(archiveButton);
+    expect(handlers.onArchive).toHaveBeenCalledWith(prompt);
+  });
+
+  it('shows restore button when archived', () => {
+    const archived = { ...prompt, archived_at: '2021-01-01T00:00:00Z' };
+    render(
+      <PromptCard prompt={archived} currentUserId="user-1" {...handlers} />
+    );
+    expect(screen.getByTitle(t('PromptCard.RestoreTooltip'))).toBeInTheDocument();
   });
 });
