@@ -7,7 +7,8 @@
     "ToggleToLogin": "Have an account? Log in",
     "ToggleToRegister": "No account? Register",
     "EmailPlaceholder": "Email",
-    "PasswordPlaceholder": "Password"
+    "PasswordPlaceholder": "Password",
+    "RegisterSuccess": "Registration successful! Check your email to confirm."
   },
   "PromptCard": {
     "DeleteTitle": "Delete Prompt",
