@@ -7,17 +7,26 @@ export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    let error;
+    let resultError;
     if (isRegistering) {
-      ({ error } = await supabase.auth.signUp({ email, password }));
+      const { error } = await supabase.auth.signUp({ email, password });
+      resultError = error;
+      if (!error) setSuccess(t('LoginForm.RegisterSuccess'));
     } else {
-      ({ error } = await supabase.auth.signInWithPassword({ email, password }));
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      resultError = error;
     }
-    if (error) setError(error.message);
+    if (resultError) {
+      setError(resultError.message);
+      setSuccess('');
+    } else {
+      setError('');
+    }
   }
 
   return (
@@ -33,6 +42,7 @@ export default function LoginForm() {
           {isRegistering ? t('LoginForm.Register') : t('LoginForm.Login')}
         </h3>
         {error && <p className="text-red-400 text-center">{error}</p>}
+        {success && <p className="text-green-400 text-center">{success}</p>}
         <input
           type="email"
           placeholder={t('LoginForm.EmailPlaceholder')}
@@ -54,7 +64,11 @@ export default function LoginForm() {
         </button>
         <button
           type="button"
-          onClick={() => setIsRegistering(!isRegistering)}
+          onClick={() => {
+            setIsRegistering(!isRegistering);
+            setError('');
+            setSuccess('');
+          }}
           className="w-full text-sm text-indigo-400 hover:underline focus:outline-none"
         >
           {isRegistering ? t('LoginForm.ToggleToLogin') : t('LoginForm.ToggleToRegister')}
