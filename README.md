@@ -179,7 +179,6 @@ All user-facing copy lives in `src/i18n/messages.en.json`. To add or edit text:
 pnpm build && pnpm preview
 ```
 
----
 
 ## 🔄 CI / CD
 | Stage | Tooling | Description |
@@ -197,8 +196,6 @@ PrompTee is built for **serverless** hosting. Push to `main` and Netlify:
 1. Runs production build via `vite build`
 2. Deploys static assets + Netlify Functions
 3. Invalidates CDN cache
-
-> **Tip:** Want a staging environment? Connect a second branch to a Netlify “context” and you’re set.
 
 ---
 
