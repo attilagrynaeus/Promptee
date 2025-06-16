@@ -2,20 +2,20 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import PromptSidebar from '../components/PromptSidebar';
-import { UIProvider, useUI } from '../context/UIContext';
+import PromptSidebar from 'components/PromptSidebar';
+import { UIProvider, useUI } from 'context/UIContext';
 
-jest.mock('../context/DialogContext', () => ({
+jest.mock('context/DialogContext', () => ({
   useDialog: () => ({ showDialog: jest.fn() }),
 }));
-import { t } from '../i18n';
+import { t } from 'i18n';
 
 jest.mock('@supabase/auth-helpers-react', () => ({
   useSupabaseClient: () => ({}),
   useSession: () => ({ user: { id: 'uid-1' } }),
 }));
 
-jest.mock('../hooks/usePromptDump', () => {
+jest.mock('hooks/usePromptDump', () => {
   const mockDump = jest.fn();
   const mockHook = jest.fn(() => ({
     dump: mockDump,
@@ -122,7 +122,7 @@ describe('PromptSidebar', () => {
     );
     fireEvent.click(screen.getByText(t('PromptSidebar.DumpPrompts')));
     // mockDump was created inside the factory → one call
-    expect(require('../hooks/usePromptDump').default().dump).toHaveBeenCalled();
+    expect(require('hooks/usePromptDump').default().dump).toHaveBeenCalled();
   });
 
   it('toggles archived mode', () => {

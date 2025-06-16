@@ -1,9 +1,9 @@
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
-import { UIProvider } from '../context/UIContext';
-import usePromptData from '../hooks/usePromptData';
+import { UIProvider } from 'context/UIContext';
+import usePromptData from 'hooks/usePromptData';
 
-jest.mock('../utils/promptService', () => ({
+jest.mock('utils/promptService', () => ({
   fetchCategories: jest.fn(() => Promise.resolve({ data: [], error: null })),
   fetchPrompts: jest.fn(),
   savePrompt: jest.fn(),
@@ -18,7 +18,7 @@ const {
   fetchPrompts,
   updatePrompt,
   archivePrompt,
-} = require('../utils/promptService');
+} = require('utils/promptService');
 
 const wrapper = ({ children }) => <UIProvider>{children}</UIProvider>;
 

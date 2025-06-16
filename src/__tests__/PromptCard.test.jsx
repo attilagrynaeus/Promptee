@@ -2,10 +2,10 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import PromptCard from '../components/PromptCard';
-import { t } from '../i18n';
+import PromptCard from 'components/PromptCard';
+import { t } from 'i18n';
 
-jest.mock('../context/DialogContext', () => {
+jest.mock('context/DialogContext', () => {
   const showDialogMock = jest.fn();
   return {
     __esModule: true,
@@ -13,11 +13,11 @@ jest.mock('../context/DialogContext', () => {
     showDialogMock,
   };
 });
-const { showDialogMock } = require('../context/DialogContext');
+const { showDialogMock } = require('context/DialogContext');
 
-jest.mock('../assets/hover-icon.svg', () => 'icon.svg', { virtual: true });
+jest.mock('assets/hover-icon.svg', () => 'icon.svg', { virtual: true });
 
-jest.mock('../utils/tokenCounter', () => ({
+jest.mock('utils/tokenCounter', () => ({
   tokensOf: () => 3
 }));
 

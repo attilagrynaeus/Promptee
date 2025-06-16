@@ -1,7 +1,7 @@
 // hooks/usePromptData.js
 import { useState, useEffect, useCallback } from 'react';
-import { fetchCategories, fetchPrompts, savePrompt, deletePrompt, clonePrompt, toggleFavorit, updatePrompt, archivePrompt } from '../utils/promptService';
-import { t } from '../i18n';
+import { fetchCategories, fetchPrompts, savePrompt, deletePrompt, clonePrompt, toggleFavorit, updatePrompt, archivePrompt } from 'utils/promptService';
+import { t } from 'i18n';
 
 export default function usePromptData(supabase, session, showDialog, archiveMode) {
   const [prompts, setPrompts] = useState([]);

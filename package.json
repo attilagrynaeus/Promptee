@@ -15,6 +15,16 @@
       "<rootDir>/src/setupTests.js"
     ],
     "moduleNameMapper": {
+      "^components/(.*)$": "<rootDir>/src/components/$1",
+      "^context/(.*)$": "<rootDir>/src/context/$1",
+      "^hooks/(.*)$": "<rootDir>/src/hooks/$1",
+      "^utils/(.*)$": "<rootDir>/src/utils/$1",
+      "^assets/(.*)$": "<rootDir>/src/assets/$1",
+      "^i18n/(.*)$": "<rootDir>/src/i18n/$1",
+      "^i18n$": "<rootDir>/src/i18n/index.js",
+      "^PromptApp$": "<rootDir>/src/PromptApp.jsx",
+      "^supabaseClient$": "<rootDir>/src/supabaseClient.js",
+      "^inMemoryDb$": "<rootDir>/src/inMemoryDb.js",
       "\\.(css|less|scss|sass)$": "identity-obj-proxy"
     },
     "transform": {

@@ -1,5 +1,5 @@
 // src/__tests__/exportPrompts.test.js
-import { exportPrompts } from '../utils/exportPrompts';
+import { exportPrompts } from 'utils/exportPrompts';
 
 describe('exportPrompts util', () => {
   beforeEach(() => {

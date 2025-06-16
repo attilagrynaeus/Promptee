@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
-import usePromptDump from '../hooks/usePromptDump';
-import { t } from '../i18n';
+import usePromptDump from 'hooks/usePromptDump';
+import { t } from 'i18n';
 
-import { useDialog } from '../context/DialogContext';
+import { useDialog } from 'context/DialogContext';
 
-import ChainModeToggle   from './ChainModeToggle';
-import SearchFilters     from './SearchFilters';
-import FavoritesToggle   from './FavoritesToggle';
-import ArchivedToggle    from './ArchivedToggle';
+import ChainModeToggle   from 'components/ChainModeToggle';
+import SearchFilters     from 'components/SearchFilters';
+import FavoritesToggle   from 'components/FavoritesToggle';
+import ArchivedToggle    from 'components/ArchivedToggle';
 
 export default function PromptSidebar({
   search, setSearch,

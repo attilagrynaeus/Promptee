@@ -1,8 +1,19 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      components: resolve(__dirname, 'src/components'),
+      context: resolve(__dirname, 'src/context'),
+      hooks: resolve(__dirname, 'src/hooks'),
+      utils: resolve(__dirname, 'src/utils'),
+      assets: resolve(__dirname, 'src/assets'),
+      i18n: resolve(__dirname, 'src/i18n'),
+    },
+  },
   build: {
     rollupOptions: {
       output: {

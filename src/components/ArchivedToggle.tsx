@@ -1,6 +1,6 @@
 import React from 'react';
-import { useUI } from '../context/UIContext';
-import { t } from '../i18n';
+import { useUI } from 'context/UIContext';
+import { t } from 'i18n';
 
 export default function ArchivedToggle() {
   const { archiveMode, setArchiveMode } = useUI();

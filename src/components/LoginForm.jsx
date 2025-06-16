@@ -1,6 +1,6 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState } from 'react';
-import { t } from '../i18n';
+import { t } from 'i18n';
 
 export default function LoginForm() {
   const supabase = useSupabaseClient();

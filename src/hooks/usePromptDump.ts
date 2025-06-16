@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { exportPrompts } from '../utils/exportPrompts';
+import { exportPrompts } from 'utils/exportPrompts';
 import { SupabaseClient, Session } from '@supabase/supabase-js';
 
 export default function usePromptDump(

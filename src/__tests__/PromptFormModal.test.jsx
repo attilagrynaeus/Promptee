@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import PromptFormModal from '../components/PromptFormModal';
-import { t } from '../i18n';
+import PromptFormModal from 'components/PromptFormModal';
+import { t } from 'i18n';
 
 // React-DOM portal mock
 jest.mock('react-dom', () => ({
@@ -10,15 +10,15 @@ jest.mock('react-dom', () => ({
   createPortal: (node) => node,
 }));
 
-jest.mock('../utils/tokenCounter', () => ({
+jest.mock('utils/tokenCounter', () => ({
   tokensOf: () => 42,
 }));
 
-jest.mock('../context/DialogContext', () => ({
+jest.mock('context/DialogContext', () => ({
   useDialog: () => ({ showDialog: jest.fn() }),
 }));
 
-jest.mock('../supabaseClient', () => ({
+jest.mock('supabaseClient', () => ({
   supabase: {
     from: () => ({
       select: () => ({ then: (cb) => { cb({ data: [] }); return Promise.resolve(); } })

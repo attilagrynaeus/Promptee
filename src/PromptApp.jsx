@@ -1,18 +1,18 @@
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
 import React, { useState, useMemo, useEffect } from 'react';
-import PromptSidebar from './components/PromptSidebar';
-import PromptCard from './components/PromptCard';
-import ChainSeparator from './components/ChainSeparator';
-import PromptFormModal from './components/PromptFormModal';
-import LoginForm from './components/LoginForm';
-import useProfile from './hooks/useProfile';
-import useIdleTimeout from './hooks/useIdleTimeout';
-import { useDialog } from './context/DialogContext';
-import usePromptData from './hooks/usePromptData';
-import { filterPrompts } from './utils/promptFilter';
-import { toggleFavorit } from './utils/promptService';
-import { useUI } from './context/UIContext';
-import { t } from './i18n';
+import PromptSidebar from 'components/PromptSidebar';
+import PromptCard from 'components/PromptCard';
+import ChainSeparator from 'components/ChainSeparator';
+import PromptFormModal from 'components/PromptFormModal';
+import LoginForm from 'components/LoginForm';
+import useProfile from 'hooks/useProfile';
+import useIdleTimeout from 'hooks/useIdleTimeout';
+import { useDialog } from 'context/DialogContext';
+import usePromptData from 'hooks/usePromptData';
+import { filterPrompts } from 'utils/promptFilter';
+import { toggleFavorit } from 'utils/promptService';
+import { useUI } from 'context/UIContext';
+import { t } from 'i18n';
 
 export default function PromptApp() {
   const session = useSession();
