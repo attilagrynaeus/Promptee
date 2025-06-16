@@ -12,6 +12,8 @@ export default defineConfig({
       utils: resolve(__dirname, 'src/utils'),
       assets: resolve(__dirname, 'src/assets'),
       i18n: resolve(__dirname, 'src/i18n'),
+      PromptApp: resolve(__dirname, 'src/PromptApp.jsx'),
+      supabaseClient: resolve(__dirname, 'src/supabaseClient.js'),
     },
   },
   build: {

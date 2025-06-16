@@ -111,16 +111,19 @@ imported relative to `src`:
   "compilerOptions": {
     "baseUrl": "src",
     "paths": {
-      "components/*": ["components/*"]
+      "components/*": ["components/*"],
+      "PromptApp": ["PromptApp.jsx"],
+      "supabaseClient": ["supabaseClient"]
     }
   }
 }
 ```
 
-Example import using the alias:
+Example imports using aliases:
 
 ```javascript
 import PromptCard from 'components/PromptCard';
+import { supabase } from 'supabaseClient';
 ```
 
 All style sheets are loaded as CSS modules. Import them with the `.module.css`
