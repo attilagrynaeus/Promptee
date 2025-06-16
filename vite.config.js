@@ -4,6 +4,7 @@ import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  base: './',
   resolve: {
     alias: {
       components: resolve(__dirname, 'src/components'),
