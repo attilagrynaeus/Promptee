@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { tokensOf } from '../utils/tokenCounter';
-import { useDialog } from '../context/DialogContext';
-import { t } from '../i18n';
+import { tokensOf } from 'utils/tokenCounter';
+import { useDialog } from 'context/DialogContext';
+import { t } from 'i18n';
 import './PromptCard.css';
-import hoverIconUrl from '../assets/hover-icon.svg';
+import hoverIconUrl from 'assets/hover-icon.svg';
 
 const bgMap = {
   default: '#313338',

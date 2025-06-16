@@ -1,4 +1,4 @@
-import { createInMemoryDb } from '../inMemoryDb';
+import { createInMemoryDb } from 'inMemoryDb';
 
 let db, client;
 let uuidv4, TEST_USER_ID;

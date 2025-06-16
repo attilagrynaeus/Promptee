@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import CustomDialog from '../components/CustomDialog';
+import CustomDialog from 'components/CustomDialog';
 
 const DialogContext = createContext();
 

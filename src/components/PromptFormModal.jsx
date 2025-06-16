@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { tokensOf } from '../utils/tokenCounter';
-import { supabase } from '../supabaseClient';
-import { useDialog } from '../context/DialogContext';
-import { t } from '../i18n';
+import { tokensOf } from 'utils/tokenCounter';
+import { supabase } from 'supabaseClient';
+import { useDialog } from 'context/DialogContext';
+import { t } from 'i18n';
 
 function hashColor(str = '') {
   let h = 0;

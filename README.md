@@ -101,6 +101,38 @@ src/
 
 ```
 
+### Path Aliases and Styles
+
+The repository defines `baseUrl` and `paths` in `jsconfig.json` so modules can be
+imported relative to `src`:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "components/*": ["components/*"],
+      "PromptApp": ["PromptApp.jsx"],
+      "supabaseClient": ["supabaseClient"]
+    }
+  }
+}
+```
+
+Example imports using aliases:
+
+```javascript
+import PromptCard from 'components/PromptCard';
+import { supabase } from 'supabaseClient';
+```
+
+Global styles live in `index.css`. Component-specific styles may use CSS modules
+and should be imported with the `.module.css` extension when present:
+
+```javascript
+import styles from './Component.module.css';
+```
+
 ## Getting Started
 
 ### Prerequisites

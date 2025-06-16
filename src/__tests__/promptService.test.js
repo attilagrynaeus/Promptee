@@ -1,5 +1,5 @@
 // src/__tests__/promptService.test.js
-import { toggleFavorit } from '../utils/promptService';
+import { toggleFavorit } from 'utils/promptService';
 
 const mockRpc = jest.fn();
 const mockFrom = jest.fn();
