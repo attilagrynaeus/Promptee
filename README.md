@@ -56,7 +56,7 @@ src/
 │   ├── FavoritesToggle.jsx     # filter switch
 │   ├── LoginForm.jsx           # Supabase email-magic-link auth UI
 │   ├── PromptCard.jsx          # glass-style card + color selector
-│   ├── PromptCard.module.css   # scoped styles for PromptCard
+│   ├── PromptCard.css          # scoped styles for PromptCard
 │   ├── PromptFormModal.jsx     # create / edit / view prompt modal
 │   ├── PromptSidebar.jsx       # sidebar: filters, chains, export, logout
 │   └── SearchFilters.jsx       # search box + category dropdown
@@ -94,14 +94,14 @@ src/
 ├── PromptApp.jsx               # main application once user is logged in
 ├── supabaseClient.js           # singleton Supabase browser client
 ├── main.jsx                    # React 18 entry (creates root)
-├── index.module.css            # Tailwind base + custom layers
+├── index.css                   # Tailwind base + custom layers
 ├── setupTests.js               # Vitest global setup
 └── vite.config.js              # Vite + Tailwind + alias config
 
 
 ```
 
-### Path Aliases and CSS Modules
+### Path Aliases and Styles
 
 The repository defines `baseUrl` and `paths` in `jsconfig.json` so modules can be
 imported relative to `src`:
@@ -126,11 +126,11 @@ import PromptCard from 'components/PromptCard';
 import { supabase } from 'supabaseClient';
 ```
 
-All style sheets are loaded as CSS modules. Import them with the `.module.css`
-extension:
+Global styles live in `index.css`. Component-specific styles may use CSS modules
+and should be imported with the `.module.css` extension when present:
 
 ```javascript
-import styles from './App.module.css';
+import styles from './Component.module.css';
 ```
 
 ## Getting Started
