@@ -100,6 +100,12 @@ src/
 
 
 ```
+- **GitHub Actions** – run CI/CD pipelines (test → lint → build → deploy)
+- **Schedule** health-check workflows (e.g. Supabase keep-alive)
+- **Generate** daily SVG commit-count badge for the *Promptee* repo
+- **Automatic** failure emails (built-in GitHub Actions notifications)
+- **Dockerised** dev envs (local Postgres via docker-compose) & VS Code Dev Containers
+
 
 ### Path Aliases and Styles
 
