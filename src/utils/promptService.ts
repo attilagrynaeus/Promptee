@@ -4,8 +4,11 @@ import { SupabaseClient } from '@supabase/supabase-js';
 export const fetchCategories = (supabase: SupabaseClient) =>
   supabase.from('categories').select('*');
 
-export const fetchPrompts = (supabase: SupabaseClient, archived = false) => {
-  const query = supabase
+export const fetchPrompts = async (
+  supabase: SupabaseClient,
+  archived = false,
+) => {
+  const base = supabase
     .from('prompts')
     .select(`
       *,
@@ -16,10 +19,11 @@ export const fetchPrompts = (supabase: SupabaseClient, archived = false) => {
     `)
     .order('sort_order', { ascending: true });
 
-  if (archived) query.not('archived_at', 'is', null);
-  else query.is('archived_at', null);
+  const { data, error } = archived
+    ? await base.not('archived_at', 'is', null)
+    : await base.is('archived_at', null);
 
-  return query;
+  return { data: data ?? [], error };
 };
 
 export const savePrompt = async (
