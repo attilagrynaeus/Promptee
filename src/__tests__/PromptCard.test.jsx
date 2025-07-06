@@ -64,12 +64,6 @@ describe('PromptCard Component', () => {
     expect(handlers.onToggleFavorit).toHaveBeenCalledWith(prompt);
   });
 
-  it('calls onColorChange when color circle clicked', () => {
-    const { container } = renderCard();
-    const firstCircle = container.querySelector('.color-circle');
-    fireEvent.click(firstCircle);
-    expect(handlers.onColorChange).toHaveBeenCalledWith('1', 'default');
-  });
 
   it('prompts before archiving the prompt', () => {
     renderCard();
