@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { tokensOf } from 'utils/tokenCounter';
 import { useDialog } from 'context/DialogContext';
 import { t } from 'i18n';
@@ -24,20 +24,10 @@ export default function PromptCard({
   const isOwner = prompt.user_id === currentUserId;
   const { showDialog } = useDialog();
 
-  const [color, setColor] = useState(prompt.color || 'default');
   const [copied, setCopied] = useState(false);
   const [cloned, setCloned] = useState(false);
 
-  useEffect(() => {
-    setColor(prompt.color || 'default');
-  }, [prompt.color]);
-
-
-  const handleColorSelect = async (e, clr) => {
-    e.stopPropagation();
-    setColor(clr);
-    await onColorChange?.(prompt.id, clr);
-  };
+  const color = prompt.color || 'default';
 
   const handleCopy = (e) => {
     e.stopPropagation();
@@ -95,8 +85,8 @@ export default function PromptCard({
 
 return (
   <div
-    className={`prompt-card relative ${chainViewActive ? 'chain-view-mode' : ''} ${!chainViewActive ? 'hover-enabled' : ''} ${prompt.archived_at ? 'archived' : ''}`}
-    style={{ background: bgMap[color] }}
+    className={`promptcard relative ${chainViewActive ? 'chain-view-mode' : ''} ${!chainViewActive ? 'hover-enabled' : ''} ${prompt.archived_at ? 'archived' : ''}`}
+    style={{ '--stripe-color': bgMap[color] }}
     tabIndex={-1}
     onFocus={(e) => e.currentTarget.blur()}
   >
@@ -115,9 +105,9 @@ return (
     )}
 
     <header>
-      <h3 className="prompt-title">{prompt.title}</h3>
+      <h3 className="promptcard__title">{prompt.title}</h3>
       {prompt.description && (
-        <p className="prompt-description">{prompt.description}</p>
+        <p className="promptcard__subtitle">{prompt.description}</p>
       )}
     </header>
 
@@ -125,42 +115,30 @@ return (
       <span className="archived-badge">{t('PromptCard.ArchivedBadge')}</span>
     )}
 
-    <div className="prompt-tags mt-auto">
-      <span className="tag category-tag">{prompt.category}</span>
-      <span className={`tag visibility-tag ${prompt.is_public ? 'public' : 'private'}`}>
+    <div className="promptcard__badges mt-auto">
+      <span className="badge category-badge">{prompt.category}</span>
+      <span className={`badge visibility-badge ${prompt.is_public ? 'public' : 'private'}`}> 
         {prompt.is_public ? t('PromptCard.Public') : t('PromptCard.Private')}
       </span>
-      <span className="tag token-tag">
+      <span className="badge token-count">
         {tokenCount} {t('PromptCard.TokensSuffix')}
       </span>
     </div>
 
-    <div className="prompt-actions">
-      <button onClick={handleToggleFavorit} className="favorite-button">
-        {prompt.favorit ? '⭐️' : '☆'}
+    <div className="promptcard__actions">
+      <button onClick={handleToggleFavorit} className="favorite-button" aria-label="Toggle favorite">
+        {prompt.favorit ? '⭐' : '☆'}
       </button>
 
-      <div className="color-selector ml-2">
-        {['default', 'blue', 'green', 'violet'].map(clr => (
-          <button
-            key={clr}
-            type="button"
-            className={`color-circle ${clr}`}
-            onClick={(e) => handleColorSelect(e, clr)}
-            aria-label={`Set ${clr} background`}
-          />
-        ))}
-      </div>
-
-      <button onClick={handleCopy} className="action-button copy relative">
-        {t('PromptCard.Copy')}
+      <button onClick={handleCopy} className="action-button copy" aria-label="Copy prompt">
+        📋
         {copied && (
           <span className="copied-tooltip">{t('PromptCard.Copied')}</span>
         )}
       </button>
 
-      <button onClick={handleClone} className="action-button clone relative">
-        {t('PromptCard.Clone')}
+      <button onClick={handleClone} className="action-button clone" aria-label="Clone prompt">
+        🧬
         {cloned && (
           <span className="cloned-tooltip">{t('PromptCard.Cloned')}</span>
         )}
@@ -191,16 +169,18 @@ return (
       <button
         onClick={(e) => { e.stopPropagation(); isOwner ? onEdit() : onView(prompt); }}
         className="action-button edit"
+        aria-label={isOwner ? 'Edit prompt' : 'View prompt'}
       >
-        {isOwner ? t('PromptCard.Edit') : t('PromptCard.View')}
+        {isOwner ? '✏️' : '👁️'}
       </button>
 
       {isOwner && (
-        <button onClick={handleDelete} className="action-button delete">
-          {t('PromptCard.Delete')}
+        <button onClick={handleDelete} className="action-button delete" aria-label="Delete prompt">
+          🗑️
         </button>
       )}
     </div>
+    <div className="promptcard__stripe" />
   </div>
 );
 }
