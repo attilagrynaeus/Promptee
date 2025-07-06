@@ -1,3 +1,6 @@
+/* ------------------------------------------------------------------
+   PROMPT CARD – base container
+   ------------------------------------------------------------------ */
 .promptcard {
   position: relative;
   display: flex;
@@ -5,19 +8,79 @@
   padding: 16px;
   border-radius: 8px;
   min-width: 280px;
+
   background: var(--card-bg, #1E1E22);
-  border: 1px solid var(--card-border, rgba(255,255,255,0.05));
-  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.05));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
   color: #fff;
+
+  /* needed for the sheen animation */
+  overflow: hidden;
+
+  /* subtle “lift” on hover */
+  transition: background 160ms ease, filter 160ms ease;
 }
 
 .light .promptcard {
   --card-bg: #ffffff;
-  --card-border: rgba(0,0,0,0.05);
+  --card-border: rgba(0, 0, 0, 0.05);
   color: #191919;
-  box-shadow: 0 1px 4px rgba(0,0,0,.10);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .10);
 }
 
+/* ------------------------------------------------------------------
+   Hover brighten
+   ------------------------------------------------------------------ */
+.promptcard.hover-enabled:hover {
+  filter: brightness(1.06);
+}
+
+/* ------------------------------------------------------------------
+   Sheen / shimmer sweep
+   ------------------------------------------------------------------ */
+.promptcard.hover-enabled::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 50%;
+  height: 100%;
+  pointer-events: none;
+
+  /* put the sheen above the card content so it’s visible */
+  z-index: 5;
+
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,   /* slightly stronger alpha */
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+}
+
+.promptcard.hover-enabled:hover::before {
+  animation: card-sheen 0.8s forwards;
+}
+
+@keyframes card-sheen {
+  to {
+    left: 150%;
+  }
+}
+
+/* Respect reduced-motion user preference */
+@media (prefers-reduced-motion: reduce) {
+  .promptcard.hover-enabled::before,
+  .promptcard.hover-enabled:hover::before {
+    animation: none;
+  }
+}
+
+
+/* ------------------------------------------------------------------
+   Typography
+   ------------------------------------------------------------------ */
 .promptcard__title {
   font-size: 1.05rem;
   font-weight: 600;
@@ -38,6 +101,9 @@
   color: #6B6B6B;
 }
 
+/* ------------------------------------------------------------------
+   Badges
+   ------------------------------------------------------------------ */
 .promptcard__badges {
   display: flex;
   gap: 0.25rem;
@@ -57,6 +123,9 @@
   color: #8BBCEA;
 }
 
+/* ------------------------------------------------------------------
+   Action buttons
+   ------------------------------------------------------------------ */
 .promptcard__actions {
   display: flex;
   justify-content: flex-end;
@@ -75,13 +144,16 @@
 }
 
 .promptcard__actions button:hover {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .favorite-button {
   margin-right: auto;
 }
 
+/* ------------------------------------------------------------------
+   Coloured stripe
+   ------------------------------------------------------------------ */
 .promptcard__stripe {
   width: 100%;
   height: 4px;
@@ -90,6 +162,9 @@
   background: var(--stripe-color, #313338);
 }
 
+/* ------------------------------------------------------------------
+   Misc. badges / icons
+   ------------------------------------------------------------------ */
 .archived-badge {
   position: absolute;
   top: 8px;
@@ -113,11 +188,11 @@
   justify-content: center;
   font-size: 0.85rem;
   font-weight: 700;
-  background: rgba(255,255,255,0.16);
+  background: rgba(255, 255, 255, 0.16);
   color: #fff;
   backdrop-filter: blur(4px);
   border-radius: 6px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 }
 
 .hover-icon {
