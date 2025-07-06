@@ -77,7 +77,7 @@ src/
 │   ├── promptFilter.ts         # client-side search / category / favorite filter
 │   ├── promptService.ts        # Supabase service layer (CRUD helpers)
 │   ├── promptService2.test.js  # edge-case unit-tests
-│   └── tokenCounter.ts         # rough GPT token estimator (moved here)
+│   └── tokenCounter.ts         # rough GPT token estimator
 ├── lib/
 │   └── inMemoryDb.js           # local mock repo (fallback without Supabase)
 ├── __tests__/                  # Vitest + RTL test suite
