@@ -17,10 +17,17 @@
     "DeleteCancel": "No, Cancel",
     "FavErrorTitle": "Cannot set favorite",
     "FavIdMissing": "Prompt ID is missing.",
+    "ArchiveTitle": "Archive Prompt",
+    "ArchiveMessage": "Are you sure you want to archive \"{title}\"?",
+    "ArchiveConfirm": "Yes, Archive",
+    "ArchiveCancel": "No, Cancel",
     "OK": "OK",
+
     "Public": "Public",
     "Private": "Private",
     "TokensSuffix": "tokens",
+    "ArchivedBadge": "ARCHIVED",
+
     "Copy": "📋 Copy",
     "Copied": "✅ Copied!",
     "Clone": "🧬 Clone",
@@ -28,13 +35,16 @@
     "Edit": "✏️",
     "View": "👁️ View",
     "Delete": "🗑️",
-    "ArchiveTooltip": "Archive prompt",
-    "RestoreTooltip": "Restore prompt",
-    "ArchiveTitle": "Archive Prompt",
-    "ArchiveMessage": "Are you sure you want to archive \"{title}\"?",
-    "ArchiveConfirm": "Yes, Archive",
-    "ArchiveCancel": "No, Cancel",
-    "ArchivedBadge": "ARCHIVED"
+
+    "FavoriteTooltip": "Favorite / Unfavorite",
+    "ColorTooltip": "Color",
+    "CopyTooltip": "Copy",
+    "CloneTooltip": "Clone",
+    "EditTooltip": "Edit",
+    "ViewTooltip": "View",
+    "DeleteTooltip": "Delete",
+    "ArchiveTooltip": "Archive",
+    "RestoreTooltip": "Restore"
   },
   "PromptForm": {
     "View": "View Prompt",

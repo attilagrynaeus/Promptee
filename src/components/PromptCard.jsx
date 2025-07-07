@@ -27,20 +27,21 @@ export default function PromptCard({
   onDelete,
   onToggleFavorit,
   onClone,
-  onColorChange, 
+  onColorChange,
   onView,
   onArchive,
-  chainViewActive
+  chainViewActive,
 }) {
-  const tokenCount  = tokensOf(prompt.content);
-  const isOwner     = prompt.user_id === currentUserId;
+  const tokenCount = tokensOf(prompt.content);
+  const isOwner = prompt.user_id === currentUserId;
   const { showDialog } = useDialog();
 
-  const [copied, setCopied]                 = useState(false);
-  const [cloned, setCloned]                 = useState(false);
-  const [pickerOpen, setPickerOpen]         = useState(false);
-  const color                               = prompt.color || 'default';
+  const [copied, setCopied] = useState(false);
+  const [cloned, setCloned] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const color = prompt.color || 'default';
 
+  /* ---------------- handlers ------------------ */
   const handleCopy = (e) => {
     e.stopPropagation();
     onCopy();
@@ -62,7 +63,7 @@ export default function PromptCard({
       message: t('PromptCard.DeleteMessage'),
       confirmText: t('PromptCard.DeleteConfirm'),
       cancelText: t('PromptCard.DeleteCancel'),
-      onConfirm: () => onDelete(prompt.id)
+      onConfirm: () => onDelete(prompt.id),
     });
   };
 
@@ -100,10 +101,12 @@ export default function PromptCard({
     await onColorChange?.(prompt.id, clr);
   };
 
-  /* -------------------------------------------------- render */
+  /* ---------------- render -------------------- */
   return (
     <div
-      className={`promptcard relative ${chainViewActive ? 'chain-view-mode' : ''} hover-enabled ${prompt.archived_at ? 'archived' : ''}`}
+      className={`promptcard relative ${
+        chainViewActive ? 'chain-view-mode' : ''
+      } hover-enabled ${prompt.archived_at ? 'archived' : ''}`}
       style={{ '--stripe-color': bgMap[color] }}
       tabIndex={-1}
       onFocus={(e) => e.currentTarget.blur()}
@@ -122,16 +125,28 @@ export default function PromptCard({
 
       <header>
         <h3 className="promptcard__title">{prompt.title}</h3>
-        {prompt.description && <p className="promptcard__subtitle">{prompt.description}</p>}
+        {prompt.description && (
+          <p className="promptcard__subtitle">{prompt.description}</p>
+        )}
       </header>
 
-      {prompt.archived_at && <span className="archived-badge">{t('PromptCard.ArchivedBadge')}</span>}
+      {prompt.archived_at && (
+        <span className="archived-badge">
+          {t('PromptCard.ArchivedBadge')}
+        </span>
+      )}
 
       {/* badges */}
       <div className="promptcard__badges mt-auto">
         <span className="badge category-badge">{prompt.category}</span>
-        <span className={`badge visibility-badge ${prompt.is_public ? 'public' : 'private'}`}>
-          {prompt.is_public ? t('PromptCard.Public') : t('PromptCard.Private')}
+        <span
+          className={`badge visibility-badge ${
+            prompt.is_public ? 'public' : 'private'
+          }`}
+        >
+          {prompt.is_public
+            ? t('PromptCard.Public')
+            : t('PromptCard.Private')}
         </span>
         <span className="badge token-count">
           {tokenCount} {t('PromptCard.TokensSuffix')}
@@ -140,52 +155,109 @@ export default function PromptCard({
 
       {/* actions */}
       <div className="promptcard__actions">
-        <button onClick={handleToggleFavorit} className="favorite-button" aria-label="Toggle favorite">
+        <button
+          onClick={handleToggleFavorit}
+          className="favorite-button"
+          aria-label="Toggle favorite"
+          title={t('PromptCard.FavoriteTooltip')}
+        >
           {prompt.favorit ? '⭐' : '☆'}
         </button>
 
-    <div className="color-picker-dropdown" onClick={(e) => e.stopPropagation()}>
-      <button
-        className="action-button color-picker-toggle"
-        onClick={() => setPickerOpen(!pickerOpen)}
-        aria-label="Change colour"
-      >
-        🎨
-      </button>
+        {/* colour picker */}
+        <div
+          className="color-picker-dropdown"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            className="action-button color-picker-toggle"
+            onClick={() => setPickerOpen(!pickerOpen)}
+            aria-label="Change colour"
+            title={t('PromptCard.ColorTooltip')}
+          >
+            🎨
+          </button>
 
-      {pickerOpen && (
-        <div className="color-picker-menu">
-          {Object.keys(bgMap).map((clr) => (
-            <div
-              key={clr}
-              className={`color-picker-item ${clr === color ? 'selected' : ''}`}
-              style={{ backgroundColor: bgMap[clr] }}
-              onClick={(e) => handleColorSelect(e, clr)}
-            />
-          ))}
+          {pickerOpen && (
+            <div className="color-picker-menu">
+              {Object.keys(bgMap).map((clr) => (
+                <div
+                  key={clr}
+                  className={`color-picker-item ${
+                    clr === color ? 'selected' : ''
+                  }`}
+                  style={{ backgroundColor: bgMap[clr] }}
+                  onClick={(e) => handleColorSelect(e, clr)}
+                />
+              ))}
+            </div>
+          )}
         </div>
-      )}
-    </div>
 
-
-        <button onClick={handleCopy} className="action-button copy" aria-label="Copy prompt">
-          📋 {copied && <span className="copied-tooltip">{t('PromptCard.Copied')}</span>}
+        <button
+          onClick={handleCopy}
+          className="action-button copy"
+          aria-label="Copy prompt"
+          title={t('PromptCard.CopyTooltip')}
+        >
+          📋{' '}
+          {copied && (
+            <span className="copied-tooltip">
+              {t('PromptCard.Copied')}
+            </span>
+          )}
         </button>
 
-        <button onClick={handleClone} className="action-button clone" aria-label="Clone prompt">
-          🧬 {cloned && <span className="cloned-tooltip">{t('PromptCard.Cloned')}</span>}
+        <button
+          onClick={handleClone}
+          className="action-button clone"
+          aria-label="Clone prompt"
+          title={t('PromptCard.CloneTooltip')}
+        >
+          🧬{' '}
+          {cloned && (
+            <span className="cloned-tooltip">
+              {t('PromptCard.Cloned')}
+            </span>
+          )}
         </button>
 
         {!prompt.archived_at ? (
-          <button onClick={handleArchive} className="action-button archive" title={t('PromptCard.ArchiveTooltip')}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+          <button
+            onClick={handleArchive}
+            className="action-button archive"
+            title={t('PromptCard.ArchiveTooltip')}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"
+              />
             </svg>
           </button>
         ) : (
-          <button onClick={handleArchive} className="action-button restore" title={t('PromptCard.RestoreTooltip')}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3 3v3m0 0v3m0-3h3m-3 0h3m10 11a9 9 0 1 1-9-9" />
+          <button
+            onClick={handleArchive}
+            className="action-button restore"
+            title={t('PromptCard.RestoreTooltip')}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 3v3m0 0v3m0-3h3m-3 0h3m10 11a9 9 0 1 1-9-9"
+              />
             </svg>
           </button>
         )}
@@ -197,12 +269,22 @@ export default function PromptCard({
           }}
           className="action-button edit"
           aria-label={isOwner ? 'Edit prompt' : 'View prompt'}
+          title={
+            isOwner
+              ? t('PromptCard.EditTooltip')
+              : t('PromptCard.ViewTooltip')
+          }
         >
           {isOwner ? '✏️' : '👁️'}
         </button>
 
         {isOwner && (
-          <button onClick={handleDelete} className="action-button delete" aria-label="Delete prompt">
+          <button
+            onClick={handleDelete}
+            className="action-button delete"
+            aria-label="Delete prompt"
+            title={t('PromptCard.DeleteTooltip')}
+          >
             🗑️
           </button>
         )}
