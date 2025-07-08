@@ -21,14 +21,16 @@
 ---
 
 ## Features
-- **Intuitive Prompt Management** – create, categorise, clone, copy, edit, and delete prompts in seconds  
-- **Real‑time Multi‑user Collaboration** – secure auth & live updates powered by **Supabase Realtime**  
-- **Serverless Backend** – lightning‑fast APIs via **Netlify Functions** (Node 18)  
-- **Prompt Export / Backup** – one‑click JSON or Markdown export  
+- **Intuitive Prompt Management** – create, categorise, clone, copy, edit, and delete prompts in seconds  
+- **Real-time Multi-user Collaboration** – secure auth & live updates powered by **Supabase Realtime**  
+- **Resilient Draft Auto-Save** – edits are cached in `sessionStorage`, so nothing is lost even if the browser discards the tab (e.g., Chrome Memory Saver)  
+- **Serverless Backend** – lightning-fast APIs via **Netlify Functions** (Node 18)  
+- **Prompt Export / Backup** – one-click JSON or Markdown export  
 - **Fuzzy Search & Filters** – instantly locate prompts by keyword, tag, token count, or favourite status  
-- **Dark Mode** – automatic theme detection for eye‑friendly UX  
+- **Dark Mode** – automatic theme detection for eye-friendly UX  
 - **Comprehensive Tests** – unit & integration coverage with **Jest** & **React Testing Library**  
-- **Continuous Deployment** – GitHub -> Netlify pipeline with preview builds on every PR  
+- **Continuous Deployment** – GitHub → Netlify pipeline with preview builds on every PR  
+
 
 
 ## 🛠 Tech Stack

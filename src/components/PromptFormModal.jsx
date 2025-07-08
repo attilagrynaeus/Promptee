@@ -37,7 +37,6 @@ export default function PromptFormModal({
       .then(({ data }) => setChains(data || []));
   }, []);
 
-  /* main form state */
   const [form, setForm] = useState({
     id: prompt.id || crypto.randomUUID(),
     title: prompt.title || '',
@@ -50,7 +49,6 @@ export default function PromptFormModal({
     chain_order: prompt.chain_order || '',
   });
 
-  /* regenerate form when `prompt` prop changes */
   useEffect(() => {
     setForm((p) => ({
       ...p,
@@ -62,14 +60,14 @@ export default function PromptFormModal({
     }));
   }, [prompt, defCat]);
 
-  /* =======================
-     AUTOSAVE IMPLEMENTATION
-     ======================= */
+  /* 
+     AUTOSAVE 
+  */
 
   /* stable storage key based on current form id */
   const draftKey = useMemo(() => `draft-${form.id}`, [form.id]);
 
-  /* 1) Re-hydrate form from storage on mount */
+  /* Re-hydrate form from storage on mount */
   useEffect(() => {
     try {
       const saved = sessionStorage.getItem(draftKey);
@@ -79,10 +77,9 @@ export default function PromptFormModal({
     } catch {
       /* ignore corrupt JSON */
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // run once
+  }, []);
 
-  /* 2) Autosave on every state change (debounced) */
+  /*  Autosave on every state change (debounced) */
   useEffect(() => {
     const h = setTimeout(() => {
       try {
@@ -94,7 +91,7 @@ export default function PromptFormModal({
     return () => clearTimeout(h);
   }, [form, draftKey]);
 
-  /* 3) Save immediately when tab loses visibility */
+  /* Save immediately when tab loses visibility */
   useEffect(() => {
     const onHide = () => {
       if (document.visibilityState === 'hidden') {
@@ -106,8 +103,6 @@ export default function PromptFormModal({
     document.addEventListener('visibilitychange', onHide);
     return () => document.removeEventListener('visibilitychange', onHide);
   }, [form, draftKey]);
-
-  /* ============================================ */
 
   const tokenCount = tokensOf(form.content);
   const catName =
@@ -324,7 +319,6 @@ export default function PromptFormModal({
               )}
             </>
           )}
-          {/* ---------------------------------------------------- */}
 
           {/* public toggle */}
           <label className="flex items-center gap-2 text-sm mb-4">
