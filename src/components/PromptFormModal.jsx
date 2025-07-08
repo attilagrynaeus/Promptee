@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { tokensOf } from 'utils/tokenCounter';
 import { supabase } from 'supabaseClient';
 import { useDialog } from 'context/DialogContext';
 import { t } from 'i18n';
 
+/* util for colored header */
 function hashColor(str = '') {
   let h = 0;
   for (let i = 0; i < str.length; i++) {
@@ -21,11 +22,13 @@ export default function PromptFormModal({
   onSave,
   readOnly = false,
 }) {
+  /* default category */
   const defCat =
     categories.find((c) => c.name === 'Others')?.id || '';
 
   const { showDialog } = useDialog();
 
+  /* chains list */
   const [chains, setChains] = useState([]);
   useEffect(() => {
     supabase
@@ -34,6 +37,7 @@ export default function PromptFormModal({
       .then(({ data }) => setChains(data || []));
   }, []);
 
+  /* main form state */
   const [form, setForm] = useState({
     id: prompt.id || crypto.randomUUID(),
     title: prompt.title || '',
@@ -42,20 +46,68 @@ export default function PromptFormModal({
     category_id: prompt.category_id || defCat,
     is_public: prompt.is_public || false,
     next_prompt_id: prompt.next_prompt_id || '',
-    chain_id: prompt.chain_id || null,      
-    chain_order: prompt.chain_order || '',  
+    chain_id: prompt.chain_id || null,
+    chain_order: prompt.chain_order || '',
   });
 
+  /* regenerate form when `prompt` prop changes */
   useEffect(() => {
     setForm((p) => ({
       ...p,
       ...prompt,
       category_id: prompt.category_id || defCat,
       next_prompt_id: prompt.next_prompt_id || '',
-      chain_id: prompt.chain_id || null,       
-      chain_order: prompt.chain_order || '',   
+      chain_id: prompt.chain_id || null,
+      chain_order: prompt.chain_order || '',
     }));
-  }, [prompt]);
+  }, [prompt, defCat]);
+
+  /* =======================
+     AUTOSAVE IMPLEMENTATION
+     ======================= */
+
+  /* stable storage key based on current form id */
+  const draftKey = useMemo(() => `draft-${form.id}`, [form.id]);
+
+  /* 1) Re-hydrate form from storage on mount */
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem(draftKey);
+      if (saved) {
+        setForm(JSON.parse(saved));
+      }
+    } catch {
+      /* ignore corrupt JSON */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run once
+
+  /* 2) Autosave on every state change (debounced) */
+  useEffect(() => {
+    const h = setTimeout(() => {
+      try {
+        sessionStorage.setItem(draftKey, JSON.stringify(form));
+      } catch {
+        /* quota or other errors – ignore */
+      }
+    }, 400); // debounce 0.4 s
+    return () => clearTimeout(h);
+  }, [form, draftKey]);
+
+  /* 3) Save immediately when tab loses visibility */
+  useEffect(() => {
+    const onHide = () => {
+      if (document.visibilityState === 'hidden') {
+        try {
+          sessionStorage.setItem(draftKey, JSON.stringify(form));
+        } catch {}
+      }
+    };
+    document.addEventListener('visibilitychange', onHide);
+    return () => document.removeEventListener('visibilitychange', onHide);
+  }, [form, draftKey]);
+
+  /* ============================================ */
 
   const tokenCount = tokensOf(form.content);
   const catName =
@@ -79,37 +131,33 @@ export default function PromptFormModal({
           : e.target.value,
     });
 
-
   const submit = async (e) => {
     e.preventDefault();
 
     let { chain_id, chain_order } = form;
 
     if (chain_id) {
-
       const { count } = await supabase
         .from('prompts')
         .select('id', { head: true, count: 'exact' })
         .eq('chain_id', chain_id);
-
 
       if (!chain_order) {
         if (count >= 10) {
           showDialog({
             title: t('PromptForm.Warning'),
             message: t('PromptForm.ChainLimit'),
-            confirmText: t('PromptForm.OK')
+            confirmText: t('PromptForm.OK'),
           });
           return;
         }
         chain_order = count + 1;
       } else {
-
         if (chain_order < 1 || chain_order > 10) {
           showDialog({
             title: t('PromptForm.Warning'),
             message: t('PromptForm.ChainRange'),
-            confirmText: t('PromptForm.OK')
+            confirmText: t('PromptForm.OK'),
           });
           return;
         }
@@ -123,7 +171,7 @@ export default function PromptFormModal({
           showDialog({
             title: t('PromptForm.Warning'),
             message: t('PromptForm.ChainDup'),
-            confirmText: t('PromptForm.OK')
+            confirmText: t('PromptForm.OK'),
           });
           return;
         }
@@ -139,6 +187,9 @@ export default function PromptFormModal({
       next_prompt_id: form.next_prompt_id || null,
       favorit: prompt.favorit ?? false,
     });
+
+    /* clear draft after successful save */
+    sessionStorage.removeItem(draftKey);
     onClose();
   };
 
@@ -159,7 +210,6 @@ export default function PromptFormModal({
         />
 
         <div className="p-6 flex flex-col flex-1">
-
           <h2 className="text-2xl font-semibold mb-4">
             {readOnly
               ? t('PromptForm.View')
@@ -177,7 +227,7 @@ export default function PromptFormModal({
             className="field-dark rounded-none mb-3"
           />
 
-          {/* -----------  Content blokk ------------- */}
+          {/* -----------  Content block ------------- */}
           <div
             className="flex flex-1 mb-4 bg-gray-900 rounded
                        max-h-[50vh] overflow-hidden"
@@ -238,7 +288,7 @@ export default function PromptFormModal({
             </select>
           </div>
 
-          {/* -----------  Chain selector blokk ------------- */}
+          {/* -----------  Chain selector block ------------- */}
           {!readOnly && (
             <>
               <label className="flex flex-col gap-1 text-sm mb-4">
