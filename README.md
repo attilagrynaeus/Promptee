@@ -207,12 +207,12 @@ PrompTee is built for **serverless** hosting. Push to `main` and Netlify:
 
 ---
 
-## Roadmap
+## Roadmap for 2025 v1.0.0-beta
 - [x] ✅ i18n & localisation  
 - [x] ✅ Login form with registration  
 - [ ] Role-based access control  
-- [ ] Prompt version history  
-- [ ] VS Code extension  
+- [ ] ✅ Resilient Draft Auto-Save with sessionStorage 
+- [ ] Automatically fetches the prompt name and description using a GPT API call
 
 Feel free to check the [issues](../../issues) page
 
