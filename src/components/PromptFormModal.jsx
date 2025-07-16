@@ -1,11 +1,17 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import ReactDOM from 'react-dom';
 import { tokensOf } from 'utils/tokenCounter';
 import { supabase } from 'supabaseClient';
 import { useDialog } from 'context/DialogContext';
 import { t } from 'i18n';
 
-/* util for colored header */
+/* ---------- helpers ---------- */
+
 function hashColor(str = '') {
   let h = 0;
   for (let i = 0; i < str.length; i++) {
@@ -14,30 +20,49 @@ function hashColor(str = '') {
   return `hsl(${h % 360}, 70%, 50%)`;
 }
 
+/* ---------- component ---------- */
+
 export default function PromptFormModal({
-  prompt,
-  categories,
+  prompt = {},
+  categories = [],
   prompts,
   onClose,
   onSave,
   readOnly = false,
 }) {
-  /* default category */
-  const defCat =
-    categories.find((c) => c.name === 'Others')?.id || '';
+  /* ---------- derived constants ---------- */
 
-  const { showDialog } = useDialog();
+  const defCat = useMemo(
+    () => categories.find((c) => c.name === 'Others')?.id || '',
+    [categories],
+  );
 
-  /* chains list */
+  /* ---------- draft key (STABLE) ---------- */
+
+  const draftKey = useMemo(
+    () => (prompt.id ? `draft-${prompt.id}` : 'draft-new'),
+    [prompt.id],
+  );
+
+  /* ---------- chains list ---------- */
+
   const [chains, setChains] = useState([]);
   useEffect(() => {
+    let cancelled = false;
     supabase
       .from('chains')
       .select('*')
-      .then(({ data }) => setChains(data || []));
+      .then(({ data }) => {
+        if (!cancelled) setChains(data || []);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const [form, setForm] = useState({
+  /* ---------- form state ---------- */
+
+  const [form, setForm] = useState(() => ({
     id: prompt.id || crypto.randomUUID(),
     title: prompt.title || '',
     content: prompt.content || '',
@@ -47,84 +72,113 @@ export default function PromptFormModal({
     next_prompt_id: prompt.next_prompt_id || '',
     chain_id: prompt.chain_id || null,
     chain_order: prompt.chain_order || '',
-  });
+  }));
 
+
+  const formRef = useRef(form);
   useEffect(() => {
-    setForm((p) => ({
-      ...p,
-      ...prompt,
-      category_id: prompt.category_id || defCat,
-      next_prompt_id: prompt.next_prompt_id || '',
-      chain_id: prompt.chain_id || null,
-      chain_order: prompt.chain_order || '',
-    }));
-  }, [prompt, defCat]);
+    formRef.current = form;
+  }, [form]);
 
-  /* 
-     AUTOSAVE 
-  */
+  const [draftLoaded, setDraftLoaded] = useState(false);
 
-  /* stable storage key based on current form id */
-  const draftKey = useMemo(() => `draft-${form.id}`, [form.id]);
-
-  /* Re-hydrate form from storage on mount */
   useEffect(() => {
     try {
       const saved = sessionStorage.getItem(draftKey);
       if (saved) {
-        setForm(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        setForm(parsed);
+        formRef.current = parsed;
       }
-    } catch {
-      /* ignore corrupt JSON */
-    }
-  }, []);
+    } catch {}
+    setDraftLoaded(true);
+  }, [draftKey]);
 
-  /*  Autosave on every state change (debounced) */
+useEffect(() => {
+  if (!draftLoaded) return;
+
+  const hasDraft = sessionStorage.getItem(draftKey);
+  if (hasDraft) return;
+
+  if (prompt.id) {
+    setForm({
+      id: prompt.id,
+      title: prompt.title || '',
+      content: prompt.content || '',
+      description: prompt.description || '',
+      category_id: prompt.category_id || defCat,
+      is_public: prompt.is_public || false,
+      next_prompt_id: prompt.next_prompt_id || '',
+      chain_id: prompt.chain_id || null,
+      chain_order: prompt.chain_order || '',
+    });
+  }
+}, [prompt, defCat, draftLoaded, draftKey]);
+
+  /*  debounce autosave */
   useEffect(() => {
-    const h = setTimeout(() => {
+    const tId = setTimeout(() => {
       try {
         sessionStorage.setItem(draftKey, JSON.stringify(form));
-      } catch {
-        /* quota or other errors – ignore */
-      }
-    }, 400); // debounce 0.4 s
-    return () => clearTimeout(h);
+      } catch { console.error('Session storage  error:', err);}
+    }, 400);
+    return () => {
+      clearTimeout(tId);
+      try {
+        sessionStorage.setItem(draftKey, JSON.stringify(formRef.current));
+      } catch { console.error('Session storage  error:', err);}
+    };
   }, [form, draftKey]);
 
-  /* Save immediately when tab loses visibility */
+  /* flush on tab hide */
   useEffect(() => {
     const onHide = () => {
       if (document.visibilityState === 'hidden') {
         try {
-          sessionStorage.setItem(draftKey, JSON.stringify(form));
-        } catch {}
+          sessionStorage.setItem(draftKey, JSON.stringify(formRef.current));
+       } catch { console.error('Session storage  error:', err);}
       }
     };
-    document.addEventListener('visibilitychange', onHide);
-    return () => document.removeEventListener('visibilitychange', onHide);
-  }, [form, draftKey]);
+    document.addEventListener('visibilitychange', onHide, { capture: true });
+    return () =>
+      document.removeEventListener('visibilitychange', onHide, { capture: true });
+  }, [draftKey]);
 
-  const tokenCount = tokensOf(form.content);
+  /* ---------- misc derived ---------- */
+
+  const tokenCount = useMemo(() => tokensOf(form.content), [form.content]);
+
   const catName =
-    categories.find((c) => c.id === form.category_id)?.name ??
-    'Others';
+    categories.find((c) => c.id === form.category_id)?.name ?? 'Others';
   const headColor = hashColor(catName);
 
-  const numbers = Array.from(
-    { length: form.content.split('\n').length },
-    (_, i) => i + 1,
-  ).join('\n');
+  const numbers = useMemo(
+    () =>
+      Array.from(
+        { length: form.content.split('\n').length },
+        (_, i) => i + 1,
+      ).join('\n'),
+    [form.content],
+  );
 
-  const chg = (f) => (e) =>
-    setForm({
-      ...form,
-      [f]:
-        e.target.type === 'checkbox'
-          ? e.target.checked
-          : e.target.type === 'number'
-          ? +e.target.value
-          : e.target.value,
-    });
+  /* ---------- helpers ---------- */
+
+  const chg =
+    (field) =>
+    ({ target }) =>
+      setForm((prev) => ({
+        ...prev,
+        [field]:
+          target.type === 'checkbox'
+            ? target.checked
+            : target.type === 'number'
+            ? +target.value
+            : target.value,
+      }));
+
+  /* ---------- submit ---------- */
+
+  const { showDialog } = useDialog();
 
   const submit = async (e) => {
     e.preventDefault();
@@ -132,10 +186,15 @@ export default function PromptFormModal({
     let { chain_id, chain_order } = form;
 
     if (chain_id) {
-      const { count } = await supabase
+      const { count = 0, error } = await supabase
         .from('prompts')
         .select('id', { head: true, count: 'exact' })
         .eq('chain_id', chain_id);
+
+      if (error) {
+        console.error(error);
+        return;
+      }
 
       if (!chain_order) {
         if (count >= 10) {
@@ -156,13 +215,14 @@ export default function PromptFormModal({
           });
           return;
         }
-        const { data: dup } = await supabase
+        const { data: dup = [] } = await supabase
           .from('prompts')
           .select('id')
           .eq('chain_id', chain_id)
           .eq('chain_order', chain_order)
           .neq('id', form.id);
-        if (dup.length > 0) {
+
+        if (dup.length) {
           showDialog({
             title: t('PromptForm.Warning'),
             message: t('PromptForm.ChainDup'),
@@ -183,22 +243,22 @@ export default function PromptFormModal({
       favorit: prompt.favorit ?? false,
     });
 
-    /* clear draft after successful save */
     sessionStorage.removeItem(draftKey);
     onClose();
   };
+
+  /* ---------- render ---------- */
 
   return ReactDOM.createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
       <form
         onSubmit={submit}
-        className="w-full max-w-3xl min-h-[70vh] max-h-[90vh]
-                   flex flex-col overflow-y-auto
-                   bg-white/5 backdrop-blur-md border border-white/10
+        className="w-full max-w-3xl min-h-[70vh] max-h-[90vh] flex flex-col
+                   overflow-y-auto bg-white/5 backdrop-blur-md border border-white/10
                    rounded-2xl shadow-[0_25px_80px_rgba(0,0,0,0.4)]
                    text-gray-200"
       >
-        {/* colored header stripe */}
+        {/* header stripe */}
         <div
           style={{ backgroundColor: headColor }}
           className="h-2 w-full"
@@ -222,19 +282,15 @@ export default function PromptFormModal({
             className="field-dark rounded-none mb-3"
           />
 
-          {/* -----------  Content block ------------- */}
-          <div
-            className="flex flex-1 mb-4 bg-gray-900 rounded
-                       max-h-[50vh] overflow-hidden"
-          >
+          {/* --- content --- */}
+          <div className="flex flex-1 mb-4 bg-gray-900 rounded max-h-[50vh] overflow-hidden">
             <pre
-              className="w-16 pr-4 py-2 text-right select-none
-                         text-gray-500 text-xs leading-7 overflow-hidden"
+              className="w-16 pr-4 py-2 text-right select-none text-gray-500
+                         text-xs leading-7 overflow-hidden"
             >
               {numbers}
             </pre>
 
-            {/* textarea */}
             <textarea
               required
               wrap="soft"
@@ -244,8 +300,7 @@ export default function PromptFormModal({
               placeholder={t('PromptForm.ContentPlaceholder')}
               className="flex-1 field-dark rounded-none resize-none
                          py-2 pl-0 text-base font-mono leading-7
-                         min-h-[18rem]
-                         overflow-y-auto
+                         min-h-[18rem] overflow-y-auto
                          scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent"
             />
           </div>
@@ -283,7 +338,7 @@ export default function PromptFormModal({
             </select>
           </div>
 
-          {/* -----------  Chain selector block ------------- */}
+          {/* chain selector */}
           {!readOnly && (
             <>
               <label className="flex flex-col gap-1 text-sm mb-4">
@@ -331,6 +386,7 @@ export default function PromptFormModal({
             {t('PromptForm.Public')}
           </label>
 
+          {/* footer buttons */}
           <div className="mt-auto flex justify-end gap-3">
             <button
               type="button"
