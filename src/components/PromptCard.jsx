@@ -41,7 +41,7 @@ export default function PromptCard({
   const [pickerOpen, setPickerOpen] = useState(false);
   const color = prompt.color || 'default';
 
-  /* ---------------- handlers ------------------ */
+  /* ---------- handlers ---------- */
   const handleCopy = (e) => {
     e.stopPropagation();
     onCopy();
@@ -101,7 +101,7 @@ export default function PromptCard({
     await onColorChange?.(prompt.id, clr);
   };
 
-  /* ---------------- render -------------------- */
+  /* ---------- render ---------- */
   return (
     <div
       className={`promptcard relative ${
@@ -131,9 +131,7 @@ export default function PromptCard({
       </header>
 
       {prompt.archived_at && (
-        <span className="archived-badge">
-          {t('PromptCard.ArchivedBadge')}
-        </span>
+        <span className="archived-badge">{t('PromptCard.ArchivedBadge')}</span>
       )}
 
       {/* badges */}
@@ -144,9 +142,7 @@ export default function PromptCard({
             prompt.is_public ? 'public' : 'private'
           }`}
         >
-          {prompt.is_public
-            ? t('PromptCard.Public')
-            : t('PromptCard.Private')}
+          {prompt.is_public ? t('PromptCard.Public') : t('PromptCard.Private')}
         </span>
         <span className="badge token-count">
           {tokenCount} {t('PromptCard.TokensSuffix')}
@@ -155,6 +151,7 @@ export default function PromptCard({
 
       {/* actions */}
       <div className="promptcard__actions">
+        {/* favorite stays left-aligned */}
         <button
           onClick={handleToggleFavorit}
           className="favorite-button"
@@ -164,7 +161,20 @@ export default function PromptCard({
           {prompt.favorit ? '⭐' : '☆'}
         </button>
 
-        {/* colour picker */}
+        {/* highlighted Copy button */}
+        <button
+          onClick={handleCopy}
+          className="action-button copy copy-highlighted"
+          aria-label={t('PromptCard.CopyTooltip')}
+          title={t('PromptCard.CopyTooltip')}
+        >
+          📋
+          {copied && (
+            <span className="copied-tooltip">{t('PromptCard.Copied')}</span>
+          )}
+        </button>
+
+        {/* color picker */}
         <div
           className="color-picker-dropdown"
           onClick={(e) => e.stopPropagation()}
@@ -194,34 +204,20 @@ export default function PromptCard({
           )}
         </div>
 
-        <button
-          onClick={handleCopy}
-          className="action-button copy"
-          aria-label="Copy prompt"
-          title={t('PromptCard.CopyTooltip')}
-        >
-          📋{' '}
-          {copied && (
-            <span className="copied-tooltip">
-              {t('PromptCard.Copied')}
-            </span>
-          )}
-        </button>
-
+        {/* clone */}
         <button
           onClick={handleClone}
           className="action-button clone"
           aria-label="Clone prompt"
           title={t('PromptCard.CloneTooltip')}
         >
-          🧬{' '}
+          🧬
           {cloned && (
-            <span className="cloned-tooltip">
-              {t('PromptCard.Cloned')}
-            </span>
+            <span className="cloned-tooltip">{t('PromptCard.Cloned')}</span>
           )}
         </button>
 
+        {/* archive / restore */}
         {!prompt.archived_at ? (
           <button
             onClick={handleArchive}
@@ -262,6 +258,7 @@ export default function PromptCard({
           </button>
         )}
 
+        {/* edit or view */}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -270,14 +267,13 @@ export default function PromptCard({
           className="action-button edit"
           aria-label={isOwner ? 'Edit prompt' : 'View prompt'}
           title={
-            isOwner
-              ? t('PromptCard.EditTooltip')
-              : t('PromptCard.ViewTooltip')
+            isOwner ? t('PromptCard.EditTooltip') : t('PromptCard.ViewTooltip')
           }
         >
           {isOwner ? '✏️' : '👁️'}
         </button>
 
+        {/* delete (owner only) */}
         {isOwner && (
           <button
             onClick={handleDelete}
