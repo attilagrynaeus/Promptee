@@ -13,7 +13,14 @@ export default function usePromptDump(
     setLoading(true);
     setError(null);
     try {
-      const { exportPrompts } = await import('utils/exportPrompts');
+      // Use explicit relative path to avoid dev-time alias issues.
+      // Fallback to alias import if needed (some setups prefer alias resolution).
+      let exportPrompts: (args: any) => Promise<void>;
+      try {
+        exportPrompts = (await import('../utils/exportPrompts.tsx')).exportPrompts;
+      } catch (_) {
+        exportPrompts = (await import('utils/exportPrompts')).exportPrompts;
+      }
       await exportPrompts({
         supabase,
         userId: session.user.id,
