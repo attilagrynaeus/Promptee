@@ -64,6 +64,13 @@ export default function PromptSidebar({
     error:   dumpError
   } = usePromptDump(supabase, session, username);
 
+  const handleNew = () => {
+    try {
+      sessionStorage.removeItem('draft-new');
+    } catch {}
+    onNew();           // open modal
+  };
+
   return (
     <aside className="sidebar-box flex flex-col justify-between">
       <div>
@@ -71,7 +78,7 @@ export default function PromptSidebar({
           {t('PromptSidebar.Title')}
         </h2>
 
-        <button onClick={onNew} className="btn-blue mt-4 w-full shadow-lg">
+        <button onClick={handleNew} className="btn-blue mt-4 w-full shadow-lg">
           {t('PromptSidebar.NewPrompt')}
         </button>
 
@@ -102,7 +109,6 @@ export default function PromptSidebar({
             chains={chains}
           />
         )}
-
 
         {chainView && chains.length > 0 && (
           <div className="mt-4">
@@ -137,7 +143,6 @@ export default function PromptSidebar({
           {t('PromptSidebar.ExitChain')}
         </button>
 
-        {/* user info */}
         <div className="border-t border-gray-700 my-4" />
         <div className="text-center text-sm text-gray-400">
           {t('PromptSidebar.LoggedInAs')}{' '}
