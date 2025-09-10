@@ -77,7 +77,10 @@
     "Dumping": "⏳ Dumping…",
     "LogoutTitle": "Logout",
     "LogoutMsg": "Successfully logged out.",
-    "OK": "OK"
+    "OK": "OK",
+    "AddCategory": "Add Category",
+    "AddCategoryPrompt": "Enter new category name",
+    "AddCategorySuccess": "Category saved. Reload to see it."
   },
   "SearchFilters": {
     "SearchPlaceholder": "Search",

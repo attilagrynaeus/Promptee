@@ -40,6 +40,21 @@ export default function PromptSidebar({
     });
   };
 
+  const handleAddCategory = async () => {
+    try {
+      const name = (window.prompt(t('PromptSidebar.AddCategoryPrompt')) || '').trim();
+      if (!name) return;
+      const { error } = await supabase.from('categories').insert({ name });
+      if (error) {
+        showDialog({ title: t('Errors.Error'), message: error.message, confirmText: t('PromptSidebar.OK') });
+      } else {
+        showDialog({ title: t('PromptSidebar.AddCategory'), message: t('PromptSidebar.AddCategorySuccess'), confirmText: t('PromptSidebar.OK') });
+      }
+    } catch (e) {
+      showDialog({ title: t('Errors.Error'), message: String(e?.message || e), confirmText: t('PromptSidebar.OK') });
+    }
+  };
+
   const toggleFavoriteOnly = () => {
     if (favoriteOnly) {
       setFavoriteOnly(false);
@@ -152,6 +167,12 @@ export default function PromptSidebar({
 
       {/* footer */}
       <div className="mt-auto pt-4 text-center text-sm text-gray-400 border-t border-gray-700">
+        <button
+          onClick={handleAddCategory}
+          className="mt-1 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 transition-colors text-white rounded-lg py-1 px-3 w-full"
+        >
+          {t('PromptSidebar.AddCategory')}
+        </button>
         <button
           onClick={handleLogout}
           className="mt-2 text-sm font-semibold bg-red-700 hover:bg-red-600 transition-colors text-white rounded-lg py-1 px-3"
