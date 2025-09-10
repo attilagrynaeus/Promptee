@@ -271,3 +271,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 AGENTS.md
+Agent.md
