@@ -35,14 +35,6 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, .10);
 }
 
-/* ------------------------------------------------------------------
-   Hover brighten
-   ------------------------------------------------------------------ */
-.promptcard.hover-enabled:hover { filter: brightness(1.06); }
-
-/* ------------------------------------------------------------------
-   Sheen / shimmer sweep
-   ------------------------------------------------------------------ */
 .promptcard.hover-enabled::before {
   content: '';
   position: absolute;
@@ -70,9 +62,7 @@
   .promptcard.hover-enabled:hover::before { animation: none; }
 }
 
-/* ------------------------------------------------------------------
-   Typography
-   ------------------------------------------------------------------ */
+/* Typography */
 .promptcard__title { font-size: 1.1rem; font-weight: 600; color: #ffffff; }
 .light .promptcard__title  { color: #191919; }
 
@@ -91,9 +81,7 @@
 
 .token-count { color: #8BBCEA; background: transparent; }
 
-/* ------------------------------------------------------------------
-   Action buttons
-   ------------------------------------------------------------------ */
+/* Actions */
 .promptcard__actions {
   display: flex;
   justify-content: flex-end;
@@ -124,9 +112,7 @@
 
 .favorite-button { margin-right: auto; }
 
-/* ------------------------------------------------------------------
-   Color picker
-   ------------------------------------------------------------------ */
+/* Color picker */
 .color-picker-dropdown { position: relative; }
 .color-picker-toggle   { cursor: pointer; }
 
@@ -255,9 +241,7 @@
 
 .promptcard.archived { opacity: 0.6; }
 
-/* ------------------------------------------------------------------
-   Copy button highlight
-   ------------------------------------------------------------------ */
+/* Copy highlight */
 .copy-highlighted {
   background: rgba(30, 144, 255, 0.2);
   border-color: rgba(30, 144, 255, 0.4);
@@ -269,9 +253,7 @@
   border-color: rgba(30, 144, 255, 0.6);
 }
 
-/* ------------------------------------------------------------------
-   Copied tooltip (no layout shift)
-   ------------------------------------------------------------------ */
+/* Copied tooltip */
 .copied-tooltip {
   position: absolute;
   top: -32px;
@@ -295,7 +277,7 @@
   to   { opacity: 1; transform: translate(-50%, 0); }
 }
 
-/* light theme override */
+/* light theme */
 .light .copied-tooltip {
   background: rgba(30, 30, 30, 0.9);
 }
