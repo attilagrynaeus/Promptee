@@ -14,6 +14,18 @@
   color: #fff;
   overflow: hidden;
   transition: background 160ms ease, filter 160ms ease;
+  /* Cut-corner / beveled sides, both left and right */
+  --card-bevel: 12px;
+  clip-path: polygon(
+    0 var(--card-bevel),
+    var(--card-bevel) 0,
+    calc(100% - var(--card-bevel)) 0,
+    100% var(--card-bevel),
+    100% calc(100% - var(--card-bevel)),
+    calc(100% - var(--card-bevel)) 100%,
+    var(--card-bevel) 100%,
+    0 calc(100% - var(--card-bevel))
+  );
 }
 
 .light .promptcard {
