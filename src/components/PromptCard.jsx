@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { tokensOf } from 'utils/tokenCounter';
 import { useDialog } from 'context/DialogContext';
 import { t } from 'i18n';
@@ -40,6 +40,8 @@ export default function PromptCard({
   const [cloned, setCloned] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [copying, setCopying] = useState(false);
+  const dropdownRef = useRef(null);
+  const instanceId = useRef(Math.random().toString(36).slice(2));
   const color = prompt.color || 'default';
 
   /* ---------- handlers ---------- */
@@ -106,6 +108,31 @@ export default function PromptCard({
     setPickerOpen(false);
     await onColorChange?.(prompt.id, clr);
   };
+
+  // Close picker when clicking outside (cancel)
+  useEffect(() => {
+    if (!pickerOpen) return;
+    const onDocPointerDown = (e) => {
+      if (!dropdownRef.current) {
+        setPickerOpen(false);
+        return;
+      }
+      if (!dropdownRef.current.contains(e.target)) {
+        setPickerOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', onDocPointerDown, true);
+    return () => document.removeEventListener('pointerdown', onDocPointerDown, true);
+  }, [pickerOpen]);
+
+  // Ensure only one picker is open globally
+  useEffect(() => {
+    const onAnyOpen = (e) => {
+      if (e.detail !== instanceId.current) setPickerOpen(false);
+    };
+    window.addEventListener('color-picker:open', onAnyOpen);
+    return () => window.removeEventListener('color-picker:open', onAnyOpen);
+  }, []);
 
   /* ---------- render ---------- */
   return (
@@ -187,10 +214,20 @@ export default function PromptCard({
         <div
           className="color-picker-dropdown"
           onClick={(e) => e.stopPropagation()}
+          ref={dropdownRef}
         >
           <button
             className="action-button color-picker-toggle"
-            onClick={() => setPickerOpen(!pickerOpen)}
+            onClick={() => {
+              if (!pickerOpen) {
+                window.dispatchEvent(
+                  new CustomEvent('color-picker:open', { detail: instanceId.current })
+                );
+                setPickerOpen(true);
+              } else {
+                setPickerOpen(false);
+              }
+            }}
             aria-label="Change colour"
             title={t('PromptCard.ColorTooltip')}
           >
