@@ -81,6 +81,8 @@ export default function PromptFormModal({
     formRef.current = form;
   }, [form]);
 
+  const [contentLoading, setContentLoading] = useState(false);
+
   const [draftLoaded, setDraftLoaded] = useState(false);
 
   // first mount – load draft (edit: id-tied, create: new-draft if exists)
@@ -121,10 +123,8 @@ export default function PromptFormModal({
 
   // If editing and content is empty, fetch it lazily from DB
   useEffect(() => {
-    if (!isEdit || readOnly === undefined) {
-      // proceed; also fetch in readOnly view if needed
-    }
     if (isEdit && (!prompt.content || prompt.content.length === 0)) {
+      setContentLoading(true);
       supabase
         .from('prompts')
         .select('content')
@@ -134,7 +134,8 @@ export default function PromptFormModal({
           if (data?.content != null) {
             setForm((f) => ({ ...f, content: data.content }));
           }
-        });
+        })
+        .finally(() => setContentLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, prompt.id]);
@@ -300,7 +301,12 @@ export default function PromptFormModal({
             className="field-dark rounded-none mb-3"
           />
 
-          <div className="flex flex-1 mb-4 bg-gray-900 rounded max-h-[50vh] overflow-hidden">
+          <div className="relative flex flex-1 mb-4 bg-gray-900 rounded max-h-[50vh] overflow-hidden">
+            {contentLoading && (
+              <div className="loading-overlay">
+                <span className="spinner spinner-lg" />
+              </div>
+            )}
             <pre
               className="w-16 pr-4 py-2 text-right select-none text-gray-500
                          text-xs leading-7 overflow-hidden"

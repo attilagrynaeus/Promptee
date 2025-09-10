@@ -175,6 +175,7 @@ export default function PromptCard({
           className="action-button copy copy-highlighted"
           aria-label={t('PromptCard.CopyTooltip')}
           title={t('PromptCard.CopyTooltip')}
+          disabled={copying}
         >
           📋
           {copied && (

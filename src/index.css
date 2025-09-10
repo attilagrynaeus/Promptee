@@ -190,6 +190,25 @@ body {
     z-index: 10;
   }
 
+  /* Button-integrated spinner for disabled state (copy) */
+  .action-button.copy:disabled {
+    position: relative;
+    color: transparent;
+  }
+  .action-button.copy:disabled::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.25);
+    border-top-color: rgba(255,255,255,0.9);
+    border-radius: 9999px;
+    animation: spin 0.7s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
 }
 
 .hover-effect {
