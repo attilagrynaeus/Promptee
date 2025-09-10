@@ -22,8 +22,17 @@ export default defineConfig({
       output: {
         assetFileNames: 'assets/[name]-[hash].[ext]',
         chunkFileNames: 'assets/[name]-[hash].js',
-        entryFileNames: 'assets/[name]-[hash].js'
+        entryFileNames: 'assets/[name]-[hash].js',
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('docx')) return 'docx';
+            if (id.includes('gpt-tokenizer')) return 'tokenizer';
+            if (id.includes('@supabase')) return 'supabase';
+          }
+        }
       }
     }
+  ,
+    chunkSizeWarningLimit: 1024
   }
 });

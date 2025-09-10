@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import { exportPrompts } from 'utils/exportPrompts';
 import { SupabaseClient, Session } from '@supabase/supabase-js';
 
 export default function usePromptDump(
@@ -14,6 +13,7 @@ export default function usePromptDump(
     setLoading(true);
     setError(null);
     try {
+      const { exportPrompts } = await import('utils/exportPrompts');
       await exportPrompts({
         supabase,
         userId: session.user.id,

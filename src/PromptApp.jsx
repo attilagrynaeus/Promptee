@@ -3,7 +3,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import PromptSidebar from 'components/PromptSidebar';
 import PromptCard from 'components/PromptCard';
 import ChainSeparator from 'components/ChainSeparator';
-import PromptFormModal from 'components/PromptFormModal';
+const PromptFormModal = React.lazy(() => import('components/PromptFormModal'));
 import LoginForm from 'components/LoginForm';
 import useProfile from 'hooks/useProfile';
 import useIdleTimeout from 'hooks/useIdleTimeout';
@@ -192,23 +192,27 @@ export default function PromptApp() {
       </main>
 
       {editingPrompt && (
-        <PromptFormModal
-          prompt={editingPrompt}
-          categories={categories}
-          prompts={prompts}
-          onClose={() => setEditingPrompt(null)}
-          onSave={handleSave}
-        />
+        <React.Suspense fallback={null}>
+          <PromptFormModal
+            prompt={editingPrompt}
+            categories={categories}
+            prompts={prompts}
+            onClose={() => setEditingPrompt(null)}
+            onSave={handleSave}
+          />
+        </React.Suspense>
       )}
 
       {viewingPrompt && (
-        <PromptFormModal
-          prompt={viewingPrompt}
-          categories={categories}
-          prompts={prompts}
-          onClose={closeViewModal}
-          readOnly={true}
-        />
+        <React.Suspense fallback={null}>
+          <PromptFormModal
+            prompt={viewingPrompt}
+            categories={categories}
+            prompts={prompts}
+            onClose={closeViewModal}
+            readOnly={true}
+          />
+        </React.Suspense>
       )}
     </div>
   );
