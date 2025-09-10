@@ -164,6 +164,32 @@ body {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
   }
 
+  /* Spinners */
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.25);
+    border-top-color: rgba(255,255,255,0.9);
+    border-radius: 9999px;
+    animation: spin 0.7s linear infinite;
+  }
+  .spinner-dark {
+    border-color: rgba(0,0,0,0.2);
+    border-top-color: rgba(0,0,0,0.8);
+  }
+  .spinner-lg { width: 24px; height: 24px; border-width: 3px; }
+
+  .loading-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.25);
+    backdrop-filter: blur(2px);
+    z-index: 10;
+  }
+
 }
 
 .hover-effect {
@@ -172,4 +198,9 @@ body {
 
 .hover-effect:hover {
   transform: translateY(-3px);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }

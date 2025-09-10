@@ -39,14 +39,20 @@ export default function PromptCard({
   const [copied, setCopied] = useState(false);
   const [cloned, setCloned] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [copying, setCopying] = useState(false);
   const color = prompt.color || 'default';
 
   /* ---------- handlers ---------- */
-  const handleCopy = (e) => {
+  const handleCopy = async (e) => {
     e.stopPropagation();
-    onCopy();
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    try {
+      setCopying(true);
+      await onCopy();
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } finally {
+      setCopying(false);
+    }
   };
 
   const handleClone = (e) => {
@@ -144,9 +150,11 @@ export default function PromptCard({
         >
           {prompt.is_public ? t('PromptCard.Public') : t('PromptCard.Private')}
         </span>
-        <span className="badge token-count">
-          {tokenCount} {t('PromptCard.TokensSuffix')}
-        </span>
+        {typeof prompt.content === 'string' && prompt.content.length > 0 && (
+          <span className="badge token-count">
+            {tokenCount} {t('PromptCard.TokensSuffix')}
+          </span>
+        )}
       </div>
 
       {/* actions */}

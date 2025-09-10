@@ -119,6 +119,26 @@ export default function PromptFormModal({
     };
   }, [form, draftKey, draftLoaded, readOnly]);
 
+  // If editing and content is empty, fetch it lazily from DB
+  useEffect(() => {
+    if (!isEdit || readOnly === undefined) {
+      // proceed; also fetch in readOnly view if needed
+    }
+    if (isEdit && (!prompt.content || prompt.content.length === 0)) {
+      supabase
+        .from('prompts')
+        .select('content')
+        .eq('id', prompt.id)
+        .single()
+        .then(({ data }) => {
+          if (data?.content != null) {
+            setForm((f) => ({ ...f, content: data.content }));
+          }
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEdit, prompt.id]);
+
   // flush on tab hide
   useEffect(() => {
     if (readOnly) return;

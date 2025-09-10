@@ -10,7 +10,7 @@ import useIdleTimeout from 'hooks/useIdleTimeout';
 import { useDialog } from 'context/DialogContext';
 import usePromptData from 'hooks/usePromptData';
 import { filterPrompts } from 'utils/promptFilter';
-import { toggleFavorit } from 'utils/promptService';
+import { toggleFavorit, fetchPromptContent } from 'utils/promptService';
 import { useUI } from 'context/UIContext';
 import { t } from 'i18n';
 
@@ -176,7 +176,10 @@ export default function PromptApp() {
                 prompt={{ ...prompt, category: prompt.categories?.name || 'Uncategorized' }}
                 currentUserId={session.user.id}
                 chainViewActive={chainView}
-                onCopy={() => navigator.clipboard.writeText(prompt.content)}
+                onCopy={async () => {
+                  const { content, error } = await fetchPromptContent(supabase, prompt.id);
+                  if (!error) await navigator.clipboard.writeText(content || '');
+                }}
                 onEdit={() => setEditingPrompt(prompt)}
                 onView={handleView}
                 onDelete={() => handleDelete(prompt.id)}

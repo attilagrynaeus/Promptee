@@ -8,12 +8,14 @@ export const fetchPrompts = async (
   supabase: SupabaseClient,
   archived = false,
 ) => {
+  // Exclude heavy 'content' to keep list lightweight
   const base = supabase
     .from('prompts')
     .select(`
-      *,
+      id, user_id, title, description, is_public, inserted_at,
+      category_id, favorit, next_prompt_id, color, sort_order,
+      model_id, chain_id, chain_order, archived_at,
       categories(name),
-      favorit,
       profiles(email),
       next_prompt:next_prompt_id(title)
     `)
@@ -24,6 +26,18 @@ export const fetchPrompts = async (
     : await base.is('archived_at', null);
 
   return { data: data ?? [], error };
+};
+
+export const fetchPromptContent = async (
+  supabase: SupabaseClient,
+  id: string,
+) => {
+  const { data, error } = await supabase
+    .from('prompts')
+    .select('content')
+    .eq('id', id)
+    .single();
+  return { content: data?.content ?? '', error };
 };
 
 export const savePrompt = async (
@@ -52,9 +66,19 @@ export const clonePrompt = async (
   prompt: any,
   userId: string,
 ): Promise<any> => {
+  let content = prompt.content;
+  if (!content && prompt.id) {
+    const { data } = await supabase
+      .from('prompts')
+      .select('content')
+      .eq('id', prompt.id)
+      .single();
+    content = data?.content || '';
+  }
+
   const clonedPrompt = {
     title: `${prompt.title} (clone)`,
-    content: prompt.content,
+    content,
     description: prompt.description,
     category_id: prompt.category_id || null,
     next_prompt_id: prompt.next_prompt_id || null,
