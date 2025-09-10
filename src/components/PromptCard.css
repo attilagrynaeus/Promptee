@@ -3,6 +3,8 @@
   display: flex;
   flex-direction: column;
   padding: 16px;
+  /* extra left padding so the side colour stripe has room */
+  padding-left: calc(16px + var(--stripe-width, 7px) + var(--stripe-gap, 0px));
   border-radius: 8px;
   min-width: 280px;
 
@@ -151,14 +153,47 @@
 }
 
 /* ------------------------------------------------------------------
-   Bottom stripe, badges, etc.
+   Side colour stripe (left), rounded ends, same thickness
    ------------------------------------------------------------------ */
 .promptcard__stripe {
-  width: 100%;
-  height: 7px;
-  margin-top: 12px;
-  border-radius: 0 0 8px 8px;
+  --stripe-width: 7px;     /* thickness */
+  --stripe-gap: 0px;       /* flush with card edges by default */
+  --stripe-bevel: 12px;    /* size of the angular cut */
+
+  position: absolute;
+  top: var(--stripe-gap, 0px);
+  bottom: var(--stripe-gap, 0px);
+  left: var(--stripe-gap, 0px);
+  width: var(--stripe-width, 7px);
   background: var(--stripe-color, #313338);
+  /* keep outer-left corners matching the card's rounding */
+  border-radius: 8px 0 0 8px;
+  /* create the slightly angular cut — reversed orientation */
+  clip-path: polygon(
+    0 var(--stripe-bevel),
+    100% 0,
+    100% 100%,
+    0 calc(100% - var(--stripe-bevel)),
+    0 var(--stripe-bevel)
+  );
+}
+
+/* subtle highlight on the inner edge to mimic a folded-paper edge */
+.promptcard__stripe::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.28),
+    rgba(255,255,255,0) 45%,
+    rgba(0,0,0,0.25)
+  );
+  mix-blend-mode: screen;
+  opacity: 0.6;
 }
 
 .archived-badge {
