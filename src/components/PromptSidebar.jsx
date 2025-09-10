@@ -9,6 +9,7 @@ import ChainModeToggle   from 'components/ChainModeToggle';
 import SearchFilters     from 'components/SearchFilters';
 import FavoritesToggle   from 'components/FavoritesToggle';
 import ArchivedToggle    from 'components/ArchivedToggle';
+import { addCategory } from 'utils/categoryService';
 
 export default function PromptSidebar({
   search, setSearch,
@@ -44,7 +45,7 @@ export default function PromptSidebar({
     try {
       const name = (window.prompt(t('PromptSidebar.AddCategoryPrompt')) || '').trim();
       if (!name) return;
-      const { error } = await supabase.from('categories').insert({ name });
+      const { error } = await addCategory(supabase, name);
       if (error) {
         showDialog({ title: t('Errors.Error'), message: error.message, confirmText: t('PromptSidebar.OK') });
       } else {
