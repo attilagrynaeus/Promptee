@@ -167,8 +167,9 @@ export default function PromptApp() {
 
       <main className="flex-1">
         <div
-          className="grid gap-6 auto-rows-max items-start"
-          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}
+          className="cards-grid auto-rows-max"
+
+          style={{ ['--card-min']:'280px' }}
         >
           {filtered.map((prompt, idx) => (
             <React.Fragment key={prompt.id}>

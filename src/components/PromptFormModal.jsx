@@ -137,7 +137,6 @@ export default function PromptFormModal({
         })
         .finally(() => setContentLoading(false));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, prompt.id]);
 
   // flush on tab hide

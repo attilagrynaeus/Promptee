@@ -164,6 +164,32 @@ body {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
   }
 
+  .cards-grid {
+    --gap-x: 2rem;   /* 32px */
+    --gap-y: 2.5rem; /* 40px */
+    --card-min: 280px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-min), 1fr));
+    column-gap: var(--gap-x);
+    row-gap: var(--gap-y);
+    align-items: start;
+  }
+
+  @media (min-width: 768px) {
+    .cards-grid {
+      --gap-x: 2.25rem; /* 36px */
+      --gap-y: 2.75rem; /* 44px */
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .cards-grid {
+      --gap-x: 2.5rem;  /* 40px */
+      --gap-y: 3rem;    /* 48px */
+    }
+  }
+
   /* Spinners */
   .spinner {
     width: 16px;
@@ -190,7 +216,6 @@ body {
     z-index: 10;
   }
 
-  /* Button-integrated spinner for disabled state (copy) */
   .action-button.copy:disabled {
     position: relative;
     color: transparent;

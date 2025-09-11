@@ -150,13 +150,10 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ------------------------------------------------------------------
-   Side colour stripe (left), rounded ends, same thickness
-   ------------------------------------------------------------------ */
 .promptcard__stripe {
-  --stripe-width: 7px;     /* thickness */
-  --stripe-gap: 0px;       /* flush with card edges by default */
-  --stripe-bevel: 12px;    /* size of the angular cut */
+  --stripe-width: 7px;
+  --stripe-gap: 0px; 
+  --stripe-bevel: 12px; 
 
   position: absolute;
   top: var(--stripe-gap, 0px);
@@ -176,7 +173,6 @@
   );
 }
 
-/* subtle highlight on the inner edge to mimic a folded-paper edge */
 .promptcard__stripe::after {
   content: '';
   position: absolute;
@@ -224,7 +220,6 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 }
 
-/* hover icon */
 .hover-icon {
   position: absolute;
   top: 8px;
@@ -241,7 +236,6 @@
 
 .promptcard.archived { opacity: 0.6; }
 
-/* Copy highlight */
 .copy-highlighted {
   background: rgba(30, 144, 255, 0.2);
   border-color: rgba(30, 144, 255, 0.4);
@@ -253,7 +247,6 @@
   border-color: rgba(30, 144, 255, 0.6);
 }
 
-/* Copied tooltip */
 .copied-tooltip {
   position: absolute;
   top: -32px;
@@ -277,7 +270,6 @@
   to   { opacity: 1; transform: translate(-50%, 0); }
 }
 
-/* light theme */
 .light .copied-tooltip {
   background: rgba(30, 30, 30, 0.9);
 }
