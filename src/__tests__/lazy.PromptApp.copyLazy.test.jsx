@@ -24,29 +24,35 @@ jest.mock('hooks/useProfile', () => ({
   default: () => ({ profile: { role: 'User' }, loading: false }),
 }));
 
+const mockPrompts = [
+  {
+    id: 'p1',
+    user_id: 'u1',
+    title: 'A',
+    description: 'd',
+    is_public: true,
+    sort_order: 0,
+    favorit: false,
+    categories: { name: 'Others' },
+    color: 'default',
+  },
+];
+
+const mockCategories = [{ id: 'c1', name: 'Others' }];
+
+const mockUsePromptData = {
+  prompts: mockPrompts,
+  categories: mockCategories,
+  handleSave: jest.fn(),
+  handleDelete: jest.fn(),
+  handleClone: jest.fn(),
+  handleArchive: jest.fn(),
+  fetchPrompts: jest.fn(),
+};
+
 jest.mock('hooks/usePromptData', () => ({
   __esModule: true,
-  default: () => ({
-    prompts: [
-      {
-        id: 'p1',
-        user_id: 'u1',
-        title: 'A',
-        description: 'd',
-        is_public: true,
-        sort_order: 0,
-        favorit: false,
-        categories: { name: 'Others' },
-        color: 'default',
-      },
-    ],
-    categories: [{ id: 'c1', name: 'Others' }],
-    handleSave: jest.fn(),
-    handleDelete: jest.fn(),
-    handleClone: jest.fn(),
-    handleArchive: jest.fn(),
-    fetchPrompts: jest.fn(),
-  }),
+  default: () => mockUsePromptData,
 }));
 
 jest.mock('context/DialogContext', () => ({
