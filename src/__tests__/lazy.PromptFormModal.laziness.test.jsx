@@ -16,19 +16,38 @@ jest.mock('context/DialogContext', () => ({
 jest.mock('utils/tokenCounter', () => ({ tokensOf: () => 0 }));
 
 // Mock Supabase client used inside the component
-const selectMock = jest.fn();
-const singleMock = jest.fn();
+// Note: Jest allows referencing out-of-scope variables in jest.mock
+// only if their names start with `mock*`. Rename accordingly to satisfy hoisting rules.
+const mockSingle = jest.fn();
 jest.mock('supabaseClient', () => ({
   supabase: {
-    from: () => ({
-      select: () => ({ eq: () => ({ single: singleMock }) }),
+    from: (table) => ({
+      select: (..._args) => {
+        if (table === 'chains') {
+          // Return a thenable for the initial chains fetch
+          const p = Promise.resolve({ data: [] });
+          return {
+            then: (onFulfilled, onRejected) => p.then(onFulfilled, onRejected),
+            catch: (onRejected) => p.catch(onRejected),
+            finally: (onFinally) => p.finally(onFinally),
+          };
+        }
+
+        // For prompts -> support chaining: eq(...).single().then(...)
+        const builder = {
+          eq: () => builder,
+          neq: () => builder,
+          single: () => mockSingle(), // returns a Promise so callers can .then/.finally
+        };
+        return builder;
+      },
     }),
   },
 }));
 
 describe('PromptFormModal – lazy load content while editing', () => {
   beforeEach(() => {
-    singleMock.mockResolvedValue({ data: { content: 'LAZY-FETCHED' } });
+    mockSingle.mockResolvedValue({ data: { content: 'LAZY-FETCHED' } });
   });
 
   it('shows loading overlay and fills textarea with fetched content', async () => {
@@ -49,4 +68,3 @@ describe('PromptFormModal – lazy load content while editing', () => {
     });
   });
 });
-

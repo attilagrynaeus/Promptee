@@ -44,7 +44,7 @@ export default function PromptCard({
   const instanceId = useRef(Math.random().toString(36).slice(2));
   const color = prompt.color || 'default';
 
-  /* ---------- handlers ---------- */
+  
   const handleCopy = async (e) => {
     e.stopPropagation();
     try {
@@ -134,7 +134,7 @@ export default function PromptCard({
     return () => window.removeEventListener('color-picker:open', onAnyOpen);
   }, []);
 
-  /* ---------- render ---------- */
+  
   return (
     <div
       className={`promptcard relative ${
