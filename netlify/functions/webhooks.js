@@ -17,6 +17,15 @@ async function updateUser(session) {
   );
 }
 
+async function deactivateCustomer(invoice) {
+  const customerId = invoice.customer;
+  if (!customerId) return;
+  await pool.query(
+    'UPDATE users SET subscription_active=false WHERE stripe_customer_id=$1',
+    [customerId]
+  );
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
@@ -37,6 +46,8 @@ exports.handler = async (event) => {
   }
   if (stripeEvent.type === 'checkout.session.completed') {
     await updateUser(stripeEvent.data.object);
+  } else if (stripeEvent.type === 'invoice.payment_failed') {
+    await deactivateCustomer(stripeEvent.data.object);
   }
   return { statusCode: 200, body: JSON.stringify({ received: true }) };
 };
