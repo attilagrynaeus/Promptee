@@ -202,6 +202,7 @@ export default function PromptApp() {
                 prompt={{ ...prompt, category: prompt.categories?.name || 'Uncategorized' }}
                 currentUserId={session.user.id}
                 chainViewActive={chainView}
+                subscriptionActive={subscriptionActive}
                 onCopy={allowAction(async () => {
                   const { content, error } = await fetchPromptContent(supabase, prompt.id);
                   if (!error) await navigator.clipboard.writeText(content || '');
