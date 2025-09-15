@@ -10,6 +10,7 @@ import useIdleTimeout from 'hooks/useIdleTimeout';
 import { useDialog } from 'context/DialogContext';
 import usePromptData from 'hooks/usePromptData';
 import { filterPrompts } from 'utils/promptFilter';
+import { sortPromptsForCategory } from 'utils/promptSort';
 import { toggleFavorit, fetchPromptContent } from 'utils/promptService';
 import { useUI } from 'context/UIContext';
 import { t } from 'i18n';
@@ -95,9 +96,13 @@ export default function PromptApp() {
       return currentChain;
     }
 
-    return filterPrompts({
+    const base = filterPrompts({
       session, prompts, search, categoryFilter, favoriteOnly
-    }).sort((a, b) => a.sort_order - b.sort_order);
+    });
+    const useTitleIndex = categoryFilter && categoryFilter !== 'All Categories';
+    return useTitleIndex
+      ? sortPromptsForCategory(base)
+      : base.sort((a, b) => a.sort_order - b.sort_order);
   }, [
     session, prompts, search, categoryFilter,
     favoriteOnly, chainView, chainFilter, currentChain
