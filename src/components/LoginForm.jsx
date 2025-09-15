@@ -18,9 +18,15 @@ export default function LoginForm() {
         method: 'POST',
         body: JSON.stringify({ email, password })
       });
-      const data = await response.json();
+      let data = {};
+      try {
+        // Attempt to parse JSON; fall back to empty object when body is blank
+        data = await response.json();
+      } catch {
+        data = {};
+      }
       if (!response.ok) {
-        setError(data.message || t('Errors.Error'));
+        setError(data.message || data.error || t('Errors.Error'));
         setSuccess('');
         return;
       }

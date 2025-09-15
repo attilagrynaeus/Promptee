@@ -75,4 +75,31 @@ describe('LoginForm', () => {
       expect(screen.getByText('LoginForm.RegisterSuccess')).toBeInTheDocument()
     );
   });
+
+  it('shows a generic error when the response body is empty', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: false,
+      json: async () => {
+        throw new Error('Unexpected end of JSON input');
+      },
+    });
+
+    render(<LoginForm />);
+
+    fireEvent.change(
+      screen.getByPlaceholderText('LoginForm.EmailPlaceholder'),
+      { target: { value: 'missing@example.com' } }
+    );
+    fireEvent.change(
+      screen.getByPlaceholderText('LoginForm.PasswordPlaceholder'),
+      { target: { value: 'secret' } }
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'LoginForm.Login' }));
+
+    await waitFor(() => expect(fetch).toHaveBeenCalled());
+    expect(
+      await screen.findByText('Errors.Error')
+    ).toBeInTheDocument();
+  });
 });
