@@ -46,7 +46,7 @@ export default function PromptApp() {
 
   const {
     prompts, categories, handleSave, handleDelete,
-    handleClone, handleArchive, fetchPrompts
+    handleClone, handleArchive, fetchPrompts, reloadCategories
   } = usePromptData(supabase, session, showDialog, archiveMode);
 
   useEffect(() => {
@@ -153,6 +153,7 @@ export default function PromptApp() {
         onNew={() => setEditingPrompt({})}
         categories={['All Categories', ...categories.map(c => c.name)]}
         categoriesData={categories}
+        reloadCategories={reloadCategories}
         user={profile}
         favoriteOnly={favoriteOnly}
         setFavoriteOnly={setFavoriteOnly}

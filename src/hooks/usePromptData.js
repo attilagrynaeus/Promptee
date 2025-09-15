@@ -30,6 +30,7 @@ export default function usePromptData(supabase, session, showDialog, archiveMode
     prompts,
     categories,
     fetchPrompts: loadPrompts,
+    reloadCategories: loadCategories,
 
     handleSave: async (prompt) => {
       const isNewPrompt = !prompt.id;

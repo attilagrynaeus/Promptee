@@ -12,6 +12,7 @@ export default function EditCategoryModal({
   open,
   onClose,
   categories = [],
+  onUpdated,
 }) {
   const supabase = useSupabaseClient();
   const { showDialog } = useDialog();
@@ -41,19 +42,41 @@ export default function EditCategoryModal({
     clearTimeout(debounceRef.current);
   }, [selectedId]);
 
+  const isDuplicateName = (trimmed) => {
+    const existing = categories.some(
+      (c) => c.id !== selectedId && (c.name ?? '').trim().toLowerCase() === trimmed.toLowerCase(),
+    );
+    return existing;
+  };
+
   const flushSave = async () => {
     if (!selectedId) return;
     const trimmed = (name || '').trim();
-    if (trimmed.length === 0 || trimmed === lastSavedNameRef.current) return;
+    if (trimmed.length === 0) {
+      showDialog({ title: t('Errors.Error'), message: t('EditCategory.Errors.Empty'), confirmText: t('PromptForm.OK') });
+      return;
+    }
+    if (isDuplicateName(trimmed)) {
+      showDialog({ title: t('Errors.Error'), message: t('EditCategory.Errors.Duplicate'), confirmText: t('PromptForm.OK') });
+      return;
+    }
+    if (trimmed === lastSavedNameRef.current) return;
     try {
       setSaving(true);
       const { error } = await updateCategory(supabase, selectedId, trimmed);
       if (error) {
-        showDialog({ title: t('Errors.Error'), message: error.message, confirmText: t('PromptForm.OK') });
+        const msg =
+          error.code === '23505' || /unique|duplicate key/i.test(error.message || '')
+            ? t('EditCategory.Errors.Duplicate')
+            : t('EditCategory.Errors.DbError');
+        showDialog({ title: t('Errors.Error'), message: msg, confirmText: t('PromptForm.OK') });
       } else {
         lastSavedNameRef.current = trimmed;
         // Show a lightweight confirmation; keep non-intrusive
         // TODO: If a toast system exists, prefer that over dialog
+        if (onUpdated) {
+          try { onUpdated(); } catch {}
+        }
       }
     } catch (e) {
       showDialog({ title: t('Errors.Error'), message: String(e?.message || e), confirmText: t('PromptForm.OK') });

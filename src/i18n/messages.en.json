@@ -89,7 +89,12 @@
     "SelectLabel": "Choose category",
     "NameLabel": "New name",
     "NamePlaceholder": "Category name",
-    "AutoSaveHint": "Changes save automatically. Use Save to close."
+    "AutoSaveHint": "Changes save automatically. Use Save to close.",
+    "Errors": {
+      "Empty": "Category name cannot be empty.",
+      "Duplicate": "Category name already exists.",
+      "DbError": "Could not update category. Please try again."
+    }
   },
   "SearchFilters": {
     "SearchPlaceholder": "Search",
