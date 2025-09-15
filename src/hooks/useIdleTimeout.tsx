@@ -1,10 +1,9 @@
 import { useEffect, useCallback, useRef } from 'react';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { supabase } from 'supabaseClient';
 import { useDialog } from 'context/DialogContext';
 import { t } from 'i18n';
 
 export default function useIdleTimeout(timeoutMinutes = 30) {
-  const supabase = useSupabaseClient();
   const { showDialog, hideDialog } = useDialog();
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -24,7 +23,7 @@ export default function useIdleTimeout(timeoutMinutes = 30) {
       confirmText: t('IdleTimeout.OK'),
       onConfirm: hideDialog,
     });
-  }, [supabase, showDialog, hideDialog]);
+  }, [showDialog, hideDialog]);
 
   const resetTimeout = useCallback(() => {
     clear();

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
+import { useSession } from '@supabase/auth-helpers-react';
+import { supabase } from 'supabaseClient';
 import usePromptDump from 'hooks/usePromptDump';
 import { t } from 'i18n';
 
@@ -24,7 +25,6 @@ export default function PromptSidebar({
   chainView, setChainView,
   chainFilter, setChainFilter
 }) {
-  const supabase = useSupabaseClient();
   const session  = useSession();
   const username = user?.email?.split('@')[0] || 'Guest';
   const { showDialog } = useDialog();

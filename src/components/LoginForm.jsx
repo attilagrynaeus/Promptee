@@ -1,9 +1,8 @@
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState } from 'react';
 import { t } from 'i18n';
+import { apiFetch } from 'utils/api';
 
 export default function LoginForm() {
-  const supabase = useSupabaseClient();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -12,24 +11,31 @@ export default function LoginForm() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    let resultError;
-    if (isRegistering) {
-      const { error } = await supabase.auth.signUp({ email, password });
-      resultError = error;
-       if (!error) {
+    setError('');
+    const endpoint = isRegistering ? '/api/register' : '/api/login';
+    try {
+      const response = await apiFetch(endpoint, {
+        method: 'POST',
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.message || t('Errors.Error'));
+        setSuccess('');
+        return;
+      }
+      if (data.token) {
+        // TODO: consider secure storage
+        localStorage.setItem('jwt', data.token);
+      }
+      if (isRegistering) {
         setSuccess(t('LoginForm.RegisterSuccess'));
         setEmail('');
         setPassword('');
       }
-    } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      resultError = error;
-    }
-    if (resultError) {
-      setError(resultError.message);
+    } catch (e) {
+      setError(String(e?.message || e));
       setSuccess('');
-    } else {
-      setError('');
     }
   }
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { supabase } from 'supabaseClient';
 import { useDialog } from 'context/DialogContext';
 import { t } from 'i18n';
 import { updateCategory } from 'utils/categoryService';
@@ -13,7 +13,6 @@ export default function EditCategoryModal({
   categories = [],
   onUpdated,
 }) {
-  const supabase = useSupabaseClient();
   const { showDialog } = useDialog();
 
   const defaultCatId = useMemo(() => categories[0]?.id ?? '', [categories]);

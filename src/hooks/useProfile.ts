@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
+import { useSession } from '@supabase/auth-helpers-react';
+import { supabase } from 'supabaseClient';
 
 export default function useProfile() {
   const [profile, setProfile] = useState<any>(null);
@@ -7,7 +8,6 @@ export default function useProfile() {
   const [error, setError] = useState<any>(null);
 
   const session = useSession();
-  const supabase = useSupabaseClient();
 
   useEffect(() => {
     if (session) {
