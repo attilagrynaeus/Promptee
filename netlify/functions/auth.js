@@ -19,6 +19,9 @@ async function ensureUsersTable() {
       id SERIAL PRIMARY KEY,
       email TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
+      stripe_customer_id TEXT,
+      stripe_subscription_id TEXT,
+      subscription_status TEXT,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
   `);
