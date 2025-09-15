@@ -1,4 +1,5 @@
-import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useSession } from '@supabase/auth-helpers-react';
+import { supabase } from 'supabaseClient';
 import React, { useState, useMemo, useEffect } from 'react';
 import PromptSidebar from 'components/PromptSidebar';
 import PromptCard from 'components/PromptCard';
@@ -17,7 +18,6 @@ import { t } from 'i18n';
 
 export default function PromptApp() {
   const session = useSession();
-  const supabase = useSupabaseClient();
   const { profile, loading } = useProfile();
   const { showDialog } = useDialog();
   const { archiveMode } = useUI();
