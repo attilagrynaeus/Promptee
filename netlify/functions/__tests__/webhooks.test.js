@@ -8,6 +8,8 @@ jest.mock('pg', () => {
     stripe_customer_id TEXT,
     stripe_subscription_id TEXT,
     subscription_status TEXT,
+    trial_started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    subscription_active BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   );`);
   const { Pool } = db.adapters.createPg();
@@ -18,9 +20,13 @@ const mockConstructEvent = jest.fn().mockReturnValue({
   type: 'checkout.session.completed',
   data: { object: { metadata: { userId: '1' }, customer: 'cus_123', subscription: 'sub_123' } }
 });
-jest.mock('stripe', () => () => ({
-  webhooks: { constructEvent: mockConstructEvent }
-}));
+jest.mock(
+  'stripe',
+  () => () => ({
+    webhooks: { constructEvent: mockConstructEvent }
+  }),
+  { virtual: true }
+);
 
 process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test';
 process.env.DATABASE_URL = 'postgres://user:pass@localhost:5432/test';
@@ -44,7 +50,8 @@ describe('webhooks function', () => {
     expect(rows[0]).toMatchObject({
       stripe_customer_id: 'cus_123',
       stripe_subscription_id: 'sub_123',
-      subscription_status: 'active'
+      subscription_status: 'active',
+      subscription_active: true
     });
   });
 });

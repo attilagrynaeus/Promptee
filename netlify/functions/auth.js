@@ -22,9 +22,17 @@ async function ensureUsersTable() {
       stripe_customer_id TEXT,
       stripe_subscription_id TEXT,
       subscription_status TEXT,
+      trial_started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      subscription_active BOOLEAN NOT NULL DEFAULT FALSE,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
   `);
+  await pool.query(
+    'ALTER TABLE users ADD COLUMN IF NOT EXISTS trial_started_at TIMESTAMPTZ NOT NULL DEFAULT NOW()'
+  );
+  await pool.query(
+    'ALTER TABLE users ADD COLUMN IF NOT EXISTS subscription_active BOOLEAN NOT NULL DEFAULT FALSE'
+  );
   usersTableEnsured = true;
 }
 
@@ -32,7 +40,7 @@ async function registerUser(email, password) {
   await ensureUsersTable();
   const hashed = await bcrypt.hash(password, 10);
   const result = await pool.query(
-    'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email, created_at',
+    'INSERT INTO users (email, password_hash, trial_started_at, subscription_active) VALUES ($1, $2, NOW(), FALSE) RETURNING id, email, created_at, trial_started_at, subscription_active',
     [email, hashed]
   );
   return result.rows[0];

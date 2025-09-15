@@ -1,7 +1,11 @@
 const mockCreate = jest.fn().mockResolvedValue({ id: 'sess_123' });
-jest.mock('stripe', () => () => ({
-  checkout: { sessions: { create: mockCreate } }
-}));
+jest.mock(
+  'stripe',
+  () => () => ({
+    checkout: { sessions: { create: mockCreate } }
+  }),
+  { virtual: true }
+);
 
 process.env.STRIPE_PRICE_ID = 'price_test';
 const { handler } = require('../checkout');
