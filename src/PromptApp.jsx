@@ -152,6 +152,7 @@ export default function PromptApp() {
         chains={chains}
         onNew={() => setEditingPrompt({})}
         categories={['All Categories', ...categories.map(c => c.name)]}
+        categoriesData={categories}
         user={profile}
         favoriteOnly={favoriteOnly}
         setFavoriteOnly={setFavoriteOnly}

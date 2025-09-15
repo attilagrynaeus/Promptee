@@ -16,6 +16,7 @@ export default function PromptSidebar({
   search, setSearch,
   categoryFilter, setCategoryFilter,
   onNew, categories,
+  categoriesData = [],
   user, favoriteOnly, setFavoriteOnly,
   chains,
   chainViewActive, deactivateChainView,
@@ -200,7 +201,7 @@ export default function PromptSidebar({
         <EditCategoryModal
           open={editCatOpen}
           onClose={() => setEditCatOpen(false)}
-          categories={categories}
+          categories={categoriesData.slice(0, 100)}
         />
 
         {dumpError && (
