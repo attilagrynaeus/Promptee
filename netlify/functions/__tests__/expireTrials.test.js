@@ -16,6 +16,14 @@ jest.mock('pg', () => {
   return { Pool };
 });
 
+jest.mock(
+  '@netlify/functions',
+  () => ({
+    schedule: (_cron, fn) => fn,
+  }),
+  { virtual: true }
+);
+
 process.env.DATABASE_URL = 'postgres://user:pass@localhost:5432/test';
 const { Pool } = require('pg');
 const { expireTrials } = require('../scripts/expireTrials');
