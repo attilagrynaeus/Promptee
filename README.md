@@ -10,13 +10,14 @@
 2. [Tech Stack](#-tech-stack)
 3. [Project Structure](#-project-structure)
 4. [Getting Started](#-getting-started)
-5. [Running Tests](#-running-tests)
-6. [CI / CD](#-ci--cd)
-7. [Deployment](#-deployment)
-8. [Roadmap](#-roadmap)
-9. [Contributing](#-contributing)
-10. [License](#-license)
-11. [Acknowledgements](#-acknowledgements)
+5. [Usage & Billing](#usage--billing)
+6. [Running Tests](#-running-tests)
+7. [CI / CD](#-ci--cd)
+8. [Deployment](#-deployment)
+9. [Roadmap](#-roadmap)
+10. [Contributing](#-contributing)
+11. [License](#-license)
+12. [Acknowledgements](#-acknowledgements)
 
 ---
 
@@ -160,12 +161,29 @@ Create a `.env` in the project root:
 ```env
 VITE_SUPABASE_URL=https://<project>.supabase.co
 VITE_SUPABASE_ANON=<public‑anon‑key>
-STRIPE_SECRET_KEY=sk_test_yourkeyhere
+STRIPE_SECRET_KEY=sk_test_yourkeyhere # TODO: set from Stripe Dashboard
+STRIPE_PRICE_ID=price_123456          # TODO: create via Stripe product
+STRIPE_WEBHOOK_SECRET=whsec_123456    # TODO: obtained from `stripe listen`
 JWT_SECRET=replace-with-strong-secret
+DATABASE_URL=postgres://user:pass@host:5432/dbname # TODO: your Postgres or Supabase URL
+SUCCESS_URL=http://localhost:5173/?checkout=success
+CANCEL_URL=http://localhost:5173/?checkout=cancel
 API_BASE_URL=https://example.netlify.app/.netlify/functions # TODO update with actual API base URL
 ```
 
 These variables must also be configured in the Netlify dashboard under **Site settings → Build & deploy → Environment**.
+
+#### Stripe Keys
+1. Create a [Stripe account](https://dashboard.stripe.com/register) and copy your test **Secret key**.
+2. Create a product with a recurring price and note the resulting **Price ID**.
+3. Run `npm run stripe:listen` and copy the generated **Webhook signing secret**.
+4. Populate `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, `SUCCESS_URL`, and `CANCEL_URL` in `.env` and the Netlify dashboard.
+
+#### Custom Auth Setup
+1. Provision a PostgreSQL database (Supabase works) and set `DATABASE_URL`.
+2. Define a strong `JWT_SECRET` for signing login tokens.
+3. Register with `POST /.netlify/functions/auth/register` and log in via `POST /.netlify/functions/auth/login`.
+4. The first run creates the `users` table automatically.
 
 ### Run Locally
 ```bash
@@ -178,6 +196,19 @@ Install the [Stripe CLI](https://stripe.com/docs/stripe-cli) and forward events 
 ```bash
 npm run stripe:listen
 ```
+
+---
+
+## Usage & Billing
+
+### Trial Period
+- Each new account starts with a **7‑day free trial**.
+- After the trial, protected routes return **HTTP 402** and the UI prompts users to subscribe.
+
+### Subscription Management
+- Subscriptions are created through Stripe Checkout sessions.
+- The `webhooks` function marks `subscription_active` when payment succeeds.
+- To cancel, use your Stripe customer portal; access is revoked once the current billing period ends.
 
 ---
 
