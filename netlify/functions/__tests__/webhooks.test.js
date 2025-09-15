@@ -16,10 +16,7 @@ jest.mock('pg', () => {
   return { Pool };
 });
 
-const mockConstructEvent = jest.fn().mockReturnValue({
-  type: 'checkout.session.completed',
-  data: { object: { metadata: { userId: '1' }, customer: 'cus_123', subscription: 'sub_123' } }
-});
+const mockConstructEvent = jest.fn();
 jest.mock(
   'stripe',
   () => () => ({
@@ -35,6 +32,10 @@ const { handler } = require('../webhooks');
 
 describe('webhooks function', () => {
   test('updates user on checkout.session.completed', async () => {
+    mockConstructEvent.mockReturnValueOnce({
+      type: 'checkout.session.completed',
+      data: { object: { metadata: { userId: '1' }, customer: 'cus_123', subscription: 'sub_123' } }
+    });
     const pool = new Pool();
     await pool.query(
       'INSERT INTO users (email, password_hash) VALUES ($1,$2)',
@@ -53,5 +54,25 @@ describe('webhooks function', () => {
       subscription_status: 'active',
       subscription_active: true
     });
+  });
+
+  test('sets subscription_active false on invoice.payment_failed', async () => {
+    const pool = new Pool();
+    await pool.query(
+      `INSERT INTO users (email, password_hash, stripe_customer_id, subscription_active) VALUES ($1,$2,$3,true)`,
+      ['b@example.com', 'hash', 'cus_123']
+    );
+    mockConstructEvent.mockReturnValueOnce({
+      type: 'invoice.payment_failed',
+      data: { object: { customer: 'cus_123' } }
+    });
+    const res = await handler({
+      httpMethod: 'POST',
+      headers: { 'stripe-signature': 'sig' },
+      body: '{}'
+    });
+    expect(res.statusCode).toBe(200);
+    const { rows } = await pool.query('SELECT subscription_active FROM users');
+    expect(rows[0].subscription_active).toBe(false);
   });
 });
