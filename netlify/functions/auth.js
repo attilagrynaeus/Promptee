@@ -11,7 +11,9 @@ const pool = new Pool({
 
 const JWT_SECRET = process.env.JWT_SECRET || 'TODO-change-me';
 
+let usersTableEnsured = false;
 async function ensureUsersTable() {
+  if (usersTableEnsured) return;
   await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
@@ -19,6 +21,7 @@ async function ensureUsersTable() {
       password TEXT NOT NULL
     );
   `);
+  usersTableEnsured = true;
 }
 
 async function registerUser(email, password) {
@@ -55,23 +58,17 @@ function verifyToken(header) {
 }
 
 exports.handler = async (event) => {
-  try {
-    if (event.httpMethod !== 'POST') {
-      return {
-        statusCode: 405,
-        body: JSON.stringify({ error: 'Method not allowed' })
-      };
-    }
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
+  }
 
+  try {
     const { path } = event;
     const { email, password } = JSON.parse(event.body || '{}');
 
     if (path.endsWith('/register')) {
       if (!email || !password) {
-        return {
-          statusCode: 400,
-          body: JSON.stringify({ error: 'Email and password required' })
-        };
+        return { statusCode: 400, body: JSON.stringify({ error: 'Email and password required' }) };
       }
       const user = await registerUser(email, password);
       return { statusCode: 201, body: JSON.stringify({ id: user.id, email: user.email }) };
@@ -79,10 +76,7 @@ exports.handler = async (event) => {
 
     if (path.endsWith('/login')) {
       if (!email || !password) {
-        return {
-          statusCode: 400,
-          body: JSON.stringify({ error: 'Email and password required' })
-        };
+        return { statusCode: 400, body: JSON.stringify({ error: 'Email and password required' }) };
       }
       const token = await loginUser(email, password);
       return { statusCode: 200, body: JSON.stringify({ token }) };
