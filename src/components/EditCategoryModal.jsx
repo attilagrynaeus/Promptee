@@ -5,9 +5,8 @@ import { useDialog } from 'context/DialogContext';
 import { t } from 'i18n';
 import { updateCategory } from 'utils/categoryService';
 
-// Modal for editing category names. As the user edits the name, it is
-// automatically saved to the database (debounced). The modal can be closed
-// with Close, or with Save (which also flushes any pending update).
+// Modal for editing category names. The category is updated only when the user
+// explicitly clicks Save.
 export default function EditCategoryModal({
   open,
   onClose,
@@ -22,7 +21,6 @@ export default function EditCategoryModal({
   const [name, setName] = useState('');
   const [saving, setSaving] = useState(false);
   const lastSavedNameRef = useRef('');
-  const debounceRef = useRef(0);
 
   useEffect(() => {
     if (!open) return;
@@ -39,7 +37,6 @@ export default function EditCategoryModal({
     const cat = categories.find(c => c.id === selectedId);
     setName(cat?.name ?? '');
     lastSavedNameRef.current = cat?.name ?? '';
-    clearTimeout(debounceRef.current);
   }, [selectedId]);
 
   const isDuplicateName = (trimmed) => {
@@ -49,7 +46,7 @@ export default function EditCategoryModal({
     return existing;
   };
 
-  const flushSave = async () => {
+  const saveCategory = async () => {
     if (!selectedId) return;
     const trimmed = (name || '').trim();
     if (trimmed.length === 0) {
@@ -86,23 +83,15 @@ export default function EditCategoryModal({
   };
 
   const onNameChange = (e) => {
-    const newVal = e.target.value;
-    setName(newVal);
-    clearTimeout(debounceRef.current);
-    // Debounced auto-save to avoid excessive updates
-    debounceRef.current = setTimeout(() => {
-      void flushSave();
-    }, 450);
+    setName(e.target.value);
   };
 
   const handleClose = () => {
-    clearTimeout(debounceRef.current);
     onClose?.();
   };
 
   const handleSaveAndClose = async () => {
-    clearTimeout(debounceRef.current);
-    await flushSave();
+    await saveCategory();
     onClose?.();
   };
 
@@ -144,7 +133,7 @@ export default function EditCategoryModal({
                 placeholder={t('EditCategory.NamePlaceholder')}
               />
 
-              <p className="text-xs text-gray-500">{t('EditCategory.AutoSaveHint')}</p>
+              <p className="text-xs text-gray-500">{t('EditCategory.SaveHint')}</p>
             </>
           )}
 
