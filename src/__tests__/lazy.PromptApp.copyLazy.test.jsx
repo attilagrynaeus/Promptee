@@ -6,18 +6,20 @@ import PromptApp from 'PromptApp';
 
 jest.mock('assets/hover-icon.svg', () => 'icon.svg', { virtual: true });
 
-jest.mock('@supabase/auth-helpers-react', () => {
-  const supabase = {
-    from: () => ({
-      select: () => ({ eq: () => ({ order: () => Promise.resolve({ data: [], error: null }) }) }),
-      order: () => Promise.resolve({ data: [], error: null }),
-    }),
-  };
-  return {
-    useSupabaseClient: () => supabase,
-    useSession: () => ({ user: { id: 'u1' } }),
-  };
-});
+const supabase = {
+  from: () => ({
+    select: () => ({ eq: () => ({ order: () => Promise.resolve({ data: [], error: null }) }) }),
+    order: () => Promise.resolve({ data: [], error: null }),
+  }),
+};
+
+jest.mock('supabaseClient', () => ({
+  supabase,
+}));
+
+jest.mock('@supabase/auth-helpers-react', () => ({
+  useSession: () => ({ user: { id: 'u1' } }),
+}));
 
 jest.mock('hooks/useProfile', () => ({
   __esModule: true,

@@ -7,10 +7,6 @@ jest.mock('context/DialogContext', () => ({
   useDialog: () => ({ showDialog: mockShowDialog }),
 }));
 
-jest.mock('@supabase/auth-helpers-react', () => ({
-  useSupabaseClient: () => ({}),
-}));
-
 jest.mock('utils/categoryService', () => ({
   updateCategory: jest.fn(() => Promise.resolve({ error: null })),
 }));
