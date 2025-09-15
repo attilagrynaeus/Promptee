@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
 import usePromptDump from 'hooks/usePromptDump';
 import { t } from 'i18n';
@@ -10,6 +10,7 @@ import SearchFilters     from 'components/SearchFilters';
 import FavoritesToggle   from 'components/FavoritesToggle';
 import ArchivedToggle    from 'components/ArchivedToggle';
 import { addCategory } from 'utils/categoryService';
+import EditCategoryModal from 'components/EditCategoryModal';
 
 export default function PromptSidebar({
   search, setSearch,
@@ -25,6 +26,7 @@ export default function PromptSidebar({
   const session  = useSession();
   const username = user?.email?.split('@')[0] || 'Guest';
   const { showDialog } = useDialog();
+  const [editCatOpen, setEditCatOpen] = useState(false);
 
   useEffect(() => {
     if (chainView && !chainFilter && chains.length) {
@@ -175,6 +177,12 @@ export default function PromptSidebar({
           {t('PromptSidebar.AddCategory')}
         </button>
         <button
+          onClick={() => setEditCatOpen(true)}
+          className="mt-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 transition-colors text-white rounded-lg py-1 px-3 w-full"
+        >
+          {t('PromptSidebar.EditCategory')}
+        </button>
+        <button
           onClick={handleLogout}
           className="mt-2 text-sm font-semibold bg-red-700 hover:bg-red-600 transition-colors text-white rounded-lg py-1 px-3"
         >
@@ -188,6 +196,12 @@ export default function PromptSidebar({
         >
           {dumpLoading ? t('PromptSidebar.Dumping') : t('PromptSidebar.DumpPrompts')}
         </button>
+
+        <EditCategoryModal
+          open={editCatOpen}
+          onClose={() => setEditCatOpen(false)}
+          categories={categories}
+        />
 
         {dumpError && (
           <p className="text-red-400 mt-1">⚠️ {dumpError.message}</p>

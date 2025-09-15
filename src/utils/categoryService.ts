@@ -10,3 +10,11 @@ export async function addCategory(
   return supabase.from('categories').insert({ name });
 }
 
+// Updates category name by id. Respects UNIQUE(name) constraint.
+export async function updateCategory(
+  supabase: SupabaseClient,
+  id: string,
+  name: string,
+) {
+  return supabase.from('categories').update({ name }).eq('id', id);
+}

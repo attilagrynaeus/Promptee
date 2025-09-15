@@ -80,7 +80,16 @@
     "OK": "OK",
     "AddCategory": "Add Category",
     "AddCategoryPrompt": "Enter new category name",
-    "AddCategorySuccess": "Category saved. Reload to see it."
+    "AddCategorySuccess": "Category saved. Reload to see it.",
+    "EditCategory": "Edit Category"
+  },
+  "EditCategory": {
+    "Title": "Edit Categories",
+    "NoCategories": "No categories to edit.",
+    "SelectLabel": "Choose category",
+    "NameLabel": "New name",
+    "NamePlaceholder": "Category name",
+    "AutoSaveHint": "Changes save automatically. Use Save to close."
   },
   "SearchFilters": {
     "SearchPlaceholder": "Search",
