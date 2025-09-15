@@ -8,7 +8,8 @@
     "preview": "vite preview",
     "test": "jest",
     "lint:strings": "node scripts/check-messages.js",
-    "clean:sections": "node scripts/cleanSectionComments.js"
+    "clean:sections": "node scripts/cleanSectionComments.js",
+    "stripe:listen": "stripe listen --forward-to localhost:8888/.netlify/functions/webhooks"
   },
   "jest": {
     "testEnvironment": "jsdom",

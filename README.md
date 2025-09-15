@@ -160,11 +160,23 @@ Create a `.env` in the project root:
 ```env
 VITE_SUPABASE_URL=https://<project>.supabase.co
 VITE_SUPABASE_ANON=<public‑anon‑key>
+STRIPE_SECRET_KEY=sk_test_yourkeyhere
+JWT_SECRET=replace-with-strong-secret
+API_BASE_URL=https://example.netlify.app/.netlify/functions # TODO update with actual API base URL
 ```
+
+These variables must also be configured in the Netlify dashboard under **Site settings → Build & deploy → Environment**.
 
 ### Run Locally
 ```bash
 npm run dev   # Vite dev server on http://localhost:5173
+```
+
+### Stripe Webhook Testing
+Install the [Stripe CLI](https://stripe.com/docs/stripe-cli) and forward events locally:
+
+```bash
+npm run stripe:listen
 ```
 
 ---

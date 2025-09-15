@@ -10,3 +10,6 @@ publish = "dist"
 
 [functions]
   directory = "netlify/functions"
+
+[dev]
+  functions = "netlify/functions"
