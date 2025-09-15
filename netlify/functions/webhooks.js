@@ -12,8 +12,8 @@ async function updateUser(session) {
   const userId = session.metadata && session.metadata.userId;
   if (!userId) return;
   await pool.query(
-    `UPDATE users SET stripe_customer_id=$1, stripe_subscription_id=$2, subscription_status=$3 WHERE id=$4`,
-    [session.customer, session.subscription, 'active', userId]
+    `UPDATE users SET stripe_customer_id=$1, stripe_subscription_id=$2, subscription_status=$3, subscription_active=$4 WHERE id=$5`,
+    [session.customer, session.subscription, 'active', true, userId]
   );
 }
 
