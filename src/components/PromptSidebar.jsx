@@ -23,7 +23,9 @@ export default function PromptSidebar({
   chains,
   chainViewActive, deactivateChainView,
   chainView, setChainView,
-  chainFilter, setChainFilter
+  chainFilter, setChainFilter,
+  subscriptionActive = true,
+  requireSubscription
 }) {
   const session  = useSession();
   const username = user?.email?.split('@')[0] || 'Guest';
@@ -46,6 +48,10 @@ export default function PromptSidebar({
   };
 
   const handleAddCategory = async () => {
+    if (!subscriptionActive) {
+      requireSubscription?.();
+      return;
+    }
     try {
       const name = (window.prompt(t('PromptSidebar.AddCategoryPrompt')) || '').trim();
       if (!name) return;
@@ -85,10 +91,14 @@ export default function PromptSidebar({
   } = usePromptDump(supabase, session, username);
 
   const handleNew = () => {
+    if (!subscriptionActive) {
+      requireSubscription?.();
+      return;
+    }
     try {
       sessionStorage.removeItem('draft-new');
     } catch {}
-    onNew();           // open modal
+    onNew();
   };
 
   return (
@@ -179,7 +189,7 @@ export default function PromptSidebar({
           {t('PromptSidebar.AddCategory')}
         </button>
         <button
-          onClick={() => setEditCatOpen(true)}
+          onClick={() => (subscriptionActive ? setEditCatOpen(true) : requireSubscription?.())}
           className="mt-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 transition-colors text-white rounded-lg py-1 px-3 w-full"
         >
           {t('PromptSidebar.EditCategory')}
@@ -192,7 +202,7 @@ export default function PromptSidebar({
         </button>
 
         <button
-          onClick={dump}
+          onClick={() => (subscriptionActive ? dump() : requireSubscription?.())}
           disabled={dumpLoading}
           className="mt-2 ml-2 text-sm bg-gray-700 hover:bg-gray-600 transition-colors text-white rounded-lg py-1 px-3"
         >
