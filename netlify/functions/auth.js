@@ -18,7 +18,8 @@ async function ensureUsersTable() {
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
       email TEXT UNIQUE NOT NULL,
-      password TEXT NOT NULL
+      password_hash TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
   `);
   usersTableEnsured = true;
@@ -28,7 +29,7 @@ async function registerUser(email, password) {
   await ensureUsersTable();
   const hashed = await bcrypt.hash(password, 10);
   const result = await pool.query(
-    'INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email',
+    'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email, created_at',
     [email, hashed]
   );
   return result.rows[0];
@@ -37,12 +38,12 @@ async function registerUser(email, password) {
 async function loginUser(email, password) {
   await ensureUsersTable();
   const { rows } = await pool.query(
-    'SELECT id, email, password FROM users WHERE email = $1',
+    'SELECT id, email, password_hash FROM users WHERE email = $1',
     [email]
   );
   if (!rows.length) throw new Error('Invalid credentials');
   const user = rows[0];
-  const match = await bcrypt.compare(password, user.password);
+  const match = await bcrypt.compare(password, user.password_hash);
   if (!match) throw new Error('Invalid credentials');
   return jwt.sign(
     { id: user.id, email: user.email },
@@ -51,8 +52,20 @@ async function loginUser(email, password) {
   );
 }
 
-function verifyToken(header) {
-  const [, token] = (header || '').split(' ');
+function getTokenFromHeaders(headers = {}) {
+  const authHeader = headers.authorization || headers.Authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    return authHeader.split(' ')[1];
+  }
+  const cookie = headers.cookie || headers.Cookie;
+  if (cookie) {
+    const match = cookie.match(/token=([^;]+)/);
+    if (match) return match[1];
+  }
+  return null;
+}
+
+function verifyToken(token) {
   if (!token) throw new Error('Missing token');
   return jwt.verify(token, JWT_SECRET);
 }
@@ -79,10 +92,17 @@ exports.handler = async (event) => {
         return { statusCode: 400, body: JSON.stringify({ error: 'Email and password required' }) };
       }
       const token = await loginUser(email, password);
-      return { statusCode: 200, body: JSON.stringify({ token }) };
+      return {
+        statusCode: 200,
+        headers: {
+          'Set-Cookie': `token=${token}; HttpOnly; Path=/; Max-Age=3600`
+        },
+        body: JSON.stringify({ message: 'Logged in' })
+      };
     }
 
-    const user = verifyToken(event.headers.authorization);
+    const token = getTokenFromHeaders(event.headers);
+    const user = verifyToken(token);
     return { statusCode: 200, body: JSON.stringify({ user }) };
   } catch (err) {
     const status = err.message.includes('Invalid') || err.message.includes('Missing') ? 401 : 500;

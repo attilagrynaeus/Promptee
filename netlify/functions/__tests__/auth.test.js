@@ -5,6 +5,22 @@ jest.mock('pg', () => {
   const { Pool } = db.adapters.createPg();
   return { Pool };
 });
+jest.mock(
+  'bcrypt',
+  () => ({
+    hash: async (pwd) => `hashed:${pwd}`,
+    compare: async (pwd, hash) => hash === `hashed:${pwd}`
+  }),
+  { virtual: true }
+);
+jest.mock(
+  'jsonwebtoken',
+  () => ({
+    sign: (payload) => Buffer.from(JSON.stringify(payload)).toString('base64'),
+    verify: (token) => JSON.parse(Buffer.from(token, 'base64').toString())
+  }),
+  { virtual: true }
+);
 
 process.env.JWT_SECRET = 'test-secret';
 process.env.DATABASE_URL = 'postgres://user:pass@localhost:5432/test';
@@ -41,17 +57,17 @@ describe('auth function', () => {
       path: '/login',
       body: JSON.stringify({ email: 'second@example.com', password: 'secret' })
     });
-    const loginBody = JSON.parse(loginRes.body);
+    const cookie = loginRes.headers['Set-Cookie'];
 
-    // Assert token is issued
+    // Assert cookie with token is issued
     expect(loginRes.statusCode).toBe(200);
-    expect(typeof loginBody.token).toBe('string');
+    expect(cookie).toMatch(/token=/);
 
-    // Act: verify token via a protected path
+    // Act: verify token via a protected path using the cookie
     const verifyRes = await handler({
       httpMethod: 'POST',
       path: '/protected',
-      headers: { authorization: `Bearer ${loginBody.token}` }
+      headers: { cookie }
     });
     const verifyBody = JSON.parse(verifyRes.body);
 
