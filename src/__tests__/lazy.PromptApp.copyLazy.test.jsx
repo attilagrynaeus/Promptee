@@ -23,7 +23,7 @@ jest.mock('@supabase/auth-helpers-react', () => ({
 
 jest.mock('hooks/useProfile', () => ({
   __esModule: true,
-  default: () => ({ profile: { role: 'User' }, loading: false }),
+  default: () => ({ profile: { role: 'User', subscription_active: true }, loading: false }),
 }));
 
 const mockPrompts = [

@@ -5,6 +5,7 @@ import PromptSidebar from 'components/PromptSidebar';
 import PromptCard from 'components/PromptCard';
 import ChainSeparator from 'components/ChainSeparator';
 const PromptFormModal = React.lazy(() => import('components/PromptFormModal'));
+const SubscribeModal = React.lazy(() => import('components/SubscribeModal'));
 import LoginForm from 'components/LoginForm';
 import useProfile from 'hooks/useProfile';
 import useIdleTimeout from 'hooks/useIdleTimeout';
@@ -38,6 +39,8 @@ export default function PromptApp() {
   const [currentChain, setCurrentChain] = useState([]);
   const [chains, setChains] = useState([]);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [subscriptionActive, setSubscriptionActive] = useState(false);
+  const [subscribeOpen, setSubscribeOpen] = useState(false);
 
   useEffect(() => {
     if (typeof sessionStorage !== 'undefined') {
@@ -90,6 +93,19 @@ export default function PromptApp() {
       return () => clearTimeout(timer);
     }
   }, [profile]);
+
+  useEffect(() => {
+    setSubscriptionActive(Boolean(profile?.subscription_active));
+  }, [profile]);
+
+  const requireSubscription = () => setSubscribeOpen(true);
+  const allowAction = (fn) => (...args) => {
+    if (!subscriptionActive) {
+      requireSubscription();
+      return;
+    }
+    return fn(...args);
+  };
 
   const filtered = useMemo(() => {
     if (chainView && chainFilter) {
@@ -155,7 +171,7 @@ export default function PromptApp() {
         categoryFilter={categoryFilter}
         setCategoryFilter={setCategoryFilter}
         chains={chains}
-        onNew={() => setEditingPrompt({})}
+        onNew={allowAction(() => setEditingPrompt({}))}
         categories={['All Categories', ...categories.map(c => c.name)]}
         categoriesData={categories}
         reloadCategories={reloadCategories}
@@ -170,6 +186,8 @@ export default function PromptApp() {
         deactivateChainView={() => {
           setChainView(false);
         }}
+        subscriptionActive={subscriptionActive}
+        requireSubscription={requireSubscription}
       />
 
       <main className="flex-1">
@@ -184,17 +202,17 @@ export default function PromptApp() {
                 prompt={{ ...prompt, category: prompt.categories?.name || 'Uncategorized' }}
                 currentUserId={session.user.id}
                 chainViewActive={chainView}
-                onCopy={async () => {
+                onCopy={allowAction(async () => {
                   const { content, error } = await fetchPromptContent(supabase, prompt.id);
                   if (!error) await navigator.clipboard.writeText(content || '');
-                }}
-                onEdit={() => setEditingPrompt(prompt)}
+                })}
+                onEdit={allowAction(() => setEditingPrompt(prompt))}
                 onView={handleView}
-                onDelete={() => handleDelete(prompt.id)}
-                onToggleFavorit={handleToggleFavorit}
-                onArchive={() => handleArchive(prompt)}
-                onClone={handleClone}
-                onColorChange={handleColorChange}
+                onDelete={allowAction(() => handleDelete(prompt.id))}
+                onToggleFavorit={allowAction(handleToggleFavorit)}
+                onArchive={allowAction(handleArchive)}
+                onClone={allowAction(handleClone)}
+                onColorChange={allowAction(handleColorChange)}
               />
               {chainView && idx < filtered.length - 1 && <ChainSeparator />}
             </React.Fragment>
@@ -222,6 +240,16 @@ export default function PromptApp() {
             prompts={prompts}
             onClose={closeViewModal}
             readOnly={true}
+          />
+        </React.Suspense>
+      )}
+
+      {subscribeOpen && (
+        <React.Suspense fallback={null}>
+          <SubscribeModal
+            open={subscribeOpen}
+            onClose={() => setSubscribeOpen(false)}
+            userId={session.user.id}
           />
         </React.Suspense>
       )}
