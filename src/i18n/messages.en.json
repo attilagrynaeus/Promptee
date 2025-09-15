@@ -89,7 +89,7 @@
     "SelectLabel": "Choose category",
     "NameLabel": "New name",
     "NamePlaceholder": "Category name",
-    "AutoSaveHint": "Changes save automatically. Use Save to close.",
+    "SaveHint": "Press Save to update the category name.",
     "Errors": {
       "Empty": "Category name cannot be empty.",
       "Duplicate": "Category name already exists.",
