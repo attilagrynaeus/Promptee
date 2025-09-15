@@ -10,7 +10,6 @@ jest.mock('context/DialogContext', () => ({
 }));
 
 jest.mock('@supabase/auth-helpers-react', () => ({
-  useSupabaseClient: () => ({}),
   useSession: () => ({ user: { id: 'uid-1' } }),
 }));
 

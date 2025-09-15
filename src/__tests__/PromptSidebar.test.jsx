@@ -11,7 +11,6 @@ jest.mock('context/DialogContext', () => ({
 import { t } from 'i18n';
 
 jest.mock('@supabase/auth-helpers-react', () => ({
-  useSupabaseClient: () => ({}),
   useSession: () => ({ user: { id: 'uid-1' } }),
 }));
 
