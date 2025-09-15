@@ -108,7 +108,10 @@ export default function PromptSidebar({
           {t('PromptSidebar.Title')}
         </h2>
 
-        <button onClick={handleNew} className="btn-blue mt-4 w-full shadow-lg">
+        <button
+          onClick={handleNew}
+          className={`btn-blue mt-4 w-full shadow-lg${subscriptionActive ? '' : ' opacity-50 cursor-not-allowed'}`}
+        >
           {t('PromptSidebar.NewPrompt')}
         </button>
 
@@ -184,13 +187,13 @@ export default function PromptSidebar({
       <div className="mt-auto pt-4 text-center text-sm text-gray-400 border-t border-gray-700">
         <button
           onClick={handleAddCategory}
-          className="mt-1 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 transition-colors text-white rounded-lg py-1 px-3 w-full"
+          className={`mt-1 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 transition-colors text-white rounded-lg py-1 px-3 w-full${subscriptionActive ? '' : ' opacity-50 cursor-not-allowed'}`}
         >
           {t('PromptSidebar.AddCategory')}
         </button>
         <button
           onClick={() => (subscriptionActive ? setEditCatOpen(true) : requireSubscription?.())}
-          className="mt-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 transition-colors text-white rounded-lg py-1 px-3 w-full"
+          className={`mt-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 transition-colors text-white rounded-lg py-1 px-3 w-full${subscriptionActive ? '' : ' opacity-50 cursor-not-allowed'}`}
         >
           {t('PromptSidebar.EditCategory')}
         </button>
@@ -204,7 +207,7 @@ export default function PromptSidebar({
         <button
           onClick={() => (subscriptionActive ? dump() : requireSubscription?.())}
           disabled={dumpLoading}
-          className="mt-2 ml-2 text-sm bg-gray-700 hover:bg-gray-600 transition-colors text-white rounded-lg py-1 px-3"
+          className={`mt-2 ml-2 text-sm bg-gray-700 hover:bg-gray-600 transition-colors text-white rounded-lg py-1 px-3${subscriptionActive ? '' : ' opacity-50 cursor-not-allowed'}`}
         >
           {dumpLoading ? t('PromptSidebar.Dumping') : t('PromptSidebar.DumpPrompts')}
         </button>

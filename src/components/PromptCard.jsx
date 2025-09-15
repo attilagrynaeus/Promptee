@@ -31,6 +31,7 @@ export default function PromptCard({
   onView,
   onArchive,
   chainViewActive,
+  subscriptionActive = true,
 }) {
   const tokenCount = tokensOf(prompt.content);
   const isOwner = prompt.user_id === currentUserId;
@@ -185,7 +186,7 @@ export default function PromptCard({
       </div>
 
       {/* actions */}
-      <div className="promptcard__actions">
+      <div className={`promptcard__actions${subscriptionActive ? '' : ' disabled'}`}>
         {/* favorite stays left-aligned */}
         <button
           onClick={handleToggleFavorit}
